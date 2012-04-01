@@ -1,6 +1,9 @@
 == Hello World!
 
-
+My name is phpenv. I was designed to help simplify the management of multiple
+PHP installations, and inspired by the outstanding work of both the
+[rbenv](https://github.com/sstephenson/rbenv) and
+[ruby-build](https://github.com/sstephenson/ruby-build) projects.
 
 == License
 
