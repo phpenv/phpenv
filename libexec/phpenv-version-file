@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$PHPENV_DEBUG" ] && set -x
+
+root="$PHPENV_DIR"
+while [ -n "$root" ]; do
+  if [ -e "${root}/.phpenv-version" ]; then
+    echo "${root}/.phpenv-version"
+    exit
+  fi
+  root="${root%/*}"
+done
+
+global_version_file="${PHPENV_ROOT}/version"
+
+if [ -e "$global_version_file" ]; then
+  echo "$global_version_file"
+elif [ -e "${PHPENV_ROOT}/global" ]; then
+  echo "${PHPENV_ROOT}/global"
+elif [ -e "${PHPENV_ROOT}/default" ]; then
+  echo "${PHPENV_ROOT}/default"
+else
+  echo "$global_version_file"
+fi
