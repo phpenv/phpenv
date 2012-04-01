@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$PHPENV_DEBUG" ] && set -x
+
+if [ -n "$PHPENV_VERSION" ]; then
+  echo "PHPENV_VERSION environment variable"
+else
+  phpenv-version-file
+fi
