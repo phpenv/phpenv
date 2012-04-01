@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$PHPENV_DEBUG" ] && set -x
+
+# Provide phpenv completions
+if [ "$1" = "--complete" ]; then
+  echo system
+  exec phpenv-versions --bare
+fi
+
+if [ -n "$1" ]; then
+  export PHPENV_VERSION="$1"
+elif [ -z "$PHPENV_VERSION" ]; then
+  PHPENV_VERSION="$(phpenv-version-name)"
+fi
+
+if [ "$PHPENV_VERSION" = "system" ]; then
+  PHP_PATH="$(phpenv-which php)"
+  echo "${PHP_PATH%/*}"
+  exit
+fi
+
+PHPENV_PREFIX_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}"
+if [ ! -d "$PHPENV_PREFIX_PATH" ]; then
+  echo "phpenv: version \`${PHPENV_VERSION}' not installed" >&2
+  exit 1
+fi
+
+echo "$PHPENV_PREFIX_PATH"
