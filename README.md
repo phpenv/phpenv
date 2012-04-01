@@ -5,6 +5,10 @@ PHP installations, and inspired by the outstanding work of both the
 [rbenv](https://github.com/sstephenson/rbenv) and
 [ruby-build](https://github.com/sstephenson/ruby-build) projects.
 
+== Install
+
+`git clone git://github.com/humanshell/phpenv.git ~/.phpenv`
+
 == License
 
 Copyright (c) 2012 Dominic Giglio
