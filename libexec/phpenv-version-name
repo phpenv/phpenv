@@ -2,8 +2,21 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-if [ -n "$PHPENV_VERSION" ]; then
-  echo "PHPENV_VERSION environment variable"
+if [ -z "$PHPENV_VERSION" ]; then
+  PHPENV_VERSION_FILE="$(phpenv-version-file)"
+  PHPENV_VERSION="$(phpenv-version-file-read "$PHPENV_VERSION_FILE" || true)"
+fi
+
+if [ -z "$PHPENV_VERSION" ] || [ "$PHPENV_VERSION" = "system" ]; then
+  echo "system"
+  exit
+fi
+
+PHPENV_VERSION_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}"
+
+if [ -d "$PHPENV_VERSION_PATH" ]; then
+  echo "$PHPENV_VERSION"
 else
-  phpenv-version-file
+  echo "phpenv: version \`$PHPENV_VERSION' is not installed" >&2
+  exit 1
 fi
