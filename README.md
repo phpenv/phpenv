@@ -28,12 +28,12 @@ PHP installations, and was inspired by the outstanding work of both the
 
 phpenv operates on the per-user directory `~/.phpenv`. Version names in
 phpenv correspond to subdirectories of `~/.phpenv/versions`. For
-example, you might have `~/.phpenv/versions/PHP-5.3.8` and
-`~/.phpenv/versions/PHP-5.4.0`.
+example, you might have `~/.phpenv/versions/5.3.8` and
+`~/.phpenv/versions/5.4.0`.
 
 Each version is a working tree with its own binaries, like
-`~/.phpenv/versions/PHP-5.4.0/bin/php` and
-`~/.phpenv/versions/PHP-5.3.8/bin/pyrus`. phpenv makes _shim binaries_
+`~/.phpenv/versions/5.4.0/bin/php` and
+`~/.phpenv/versions/5.3.8/bin/pyrus`. phpenv makes _shim binaries_
 for every such binary across all installed versions of PHP.
 
 These shims are simple wrapper scripts that live in `~/.phpenv/shims`
@@ -54,7 +54,7 @@ easy to fork and contribute any changes back upstream.
 1. Check out phpenv into `~/.phpenv`.
 
         $ cd
-        $ git clone git://github.com/sstephenson/phpenv.git .phpenv
+        $ git clone git://github.com/humanshell/phpenv.git .phpenv
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
