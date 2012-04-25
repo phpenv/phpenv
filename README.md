@@ -229,7 +229,9 @@ GitHub](https://github.com/humanshell/phpenv). It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
-Please feel free to submit pull requests and file bugs on the [issue
+This project is basically a clone (Read: "search and replace") of the rbenv
+project. It's in need of love and support. if you're interested in improving it
+please feel free to fork, submit pull requests and file bugs on the [issue
 tracker](https://github.com/humanshell/phpenv/issues).
 
 ### <a name="section_4.2"></a> 4.2 License
