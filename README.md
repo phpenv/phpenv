@@ -5,26 +5,7 @@ PHP installations, and was inspired by the outstanding work of both the
 [rbenv](https://github.com/sstephenson/rbenv) and
 [ruby-build](https://github.com/sstephenson/ruby-build) projects.
 
-== Table of Contents
-
-   * [1 How It Works](#section_1)
-   * [2 Installation](#section_2)
-      * [2.1 Basic GitHub Checkout](#section_2.1)
-         * [2.1.1 Upgrading](#section_2.1.1)
-      * [2.2 Neckbeard Configuration](#section_2.2)
-   * [3 Usage](#section_3)
-      * [3.1 phpenv global](#section_3.1)
-      * [3.2 phpenv local](#section_3.2)
-      * [3.3 phpenv shell](#section_3.3)
-      * [3.4 phpenv versions](#section_3.4)
-      * [3.5 phpenv version](#section_3.5)
-      * [3.6 phpenv rehash](#section_3.6)
-      * [3.7 phpenv which](#section_3.7)
-   * [4 Development](#section_4)
-      * [4.1 Version History](#section_4.1)
-      * [4.2 License](#section_4.2)
-
-## <a name="section_1"></a> 1 How It Works
+## How It Works
 
 phpenv operates on the per-user directory `~/.phpenv`. Version names in
 phpenv correspond to subdirectories of `~/.phpenv/versions`. For
@@ -44,9 +25,9 @@ and then execute the corresponding binary.
 Because of the simplicity of the shim approach, all you need to use
 phpenv is `~/.phpenv/shims` in your `$PATH`.
 
-## <a name="section_2"></a> 2 Installation
+## Installation
 
-### <a name="section_2.1"></a> 2.1 Basic GitHub Checkout
+### Basic GitHub Checkout
 
 This will get you going with the latest version of phpenv and make it
 easy to fork and contribute any changes back upstream.
@@ -92,7 +73,7 @@ easy to fork and contribute any changes back upstream.
 
         $ phpenv rehash
 
-#### <a name="section_2.1.1"></a> 2.1.1 Upgrading
+#### Upgrading
 
 If you've installed phpenv using the instructions above, you can
 upgrade your installation at any time using git.
@@ -102,7 +83,7 @@ To upgrade to the latest development version of phpenv, use `git pull`:
     $ cd ~/.phpenv
     $ git pull
 
-### <a name="section_2.3"></a> 2.3 Neckbeard Configuration
+### Neckbeard Configuration
 
 Skip this section unless you must know what every line in your shell
 profile is doing.
@@ -133,12 +114,12 @@ extra commands into your shell. Here's what `phpenv init` actually does:
 Run `phpenv init -` for yourself to see exactly what happens under the
 hood.
 
-## <a name="section_3"></a> 3 Usage
+## Usage
 
 Like `git`, the `phpenv` command delegates to subcommands based on its
 first argument. The most common subcommands are:
 
-### <a name="section_3.1"></a> 3.1 phpenv global
+### phpenv global
 
 Sets the global version of PHP to be used in all shells by writing
 the version name to the `~/.phpenv/version` file. This version can be
@@ -153,7 +134,7 @@ The special version name `system` tells phpenv to use the system PHP
 When run without a version number, `phpenv global` reports the
 currently configured global version.
 
-### <a name="section_3.2"></a> 3.2 phpenv local
+### phpenv local
 
 Sets a local per-project PHP version by writing the version name to
 a `.phpenv-version` file in the current directory. This version
@@ -168,7 +149,7 @@ configured local version. You can also unset the local version:
 
     $ phpenv local --unset
 
-### <a name="section_3.3"></a> 3.3 phpenv shell
+### phpenv shell
 
 Sets a shell-specific PHP version by setting the `PHPENV_VERSION`
 environment variable in your shell. This version overrides both
@@ -188,7 +169,7 @@ prefer not to use shell integration, you may simply set the
 
     $ export PHPENV_VERSION=5.2.17
 
-### <a name="section_3.4"></a> 3.4 phpenv versions
+### phpenv versions
 
 Lists all PHP versions known to phpenv, and shows an asterisk next to
 the currently active version.
@@ -198,7 +179,7 @@ the currently active version.
       5.3.8
     * 5.4.0 (set by /Users/sam/.phpenv/global)
 
-### <a name="section_3.5"></a> 3.5 phpenv version
+### phpenv version
 
 Displays the currently active PHP version, along with information on
 how it was set.
@@ -206,7 +187,7 @@ how it was set.
     $ phpenv version
     5.4.0 (set by /User/sam/.phpenv-version)
 
-### <a name="section_3.6"></a> 3.6 phpenv rehash
+### phpenv rehash
 
 Installs shims for all PHP binaries known to phpenv (i.e.,
 `~/.phpenv/versions/*/bin/*`). Run this command after you install a new
@@ -214,7 +195,7 @@ version of PHP.
 
     $ phpenv rehash
 
-### <a name="section_3.7"></a> 3.7 phpenv which
+### phpenv which
 
 Displays the full path to the binary that phpenv will execute when you
 run the given command.
@@ -222,7 +203,7 @@ run the given command.
     $ phpenv which pyrus
     /Users/sam/.phpenv/versions/5.4.0/bin/pyrus
 
-## <a name="section_4"></a> 4 Development
+## Development
 
 The phpenv source code is [hosted on
 GitHub](https://github.com/humanshell/phpenv). It's clean, modular,
@@ -230,15 +211,15 @@ and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
 This project is basically a clone (Read: "search and replace") of the rbenv
-project. It's in need of love and support. if you're interested in improving it
+project. It's in need of love and support. If you're interested in improving it
 please feel free to fork, submit pull requests and file bugs on the [issue
 tracker](https://github.com/humanshell/phpenv/issues).
 
-### <a name="section_4.2"></a> 4.2 License
+### 4.2 License
 
 (The MIT license)
 
-Copyright (c) 2011 Sam Stephenson
+Copyright (c) 2012 Dominic Giglio
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
