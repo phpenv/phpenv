@@ -38,7 +38,7 @@ create_prototype_shim() {
 #!/usr/bin/env bash
 set -e
 export PHPENV_ROOT="$PHPENV_ROOT"
-exec phpenv exec "\${0##*/}" "\$@"
+exec $PHPENV_ROOT/bin/phpenv exec "\${0##*/}" "\$@"
 SH
   chmod +x "$PROTOTYPE_SHIM_PATH"
 }
