@@ -46,13 +46,13 @@ function realpath {
   cd "$cwd"
 }
 
-# Common Variables
+# Useful Variables
 # ----------------
 GIT=$(which git)
-PHPENV_ROOT="$(realpath "$0")/.."
+RELEASE=$1
+PHPENV_ROOT="$( dirname $( realpath "$0" ) )"
 SRC_DIR="$PHPENV_ROOT/php-src"
 SRC_URL="https://github.com/php/php-src.git"
-INSTALL_PATH="$PHPENV_ROOT/versions"
 DEFAULT_INI="php.ini-development"
 CONFIGURE_OPTIONS="--without-pear \
                    --with-gd \
@@ -106,10 +106,7 @@ if [ "$1" = "-i" ] || [ "$1" = "--ini" ]; then
   shift
 fi
 
-# This is the name of the release we want to build.
-RELEASE=$1
-
-# Processes the age message for the script and displays it on STDERR.
+# Processes the usage message for the script and displays it on STDERR.
 function display_usage {
   grep '^#/' <"$0" | cut -c4- >&3
 }
@@ -117,6 +114,7 @@ function display_usage {
 # clone the php-src repo if it doesn't exist
 function init {
   if [ ! -d "$SRC_DIR" ]; then
+    log "Cloning" "source from php-src Github repo"
     $GIT clone "$SRC_URL" "$SRC_DIR" &> /dev/null
   fi
 }
@@ -172,7 +170,7 @@ function build_release {
   log "Configuring" "build options for selected release"
   configure_release
   
-  log "Compiling" "$INSTALL_PATH/$RELEASE"
+  log "Compiling" "$PREFIX"
   {
     make
     make install
@@ -180,17 +178,17 @@ function build_release {
   } > /dev/null
 
   if [ -n "$DEFAULT_INI" ]; then
-    if [ -f "$INSTALL_PATH/$RELEASE/$DEFAULT_INI" ]; then
-      cp "$INSTALL_PATH/$RELEASE/$DEFAULT_INI" "$INSTALL_PATH/$RELEASE/etc/php.ini"
+    if [ -f "$PREFIX/$DEFAULT_INI" ]; then
+      cp "$PREFIX/$DEFAULT_INI" "$PREFIX/etc/php.ini"
     else
       if [ -f "$DEFAULT_INI" ]; then
-          cp "$DEFAULT_INI" "$INSTALL_PATH/$RELEASE/etc/php.ini"
+          cp "$DEFAULT_INI" "$PREFIX/etc/php.ini"
       fi
     fi
   fi
 
   # remove build branch
-  $GIT checkout master && $GIT branch -D build > /dev/null
+  $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
 
   cd "$cwd"
 }
@@ -200,6 +198,8 @@ function build_release {
 # kicks off the entire build / install process
 function install_release {
   {
+    VERSION=$( echo $RELEASE | sed 's/php-//' )
+    PREFIX="$PHPENV_ROOT/versions/$VERSION"
     build_release
   } >&4 2>&1
 }
@@ -250,11 +250,11 @@ function configure_option {
 #
 # Configures a `pear` install in `$PREFIX/pear`.
 function with_pear {
-  pear_dir="$INSTALL_PATH/$RELEASE/pear"
+  pear_dir="$PREFIX/pear"
 
-  [ ! -d "$INSTALL_PATH/$RELEASE/pear" ] && mkdir -p "$INSTALL_PATH/$RELEASE/pear"
+  [ ! -d "$PREFIX/pear" ] && mkdir -p "$PREFIX/pear"
 
-  configure_option "--with-pear" "$INSTALL_PATH/$RELEASE/pear"
+  configure_option "--with-pear" "$PREFIX/pear"
 }
 
 # Configure Stage
@@ -273,19 +273,19 @@ function configure_release {
   if is_osx; then
     configure_option -D "--with-gettext"
     configure_option -D "--with-readline"
-    configure_option "--with-libedit"
+    configure_option    "--with-libedit"
     configure_option -R "--with-png-dir" "/usr/X11"
   fi
 
   # Add the config-file-path, config-file-scan-dir aswell as the
   # prefix to the build options, these cannot be changed by definitions.
   local argv="$CONFIGURE_OPTIONS \
---with-config-file-path="$INSTALL_PATH/$RELEASE/etc" \
---with-config-file-scan-dir="$INSTALL_PATH/$RELEASE/etc/conf.d" \
---prefix=$INSTALL_PATH/$RELEASE"
+--with-config-file-path="$PREFIX/etc" \
+--with-config-file-scan-dir="$PREFIX/etc/conf.d" \
+--prefix=$PREFIX"
   
-  if [ ! -d "$INSTALL_PATH/$RELEASE/etc/conf.d" ]; then
-    mkdir -p "$INSTALL_PATH/$RELEASE/etc/conf.d"
+  if [ ! -d "$PREFIX/etc/conf.d" ]; then
+    mkdir -p "$PREFIX/etc/conf.d"
   fi
 
   # Set the lib dir to `lib64` on **x86_64** systems.
@@ -315,8 +315,8 @@ function build_error {
 }
 
 function cleanup_abort {
-  rm -rf "$INSTALL_PATH/$RELEASE"
-  $GIT checkout master && $GIT branch -D build > /dev/null
+  rm -rf "$PREFIX"
+  $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
 }
 
 # Here the magic begins
