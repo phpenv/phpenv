@@ -26,31 +26,12 @@ fi
 # FD2 to a file and use FD3 for visible error messages.
 exec 3<&2
 
-# Simpe function for resolving a relative path to an absolute one
-function realpath {
-  local path="$1"
-  local cwd="$(pwd)"
-
-  if [ -z "$path" ]; then
-    echo "realpath: Path is empty" >&3
-    return 1
-  fi
-
-  while [ -n "$path" ]; do
-    cd "${path%/*}"
-    local name="${path##*/}"
-    path="$(readlink "$name" || true)"
-  done
-
-  echo "$(pwd)"
-  cd "$cwd"
-}
-
 # Useful Variables
 # ----------------
+
 GIT=$(which git)
 RELEASE=$1
-PHPENV_ROOT="$( dirname $( realpath "$0" ) )"
+PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
 SRC_DIR="$PHPENV_ROOT/php-src"
 SRC_URL="https://github.com/php/php-src.git"
 DEFAULT_INI="php.ini-development"
@@ -98,13 +79,16 @@ if [ "$1" = "-i" ] || [ "$1" = "--ini" ]; then
   # then use this file, otherwise use `php.ini-<value>`
   # from the tarball.
   if [ -f "$2" ]; then
-    PHP_DEFAULT_INI="$2"
+    DEFAULT_INI="$2"
   else
-    PHP_DEFAULT_INI="php.ini-$2"
+    DEFAULT_INI="php.ini-$2"
   fi
   shift
   shift
 fi
+
+# Utility Functions
+# -----------------
 
 # Processes the usage message for the script and displays it on STDERR.
 function display_usage {
@@ -157,59 +141,30 @@ function list_releases {
   cd "$cwd"
 }
 
-function build_release {
-  local cwd="$(pwd)"
-
-  cd "$SRC_DIR"
-
-  fetch_releases
-
-  log "Branching" "for a clean build environment"
-  $GIT checkout -b build $RELEASE > /dev/null
-
-  log "Configuring" "build options for selected release"
-  configure_release
+# Handles build errors, and displays the last 10 line of the build log.
+function build_error {
+  {
+    echo
+    echo "BUILD ERROR"
+    echo $(tail -n10 "$LOG_PATH")
+    echo
+    echo "The full Log is available here ${LOG_PATH}"
+    echo
+  } >&3
   
-  log "Compiling" "$PREFIX"
-  {
-    make
-    make install
-    make clean
-  } > /dev/null
+  # Removes the prefix when the build fails.
+  cleanup_abort
+}
 
-  if [ -n "$DEFAULT_INI" ]; then
-    if [ -f "$PREFIX/$DEFAULT_INI" ]; then
-      cp "$PREFIX/$DEFAULT_INI" "$PREFIX/etc/php.ini"
-    else
-      if [ -f "$DEFAULT_INI" ]; then
-          cp "$DEFAULT_INI" "$PREFIX/etc/php.ini"
-      fi
-    fi
-  fi
-
-  # remove build branch
+# cleans up our build environment if we error out
+function cleanup_abort {
+  rm -rf "$PREFIX"
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
-
-  cd "$cwd"
 }
 
-# ### install_release
-#
-# kicks off the entire build / install process
-function install_release {
-  {
-    VERSION=$( echo $RELEASE | sed 's/php-//' )
-    PREFIX="$PHPENV_ROOT/versions/$VERSION"
-    build_release
-  } >&4 2>&1
-}
-
-# ### configure_option
-#
-# This function sets and unsets arguments for `configure`. Pass it
-# the `-D` option to unset the argument given in `$2`. Otherwise
-# the first argument is the name of the option and the second
-# argument contains the optional value.
+# sets and unsets arguments for `configure`. Pass it the `-D` option to unset
+# the argument given in `$2`. Otherwise the first argument is the name of the
+# option and the second argument contains the optional value.
 function configure_option {
   if [ "$1" = "-D" ]; then
     # This variable will contain the filtered arguments.
@@ -246,8 +201,9 @@ function configure_option {
   fi
 }
 
-# ### with_pear
-#
+# Package Manager Functions
+# -------------------------
+
 # Configures a `pear` install in `$PREFIX/pear`.
 function with_pear {
   pear_dir="$PREFIX/pear"
@@ -257,12 +213,65 @@ function with_pear {
   configure_option "--with-pear" "$PREFIX/pear"
 }
 
-# Configure Stage
-# ---------------
+# Install / Build Functions
+# -------------------------
 
+# ### install_release
+#
+# kicks off the entire build / install process
+# and sends output to our log file
+function install_release {
+  {
+    VERSION=$( echo $RELEASE | sed 's/php-//' )
+    PREFIX="$PHPENV_ROOT/versions/$VERSION"
+    build_release
+  } >&4 2>&1
+}
+
+# ### build_release
+#
+# handles all the heavy lifting when building $RELEASE
+function build_release {
+  local cwd="$(pwd)"
+
+  cd "$SRC_DIR"
+
+  fetch_releases
+
+  log "Branching" "for a clean build environment"
+  $GIT checkout -b build $RELEASE > /dev/null
+
+  log "Configuring" "build options for selected release"
+  configure_release
+  
+  log "Compiling" "$PREFIX"
+  {
+    make
+    make install
+    make clean
+  } > /dev/null
+
+  if [ -n "$DEFAULT_INI" ]; then
+    if [ -f "$PREFIX/$DEFAULT_INI" ]; then
+      cp "$PREFIX/$DEFAULT_INI" "$PREFIX/etc/php.ini"
+    else
+      if [ -f "$DEFAULT_INI" ]; then
+          cp "$DEFAULT_INI" "$PREFIX/etc/php.ini"
+      fi
+    fi
+  fi
+
+  # remove build branch
+  $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
+
+  cd "$cwd"
+}
+
+# ### configure_release
+#
 # This is invoked by `build_release` and is used to
 # build PHP with the arguments in `$CONFIGURE_OPTIONS`.
-#
+# It also determines whether or not to install PEAR or Pyrus
 function configure_release {
 
   # Mac OSX stores some libraries (for example `libpng`)
@@ -296,27 +305,6 @@ function configure_release {
   ./buildconf --force > /dev/null
   ./configure $argv > /dev/null
 
-}
-
-# Handles build errors, and displays the last 10 lines
-# of the build log.
-function build_error {
-  {
-    echo
-    echo "BUILD ERROR"
-    echo $(tail -n10 "$LOG_PATH")
-    echo
-    echo "The full Log is available here ${LOG_PATH}"
-    echo
-  } >&3
-  
-  # Removes the prefix when the build fails.
-  cleanup_abort
-}
-
-function cleanup_abort {
-  rm -rf "$PREFIX"
-  $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
 }
 
 # Here the magic begins
