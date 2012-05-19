@@ -204,7 +204,7 @@ function configure_option {
 # Package Manager Functions
 # -------------------------
 
-# Configures a `pear` install in `$PREFIX/pear`.
+# Configures a `pear` install in `$PREFIX/pear`
 function with_pear {
   pear_dir="$PREFIX/pear"
 
@@ -216,8 +216,6 @@ function with_pear {
 # Install / Build Functions
 # -------------------------
 
-# ### install_release
-#
 # kicks off the entire build / install process
 # and sends output to our log file
 function install_release {
@@ -228,8 +226,6 @@ function install_release {
   } >&4 2>&1
 }
 
-# ### build_release
-#
 # handles all the heavy lifting when building $RELEASE
 function build_release {
   local cwd="$(pwd)"
@@ -264,11 +260,11 @@ function build_release {
   # remove build branch
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
 
+  $PHPENV_ROOT/bin/phpenv rehash
+
   cd "$cwd"
 }
 
-# ### configure_release
-#
 # This is invoked by `build_release` and is used to
 # build PHP with the arguments in `$CONFIGURE_OPTIONS`.
 # It also determines whether or not to install PEAR or Pyrus
@@ -302,6 +298,11 @@ function configure_release {
     argv="$argv --with-libdir=lib64"
   fi
 
+  # enable PEAR if PHP version < 5.3
+  local major=$(echo $VERSION | cut -f1 -d.)
+  local minor=$(echo $VERSION | cut -f2 -d.)
+  [[ $major < 5 || $minor < 3 ]] && with_pear
+
   ./buildconf --force > /dev/null
   ./configure $argv > /dev/null
 
@@ -319,6 +320,7 @@ if [ -z $1 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   exit 1
 fi
 
+# display list of available releases if --releases was passed in
 if [ "$1" = "--releases" ]; then
   list_releases
   exit 0
