@@ -1,0 +1,376 @@
+#!/bin/bash
+# The most important line in every shell script. Basically this says:
+# This script should fail once a command invocation itself fails.
+set -e
+
+#/ Usage: phpenv install [--releases] [--ini|i <environment>] [<release>]
+#/
+#/ Arguments:
+#/   release:    What release should be built
+#/
+#/ Options:
+#/   --releases: Lists all available definitions
+#/
+#/   --ini|i:    Specifies which php.ini-<environment> from the
+#/               source distribution is used as default php.ini
+#/
+
+# Set the `PHPENV_DEBUG` environment variable to
+# `yes` to trigger the `set -x` call, which in turn
+# outputs every issued shell command to `STDOUT`.
+if [ -n "$PHPENV_DEBUG" ]; then
+  set -x
+fi
+
+# Preserve STDERR on FD3, so we can easily log build errors on
+# FD2 to a file and use FD3 for visible error messages.
+exec 3<&2
+
+# Simpe function for resolving a relative path to an absolute one
+function realpath {
+  local path="$1"
+  local cwd="$(pwd)"
+
+  if [ -z "$path" ]; then
+    echo "realpath: Path is empty" >&3
+    return 1
+  fi
+
+  while [ -n "$path" ]; do
+    cd "${path%/*}"
+    local name="${path##*/}"
+    path="$(readlink "$name" || true)"
+  done
+
+  echo "$(pwd)"
+  cd "$cwd"
+}
+
+# Common Variables
+# ----------------
+GIT=$(which git)
+PHPENV_ROOT="$(realpath "$0")/.."
+SRC_DIR="$PHPENV_ROOT/php-src"
+SRC_URL="https://github.com/php/php-src.git"
+INSTALL_PATH="$PHPENV_ROOT/versions"
+DEFAULT_INI="php.ini-development"
+CONFIGURE_OPTIONS="--without-pear \
+                   --with-gd \
+                   --enable-sockets \
+                   --with-jpeg-dir=/usr \
+                   --with-png-dir=/usr \
+                   --enable-exif \
+                   --enable-zip \
+                   --with-zlib \
+                   --with-zlib-dir=/usr \
+                   --with-kerberos \
+                   --with-imap-ssl \
+                   --with-openssl \
+                   --with-mcrypt=/usr \
+                   --with-pdo-sqlite \
+                   --enable-soap \
+                   --enable-xmlreader \
+                   --with-xsl \
+                   --enable-ftp \
+                   --enable-cgi \
+                   --with-curl=/usr \
+                   --with-tidy \
+                   --with-xmlrpc \
+                   --enable-sysvsem \
+                   --enable-sysvshm \
+                   --enable-shmop \
+                   --with-mysql=mysqlnd \
+                   --with-mysqli=mysqlnd \
+                   --with-pdo-mysql=mysqlnd \
+                   --enable-pcntl \
+                   --with-readline \
+                   --enable-mbstring \
+                   --disable-debug"
+
+if [ -n "$PHPENV_CONFIGURE_OPTS" ]; then
+  CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $PHPENV_CONFIGURE_OPTS"
+fi
+
+# If `-i` or `--ini` is given as first argument, then
+# treat the second argument as `php.ini` file.
+if [ "$1" = "-i" ] || [ "$1" = "--ini" ]; then
+  # If an existing path is passed (and the path is a file)
+  # then use this file, otherwise use `php.ini-<value>`
+  # from the tarball.
+  if [ -f "$2" ]; then
+    PHP_DEFAULT_INI="$2"
+  else
+    PHP_DEFAULT_INI="php.ini-$2"
+  fi
+  shift
+  shift
+fi
+
+# This is the name of the release we want to build.
+RELEASE=$1
+
+# Processes the age message for the script and displays it on STDERR.
+function display_usage {
+  grep '^#/' <"$0" | cut -c4- >&3
+}
+
+# clone the php-src repo if it doesn't exist
+function init {
+  if [ ! -d "$SRC_DIR" ]; then
+    $GIT clone "$SRC_URL" "$SRC_DIR" &> /dev/null
+  fi
+}
+
+# Logs a given log text with a [marker] to STDERR.
+function log {
+  local marker="$1"
+  local text="$2"
+  echo "    [$marker]:  $text" >&3
+}
+
+# Uses uname to check if running OSX.
+# This is used later on to enable specifc fixes for
+# OSX oddnesses in library file placement.
+function is_osx {
+  if [ $(uname -o) == "Darwin" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# gets latest code from github repo
+function fetch_releases {
+  log "Fetching" "latest code from Github repo"
+  $GIT fetch &> /dev/null
+}
+
+# List all releases found in the github repo
+function list_releases {
+  local cwd="$(pwd)"
+  cd "$SRC_DIR"
+  fetch_releases
+  {
+    for release in "$($GIT tag | sed '/php-/!d' | cut -f3 -d/)"
+    do
+      echo "$release"
+    done
+  } | sort >&3
+  cd "$cwd"
+}
+
+function build_release {
+  local cwd="$(pwd)"
+
+  cd "$SRC_DIR"
+
+  fetch_releases
+
+  log "Branching" "for a clean build environment"
+  $GIT checkout -b build $RELEASE > /dev/null
+
+  log "Configuring" "build options for selected release"
+  configure_release
+  
+  log "Compiling" "$INSTALL_PATH/$RELEASE"
+  {
+    make
+    make install
+    make clean
+  } > /dev/null
+
+  if [ -n "$DEFAULT_INI" ]; then
+    if [ -f "$INSTALL_PATH/$RELEASE/$DEFAULT_INI" ]; then
+      cp "$INSTALL_PATH/$RELEASE/$DEFAULT_INI" "$INSTALL_PATH/$RELEASE/etc/php.ini"
+    else
+      if [ -f "$DEFAULT_INI" ]; then
+          cp "$DEFAULT_INI" "$INSTALL_PATH/$RELEASE/etc/php.ini"
+      fi
+    fi
+  fi
+
+  # remove build branch
+  $GIT checkout master && $GIT branch -D build > /dev/null
+
+  cd "$cwd"
+}
+
+# ### install_release
+#
+# kicks off the entire build / install process
+function install_release {
+  {
+    build_release
+  } >&4 2>&1
+}
+
+# ### configure_option
+#
+# This function sets and unsets arguments for `configure`. Pass it
+# the `-D` option to unset the argument given in `$2`. Otherwise
+# the first argument is the name of the option and the second
+# argument contains the optional value.
+function configure_option {
+  if [ "$1" = "-D" ]; then
+    # This variable will contain the filtered arguments.
+    local filtered=
+
+    for option in $CONFIGURE_OPTIONS; do
+      # If the argument starts with the given string in `$1`
+      # then skip it from concatenation. Otherwise add it to
+      # the filtered options.
+      case "$option" in
+        "$2"*) ;;
+        *) filtered="$filtered $option";;
+      esac
+    done
+    
+    # Trim the leading whitespace added in the concatenation.
+    filtered=$(echo "$filtered" | sed -e 's/[ ]*//')
+
+    # Then replace the old argument list with the new one.
+    CONFIGURE_OPTIONS="$filtered"
+    return 0
+  else
+    if [ "$1" = "-R" ]; then
+      configure_option -D "$2"
+      configure_option "$2" "$3"
+      return 0
+    fi
+  fi
+
+  CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $1"
+
+  if [ -n "$2" ]; then
+    CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS=$2"
+  fi
+}
+
+# ### with_pear
+#
+# Configures a `pear` install in `$PREFIX/pear`.
+function with_pear {
+  pear_dir="$INSTALL_PATH/$RELEASE/pear"
+
+  [ ! -d "$INSTALL_PATH/$RELEASE/pear" ] && mkdir -p "$INSTALL_PATH/$RELEASE/pear"
+
+  configure_option "--with-pear" "$INSTALL_PATH/$RELEASE/pear"
+}
+
+# Configure Stage
+# ---------------
+
+# This is invoked by `build_release` and is used to
+# build PHP with the arguments in `$CONFIGURE_OPTIONS`.
+#
+function configure_release {
+
+  # Mac OSX stores some libraries (for example `libpng`)
+  # in `/usr/X11/lib` instead of `/usr/lib`.
+  #
+  # This currently builds PHP without the `gettext` and `readline`
+  # extensions, as I've currently not got them to work on my machine.
+  if is_osx; then
+    configure_option -D "--with-gettext"
+    configure_option -D "--with-readline"
+    configure_option "--with-libedit"
+    configure_option -R "--with-png-dir" "/usr/X11"
+  fi
+
+  # Add the config-file-path, config-file-scan-dir aswell as the
+  # prefix to the build options, these cannot be changed by definitions.
+  local argv="$CONFIGURE_OPTIONS \
+--with-config-file-path="$INSTALL_PATH/$RELEASE/etc" \
+--with-config-file-scan-dir="$INSTALL_PATH/$RELEASE/etc/conf.d" \
+--prefix=$INSTALL_PATH/$RELEASE"
+  
+  if [ ! -d "$INSTALL_PATH/$RELEASE/etc/conf.d" ]; then
+    mkdir -p "$INSTALL_PATH/$RELEASE/etc/conf.d"
+  fi
+
+  # Set the lib dir to `lib64` on **x86_64** systems.
+  if [ "$(uname -p)" = "x86_64" ]; then
+    argv="$argv --with-libdir=lib64"
+  fi
+
+  ./buildconf --force > /dev/null
+  ./configure $argv > /dev/null
+
+}
+
+# Handles build errors, and displays the last 10 lines
+# of the build log.
+function build_error {
+  {
+    echo
+    echo "BUILD ERROR"
+    echo $(tail -n10 "$LOG_PATH")
+    echo
+    echo "The full Log is available here ${LOG_PATH}"
+    echo
+  } >&3
+  
+  # Removes the prefix when the build fails.
+  cleanup_abort
+}
+
+function cleanup_abort {
+  rm -rf "$INSTALL_PATH/$RELEASE"
+  $GIT checkout master && $GIT branch -D build > /dev/null
+}
+
+# Here the magic begins
+# ---------------------
+
+# always ensure we have cloned the php-src repo
+init
+
+# Display the Usage message if no arguments are given.
+if [ -z $1 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  display_usage
+  exit 1
+fi
+
+if [ "$1" = "--releases" ]; then
+  list_releases
+  exit 0
+fi
+
+# Generate the Path for the build log.
+TIME="$(date "+%Y%m%d%H%M%S")"
+LOG_PATH="/tmp/phpenv-install-$RELEASE.$TIME.log"
+
+# Redirect everything logged to STDERR (except messages by php-build itself)
+# to the Log file.
+exec 4<> "$LOG_PATH"
+
+echo "$DEFAULT_INI gets used as php.ini"
+
+echo
+echo "Building $RELEASE"
+echo
+
+# Handle script termination with the `cleanup_abort`.
+trap cleanup_abort SIGINT SIGTERM
+
+# Handle Script Errors with `build_error`.
+trap build_error ERR EXIT
+
+# start build / install process
+install_release
+
+# Unbind the error handler.
+trap - ERR
+trap - EXIT
+
+# Display a notice if build warnings got logged.
+if [ -n $LOG_PATH ]; then
+  log "Info" "The Log File is not empty, but the build did not fail.
+       Maybe just warnings got logged?
+       You can review the log at $LOG_PATH"
+fi
+
+log "Success" "Built $RELEASE successfully."
+
+trap - SIGINT
+trap - SIGTERM
