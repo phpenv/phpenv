@@ -28,7 +28,6 @@ exec 3<&2
 # ----------------
 
 GIT=$(which git)
-RELEASE=$1
 PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
 SRC_DIR="$PHPENV_ROOT/php-src"
 SRC_URL="https://github.com/php/php-src.git"
@@ -85,6 +84,9 @@ if [ "$1" = "-i" ] || [ "$1" = "--ini" ]; then
   shift
   shift
 fi
+
+# grab the release that the user wants to build
+RELEASE=$1
 
 # Utility Functions
 # -----------------
