@@ -205,9 +205,66 @@ function configure_option {
 # -------------------------
 
 # configures a `pear` install in `$PREFIX/pear`
-function with_pear {
+function enable_pear {
   [[ ! -d "$PREFIX/pear" ]] && mkdir -p "$PREFIX/pear"
   configure_option "--with-pear" "$PREFIX/pear"
+}
+
+# installs Pyrus
+function install_pyrus {
+  local pyrus_url="http://pear2.php.net/pyrus.phar"
+  local pyrus_bin="$PREFIX/bin/pyrus.phar"
+  local pyrus_home="$PREFIX/share/pyrus"
+
+  log "Pyrus" "downloading and installing from $pyrus_url"
+
+  # if pyrus doesn't exist, download it
+  [[ ! -f "$pyrus_bin" ]] && wget -qP "$pyrus_bin" "$pyrus_url"
+  
+  # if $pyrus_home doesn't exist, create it
+  [[ ! -d "$pyrus_home" ]] && mkdir -p "$pyrus_home"
+
+  # Add the directory where PEAR Packages get installed, to PHP's include path
+  local default_include_path=$("$PREFIX/bin/php" -r "echo get_include_path();")
+  echo "include_path=$default_include_path:$PREFIX/share/pyrus/.pear/php" > "$PREFIX/etc/conf.d/pyrus.ini"
+
+  # Create the Pyrus executable
+  cat > "$PREFIX/bin/pyrus" <<SH
+#!/usr/bin/env bash
+export HOME="$pyrus_home"
+"$PREFIX/bin/php" -dphar.readonly=0 "$pyrus_bin" \$@
+SH
+
+  chmod +x "$PREFIX/bin/pyrus"
+
+  if [[ ! -f "$pyrus_home/.pear/pearconfig.xml" ]]; then
+    [[ ! -d "$pyrus_home/.pear" ]] && mkdir "$pyrus_home/.pear"
+
+    # Create the default pearconfig.xml by hand, otherwise the
+    # User would be asked for the PEAR path on the first run.
+    cat > "$pyrus_home/.pear/pearconfig.xml" <<EOF
+<?xml version="1.0"?>
+<pearconfig version="1.0">
+<default_channel>pear2.php.net</default_channel>
+<auto_discover>0</auto_discover>
+<http_proxy></http_proxy>
+<cache_dir>$pyrus_home/.pear/cache</cache_dir>
+<temp_dir>$pyrus_home/.pear/tmp</temp_dir>
+<verbose>1</verbose>
+<preferred_state>stable</preferred_state>
+<umask>0022</umask>
+<cache_ttl>3600</cache_ttl>
+<my_pear_path>$pyrus_home/.pear</my_pear_path>
+<plugins_dir>$pyrus_home/.pear</plugins_dir>
+</pearconfig>
+EOF
+  fi
+
+  local ext_dir=$("$PREFIX/bin/php" -r "echo ini_get('extension_dir');")
+
+  "$PREFIX/bin/pyrus" set bin_dir "$PREFIX/bin/" &> /dev/null
+  "$PREFIX/bin/pyrus" set php_prefix "$PREFIX/bin/" &> /dev/null
+  "$PREFIX/bin/pyrus" set ext_dir "$ext_dir" &> /dev/null
 }
 
 # Install / Build Functions
@@ -218,6 +275,8 @@ function with_pear {
 function install_release {
   {
     VERSION=$( echo $RELEASE | sed 's/php-//' )
+    VERSION_MAJOR=$(echo $VERSION | cut -f1 -d.)
+    VERSION_MINOR=$(echo $VERSION | cut -f2 -d.)
     PREFIX="$PHPENV_ROOT/versions/$VERSION"
     build_release
   } >&4 2>&1
@@ -255,15 +314,18 @@ function build_release {
     make clean
   } > /dev/null
 
-  if [ -n "$DEFAULT_INI" ]; then
-    if [ -f "$PREFIX/$DEFAULT_INI" ]; then
+  if [[ -n "$DEFAULT_INI" ]]; then
+    if [[ -f "$PREFIX/$DEFAULT_INI" ]]; then
       cp "$PREFIX/$DEFAULT_INI" "$PREFIX/etc/php.ini"
     else
-      if [ -f "$DEFAULT_INI" ]; then
-          cp "$DEFAULT_INI" "$PREFIX/etc/php.ini"
+      if [[ -f "$DEFAULT_INI" ]]; then
+        cp "$DEFAULT_INI" "$PREFIX/etc/php.ini"
       fi
     fi
   fi
+
+  # install Pyrus if PHP version > 5.2
+  [[ $VERSION_MAJOR = 5 && $VERSION_MINOR > 2 ]] && install_pyrus
 
   # remove build branch
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
@@ -307,10 +369,9 @@ function configure_release {
   fi
 
   # enable PEAR if PHP version < 5.3
-  local major=$(echo $VERSION | cut -f1 -d.)
-  local minor=$(echo $VERSION | cut -f2 -d.)
-  [[ $major < 5 || $minor < 3 ]] && with_pear
+  [[ $VERSION_MAJOR < 5 || $VERSION_MINOR < 3 ]] && enable_pear
 
+  # perform build / configure
   ./buildconf --force > /dev/null
   ./configure $argv > /dev/null
 
