@@ -72,11 +72,11 @@ fi
 
 # If `-i` or `--ini` is given as first argument, then
 # treat the second argument as `php.ini` file.
-if [ "$1" = "-i" ] || [ "$1" = "--ini" ]; then
+if [[ "$1" = "-i" || "$1" = "--ini" ]]; then
   # If an existing path is passed (and the path is a file)
   # then use this file, otherwise use `php.ini-<value>`
   # from the tarball.
-  if [ -f "$2" ]; then
+  if [[ -f "$2" ]]; then
     DEFAULT_INI="$2"
   else
     DEFAULT_INI="php.ini-$2"
@@ -98,7 +98,7 @@ function display_usage {
 
 # clones the php-src repo if it doesn't exist
 function init {
-  if [ ! -d "$SRC_DIR" ]; then
+  if [[ ! -d "$SRC_DIR" ]]; then
     log "Cloning" "source from php-src Github repo"
     $GIT clone "$SRC_URL" "$SRC_DIR" &> /dev/null
   fi
@@ -115,7 +115,7 @@ function log {
 # this is used later on to enable specifc fixes for
 # OSX oddnesses in library file placement
 function is_osx {
-  if [ $(uname -o) == "Darwin" ]; then
+  if [[ $(uname -o) == "Darwin" ]]; then
     return 0
   else
     return 1
@@ -130,18 +130,14 @@ function fetch_releases {
 
 # lists all releases found in the github repo
 function list_releases {
-  local cwd="$(pwd)"
-  cd "$SRC_DIR"
-  fetch_releases
-
   {
-    for release in "$($GIT tag | sed '/php-/!d' | cut -f3 -d/)"
-    do
+    cd "$SRC_DIR"
+    fetch_releases
+
+    for release in "$($GIT tag | sed '/php-/!d' | cut -f3 -d/)"; do
       echo "$release"
     done
-  } | sort >&3
-
-  cd "$cwd"
+  }
 }
 
 # Handles build errors, and displays the last 10 line of the build log.
@@ -161,18 +157,18 @@ function build_error {
 
 # cleans up our build environment if we error out
 function cleanup_abort {
-  local cwd="$(pwd)"
-  rm -rf "$PREFIX"
-  cd "$SRC_DIR"
-  $GIT checkout . && $GIT checkout master && $GIT branch -D build &> /dev/null
-  cd "$cwd"
+  {
+    rm -rf "$PREFIX"
+    cd "$SRC_DIR"
+    $GIT checkout . && $GIT checkout master && $GIT branch -D build &> /dev/null
+  }
 }
 
 # sets and unsets arguments for `configure`. Pass it the `-D` option to unset
 # the argument given in `$2`. Otherwise the first argument is the name of the
 # option and the second argument contains the optional value.
 function configure_option {
-  if [ "$1" = "-D" ]; then
+  if [[ "$1" = "-D" ]]; then
     # This variable will contain the filtered arguments.
     local filtered=
 
@@ -193,7 +189,7 @@ function configure_option {
     CONFIGURE_OPTIONS="$filtered"
     return 0
   else
-    if [ "$1" = "-R" ]; then
+    if [[ "$1" = "-R" ]]; then
       configure_option -D "$2"
       configure_option "$2" "$3"
       return 0
@@ -202,9 +198,7 @@ function configure_option {
 
   CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $1"
 
-  if [ -n "$2" ]; then
-    CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS=$2"
-  fi
+  [[ -n "$2" ]] && CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS=$2"
 }
 
 # Package Manager Functions
@@ -212,7 +206,7 @@ function configure_option {
 
 # configures a `pear` install in `$PREFIX/pear`
 function with_pear {
-  [ ! -d "$PREFIX/pear" ] && mkdir -p "$PREFIX/pear"
+  [[ ! -d "$PREFIX/pear" ]] && mkdir -p "$PREFIX/pear"
   configure_option "--with-pear" "$PREFIX/pear"
 }
 
@@ -232,8 +226,8 @@ function install_release {
 # handles all the heavy lifting when building $RELEASE
 function build_release {
   local cwd="$(pwd)"
-  cd "$SRC_DIR"
   local valid=
+  cd "$SRC_DIR"
 
   # verify chosen release before continuing
   for release in $($GIT tag | sed '/php-/!d' | cut -f3 -d/); do
@@ -329,13 +323,13 @@ function configure_release {
 init
 
 # Display the Usage message if no arguments are given.
-if [ -z $1 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+if [[ -z $1 || "$1" = "--help" || "$1" = "-h" ]]; then
   display_usage
   exit 1
 fi
 
 # display list of available releases if --releases was passed in
-if [ "$1" = "--releases" ]; then
+if [[ "$1" = "--releases" ]]; then
   list_releases
   exit 0
 fi
@@ -368,7 +362,7 @@ trap - ERR
 trap - EXIT
 
 # Display a notice if build warnings got logged.
-if [ -n $LOG_PATH ]; then
+if [[ -n $LOG_PATH ]]; then
   log "Info" "The Log File is not empty, but the build did not fail.
        Maybe just warnings got logged?
        You can review the log at $LOG_PATH"
