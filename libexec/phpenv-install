@@ -18,9 +18,7 @@ set -e
 # Set the `PHPENV_DEBUG` environment variable to
 # `yes` to trigger the `set -x` call, which in turn
 # outputs every issued shell command to `STDOUT`.
-if [ -n "$PHPENV_DEBUG" ]; then
-  set -x
-fi
+[[ -n "$PHPENV_DEBUG" ]] && set -x
 
 # Preserve STDERR on FD3, so we can easily log build errors on
 # FD2 to a file and use FD3 for visible error messages.
@@ -35,6 +33,7 @@ PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
 SRC_DIR="$PHPENV_ROOT/php-src"
 SRC_URL="https://github.com/php/php-src.git"
 DEFAULT_INI="php.ini-development"
+E_RELEASE_NOT_FOUND=127
 CONFIGURE_OPTIONS="--without-pear \
                    --with-gd \
                    --enable-sockets \
@@ -90,12 +89,12 @@ fi
 # Utility Functions
 # -----------------
 
-# Processes the usage message for the script and displays it on STDERR.
+# processes the usage message for the script and displays it on STDERR.
 function display_usage {
   grep '^#/' <"$0" | cut -c4- >&3
 }
 
-# clone the php-src repo if it doesn't exist
+# clones the php-src repo if it doesn't exist
 function init {
   if [ ! -d "$SRC_DIR" ]; then
     log "Cloning" "source from php-src Github repo"
@@ -103,16 +102,16 @@ function init {
   fi
 }
 
-# Logs a given log text with a [marker] to STDERR.
+# logs the given log text with a [marker] to STDERR.
 function log {
   local marker="$1"
   local text="$2"
   echo "    [$marker]:  $text" >&3
 }
 
-# Uses uname to check if running OSX.
-# This is used later on to enable specifc fixes for
-# OSX oddnesses in library file placement.
+# uses uname to check if running OSX
+# this is used later on to enable specifc fixes for
+# OSX oddnesses in library file placement
 function is_osx {
   if [ $(uname -o) == "Darwin" ]; then
     return 0
@@ -127,17 +126,19 @@ function fetch_releases {
   $GIT fetch &> /dev/null
 }
 
-# List all releases found in the github repo
+# lists all releases found in the github repo
 function list_releases {
   local cwd="$(pwd)"
   cd "$SRC_DIR"
   fetch_releases
+
   {
     for release in "$($GIT tag | sed '/php-/!d' | cut -f3 -d/)"
     do
       echo "$release"
     done
   } | sort >&3
+
   cd "$cwd"
 }
 
@@ -158,8 +159,11 @@ function build_error {
 
 # cleans up our build environment if we error out
 function cleanup_abort {
+  local cwd="$(pwd)"
   rm -rf "$PREFIX"
-  $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
+  cd "$SRC_DIR"
+  $GIT checkout . && $GIT checkout master && $GIT branch -D build &> /dev/null
+  cd "$cwd"
 }
 
 # sets and unsets arguments for `configure`. Pass it the `-D` option to unset
@@ -204,12 +208,9 @@ function configure_option {
 # Package Manager Functions
 # -------------------------
 
-# Configures a `pear` install in `$PREFIX/pear`
+# configures a `pear` install in `$PREFIX/pear`
 function with_pear {
-  pear_dir="$PREFIX/pear"
-
   [ ! -d "$PREFIX/pear" ] && mkdir -p "$PREFIX/pear"
-
   configure_option "--with-pear" "$PREFIX/pear"
 }
 
@@ -217,7 +218,7 @@ function with_pear {
 # -------------------------
 
 # kicks off the entire build / install process
-# and sends output to our log file
+# and sends output to the log file
 function install_release {
   {
     VERSION=$( echo $RELEASE | sed 's/php-//' )
@@ -229,9 +230,20 @@ function install_release {
 # handles all the heavy lifting when building $RELEASE
 function build_release {
   local cwd="$(pwd)"
-
   cd "$SRC_DIR"
+  local valid=
 
+  # verify chosen release before continuing
+  for release in $($GIT tag | sed '/php-/!d' | cut -f3 -d/); do
+    [[ $RELEASE = $release ]] && valid=true
+  done
+
+  if [[ ! $valid ]]; then
+    log "Error" "Release $RELEASE not found."
+    exit $E_RELEASE_NOT_FOUND
+  fi
+
+  # update the repo
   fetch_releases
 
   log "Branching" "for a clean build environment"
