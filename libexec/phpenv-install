@@ -213,13 +213,13 @@ function enable_pear {
 # installs Pyrus
 function install_pyrus {
   local pyrus_url="http://pear2.php.net/pyrus.phar"
-  local pyrus_bin="$PREFIX/bin/pyrus.phar"
+  local pyrus_bin="$PREFIX/bin/pyrus"
   local pyrus_home="$PREFIX/share/pyrus"
 
   log "Pyrus" "downloading and installing from $pyrus_url"
 
   # if pyrus doesn't exist, download it
-  [[ ! -f "$pyrus_bin" ]] && wget -qP "$pyrus_bin" "$pyrus_url"
+  [[ ! -f "$PREFIX/bin/pyrus.phar" ]] && wget -qP "$PREFIX/bin/" $pyrus_url
   
   # if $pyrus_home doesn't exist, create it
   [[ ! -d "$pyrus_home" ]] && mkdir -p "$pyrus_home"
@@ -232,12 +232,13 @@ function install_pyrus {
   cat > "$PREFIX/bin/pyrus" <<SH
 #!/usr/bin/env bash
 export HOME="$pyrus_home"
-"$PREFIX/bin/php" -dphar.readonly=0 "$pyrus_bin" \$@
+"$PREFIX/bin/php" -dphar.readonly=0 "$PREFIX/bin/pyrus.phar" \$@
 SH
 
-  chmod +x "$PREFIX/bin/pyrus"
+  chmod 755 "$PREFIX/bin/pyrus"
 
   if [[ ! -f "$pyrus_home/.pear/pearconfig.xml" ]]; then
+
     [[ ! -d "$pyrus_home/.pear" ]] && mkdir "$pyrus_home/.pear"
 
     # Create the default pearconfig.xml by hand, otherwise the
@@ -258,13 +259,14 @@ SH
 <plugins_dir>$pyrus_home/.pear</plugins_dir>
 </pearconfig>
 EOF
+
   fi
 
   local ext_dir=$("$PREFIX/bin/php" -r "echo ini_get('extension_dir');")
 
-  "$PREFIX/bin/pyrus" set bin_dir "$PREFIX/bin/" &> /dev/null
-  "$PREFIX/bin/pyrus" set php_prefix "$PREFIX/bin/" &> /dev/null
-  "$PREFIX/bin/pyrus" set ext_dir "$ext_dir" &> /dev/null
+  "$pyrus_bin" set bin_dir "$PREFIX/bin/" > /dev/null
+  "$pyrus_bin" set php_prefix "$PREFIX/bin/" > /dev/null
+  "$pyrus_bin" set ext_dir "$ext_dir" > /dev/null
 }
 
 # Install / Build Functions
