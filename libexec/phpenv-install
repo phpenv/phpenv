@@ -252,7 +252,7 @@ SH
 <cache_dir>$pyrus_home/.pear/cache</cache_dir>
 <temp_dir>$pyrus_home/.pear/tmp</temp_dir>
 <verbose>1</verbose>
-<preferred_state>stable</preferred_state>
+<preferred_state>beta</preferred_state>
 <umask>0022</umask>
 <cache_ttl>3600</cache_ttl>
 <my_pear_path>$pyrus_home/.pear</my_pear_path>
