@@ -1,4 +1,5 @@
 .DS_Store
+/php-src
 /plugins
 /shims
 /version
