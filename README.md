@@ -136,6 +136,27 @@ hood.
 Like `git`, the `phpenv` command delegates to subcommands based on its
 first argument. The most common subcommands are:
 
+### phpenv install
+
+The phpenv installation script is based (almost entirely) on the
+[php-build](https://github.com/CHH/php-build) installation script written by
+[Christoph Hochstrasser (CHH)](https://github.com/CHH). The main difference is
+that it uses the [php-src](https://github.com/php/php-src) repo to compile your
+individual PHP installs as opposed to downloading a tarball from php.net.
+
+You can list the available PHP releases by running:
+
+    $ phpenv install --releases
+
+To build one of the listed releases run:
+
+    $ phpenv install php-5.3.13
+
+This command will checkout a branch to build in and install that release to
+its own subdirectory in ~/.phpenv/versions/
+
+Running `phpenv install` with no arguments will output its usage.
+
 ### phpenv global
 
 Sets the global version of PHP to be used in all shells by writing
