@@ -96,9 +96,9 @@ following code to the end of your httpd.conf file:
 Action application/x-httpd-php5 "/phpenv/php-cgi"
 ```
 
-*NOTE: running php as a cgi binary can be considered insecure, which you can
+**NOTE: running php as a cgi binary can be considered insecure, which you can
 read about [here](http://www.php.net/manual/en/security.cgi-bin.php). PLEASE DO
-NOT RUN PHPENV ON A PRODUCTION SERVER.*
+NOT RUN PHPENV ON A PRODUCTION SERVER.**
 
 ### Neckbeard Configuration
 
