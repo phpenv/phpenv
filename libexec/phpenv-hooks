@@ -16,6 +16,11 @@ if [ -z "$PHPENV_COMMAND" ]; then
   exit 1
 fi
 
+PHPENV_COMMAND_HOOK="$2"
+if [ -z "$PHPENV_COMMAND_HOOK" ]; then
+  PHPENV_COMMAND_HOOK="*"
+fi
+
 resolve_link() {
   $(type -p greadlink readlink | head -1) $1
 }
