@@ -42,8 +42,13 @@ realpath() {
 
 shopt -s nullglob
 for path in ${PHPENV_HOOK_PATH//:/$'\n'}; do
-  for script in $path/"$PHPENV_COMMAND"/*.bash; do
-    echo $(realpath $script)
+  files="${path}/${PHPENV_COMMAND}/${PHPENV_COMMAND_HOOK}.bash"
+  for script in $files; do
+    if [ "$PHPENV_COMMAND_HOOK" != "*" ] && [ -x $script ]; then
+      exec "$script"
+    elif [ -f $script ]; then
+      echo $(realpath $script)
+    fi
   done
 done
 shopt -u nullglob
