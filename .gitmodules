@@ -7,3 +7,6 @@
 [submodule "php-ext/uri-template"]
 	path = php-ext/uri-template
 	url = git://github.com/ioseb/uri-template.git
+[submodule "php-ext/apc"]
+	path = php-ext/apc
+	url = git://github.com/nickl-/pecl-apc.git
