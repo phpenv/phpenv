@@ -1,3 +1,6 @@
 [submodule "php-ext/igbinary"]
 	path = php-ext/igbinary
 	url = git://github.com/igbinary/igbinary.git
+[submodule "php-ext/xdebug"]
+	path = php-ext/xdebug
+	url = git://github.com/xdebug/xdebug.git
