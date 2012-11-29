@@ -16,6 +16,15 @@ if [ "$version" = "--unset" ]; then
   unset PHPENV_VERSION
   unset version
 fi
+
+if [ -n "$version" ]; then
+  # Make sure the specified version is installed.
+  phpenv-prefix "$version" >/dev/null
+  echo "export PHPENV_VERSION=\"${version}\""
+  PHPENV_VERSION="${version}"
+  unset version
+fi
+
 if [ -z "$version" ]; then
   if [ -z "$PHPENV_VERSION" ]; then
     echo "phpenv: no shell-specific version configured" >&2
@@ -27,7 +36,3 @@ if [ -z "$version" ]; then
 fi
 
 
-# Make sure the specified version is installed.
-phpenv-prefix "$version" >/dev/null
-
-echo "export PHPENV_VERSION=\"${version}\""
