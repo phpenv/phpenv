@@ -4,3 +4,6 @@
 [submodule "php-ext/xdebug"]
 	path = php-ext/xdebug
 	url = git://github.com/xdebug/xdebug.git
+[submodule "php-ext/uri-template"]
+	path = php-ext/uri-template
+	url = git://github.com/ioseb/uri-template.git
