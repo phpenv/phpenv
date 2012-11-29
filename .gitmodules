@@ -13,3 +13,6 @@
 [submodule "php-ext/memcached"]
 	path = php-ext/memcached
 	url = git://github.com/php-memcached-dev/php-memcached.git
+[submodule "php-ext/http"]
+	path = php-ext/http
+	url = git@github.com:nickl-/pecl-http.git
