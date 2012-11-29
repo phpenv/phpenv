@@ -16,3 +16,6 @@
 [submodule "php-ext/http"]
 	path = php-ext/http
 	url = git@github.com:nickl-/pecl-http.git
+[submodule "php-ext/ncurses"]
+	path = php-ext/ncurses
+	url = git@github.com:nickl-/pecl-ncurses.git
