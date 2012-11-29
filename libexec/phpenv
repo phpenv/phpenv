@@ -64,7 +64,7 @@ shopt -u nullglob
 command="$1"
 case "$command" in
 "" | "-h" | "--help" )
-  echo -e "phpenv 0.0.1\n$(phpenv-help)" >&2
+  echo "$(phpenv-help)" >&2
   ;;
 * )
   command_path="$(command -v "phpenv-$command" || true)"
