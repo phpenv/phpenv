@@ -19,3 +19,6 @@
 [submodule "php-ext/ncurses"]
 	path = php-ext/ncurses
 	url = git@github.com:nickl-/pecl-ncurses.git
+[submodule "php-ext/phalcon"]
+	path = php-ext/phalcon
+	url = git://github.com/phalcon/cphalcon.git
