@@ -1,0 +1,3 @@
+[submodule "php-ext/igbinary"]
+	path = php-ext/igbinary
+	url = git://github.com/igbinary/igbinary.git
