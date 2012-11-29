@@ -30,7 +30,7 @@ if [ -z "$version" ]; then
     echo "phpenv: no shell-specific version configured" >&2
     exit 1
   else
-    echo "echo \"\$PHPENV_VERSION\""
+    echo "$PHPENV_VERSION" >&2
     exit
   fi
 fi
