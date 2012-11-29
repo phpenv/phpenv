@@ -22,3 +22,6 @@
 [submodule "php-ext/phalcon"]
 	path = php-ext/phalcon
 	url = git://github.com/phalcon/cphalcon.git
+[submodule "php-ext/yaf"]
+	path = php-ext/yaf
+	url = https://github.com/laruence/php-yaf
