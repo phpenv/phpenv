@@ -10,3 +10,6 @@
 [submodule "php-ext/apc"]
 	path = php-ext/apc
 	url = git://github.com/nickl-/pecl-apc.git
+[submodule "php-ext/memcached"]
+	path = php-ext/memcached
+	url = git://github.com/php-memcached-dev/php-memcached.git
