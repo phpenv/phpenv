@@ -429,6 +429,7 @@ function patch_bingo() {
 function configure_release() {
   continue_after 3 "Configuring" && return
 
+  log "Configuring" "build options for selected release"
 
   # Mac OSX stores some libraries (for example `libpng`)
   # in `/usr/X11/lib` instead of `/usr/lib`.
@@ -457,20 +458,25 @@ function configure_release() {
   fi
 
   # enable PEAR if PHP version < 5.3
-  [[ $VERSION_MAJOR < 5 || $VERSION_MINOR < 3 ]] && enable_pear
+  [[ ${VERSION_MAJOR} -le 5 || ${VERSION_MINOR} -lt 3 ]] && enable_pear
+  # patch for x86_64 linking problems building with readline
 
-  # perform build / configure
-  ./buildconf --force > /dev/null
   echo
   printf './configure '
   echo $argv
   echo
 
+  # perform build / configure
+  phpenv-hooks install pre-buildconf
+  rm -rf configure autom4te.cache
+  ./buildconf --force
   phpenv-hooks install pre-configure
-
-  ./configure $argv > /dev/null
-
+  ./configure $argv
   phpenv-hooks install post-configure
+  sed -i '' 's#INSTALL_IT =.*$#INSTALL_IT=mkdir -p \${prefix}/libexec \&\& cp libs/libphp5.so  \${prefix}/libexec/.#' Makefile
+  mkdir -p "$PREFIX/etc"
+  echo "LoadModule php5_module $PREFIX/libexec/libphp5.so" > "$PREFIX/etc/httpd.conf"
+}
 
 function clean_repository() {
   repo=$1
