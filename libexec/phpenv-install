@@ -469,6 +469,13 @@ if [[ "$1" = "--releases" ]]; then
   exit 0
 fi
 
+# clean build environment
+if [[ "$1" = "--clean" ]]; then
+  cd "$SRC_DIR"
+  ${GIT} branch|grep -q '* master' || cleanup
+  clean_repository "$SRC_DIR"
+  exit 0
+fi
 
 # If `-i` or `--ini` is given as first argument, then
 # treat the second argument as `php.ini` file.
