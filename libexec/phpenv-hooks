@@ -21,11 +21,11 @@ if [ -z "$PHPENV_COMMAND_HOOK" ]; then
   PHPENV_COMMAND_HOOK="*"
 fi
 
-resolve_link() {
+function resolve_link() {
   $(type -p greadlink readlink | head -1) $1
 }
 
-realpath() {
+function realpath() {
   local cwd="$(pwd)"
   local base="$(basename $1)"
   local path="$1"

@@ -15,7 +15,7 @@ else
   print_paths=""
 fi
 
-whence() {
+functions whence() {
   local command="$1"
   phpenv-versions --bare | while read version; do
     path="$(phpenv-prefix "$version")/bin/${command}"

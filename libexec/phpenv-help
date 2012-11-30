@@ -2,7 +2,7 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-print_set_version() {
+function print_set_version() {
   echo "<version> should be a string matching a PHP version known by phpenv."
 
   local versions="$(phpenv-versions --bare)"

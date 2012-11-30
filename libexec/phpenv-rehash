@@ -24,7 +24,7 @@ set +o noclobber
 # prototype shim when the process exits.
 trap remove_prototype_shim EXIT
 
-remove_prototype_shim() {
+function remove_prototype_shim() {
   rm -f "$PROTOTYPE_SHIM_PATH"
 }
 
@@ -33,7 +33,7 @@ remove_prototype_shim() {
 # hard-linked for every binary and then removed. The linking technique
 # is fast, uses less disk space than unique files, and also serves as
 # a locking mechanism.
-create_prototype_shim() {
+function create_prototype_shim() {
   cat > "$PROTOTYPE_SHIM_PATH" <<SH
 #!/usr/bin/env bash
 set -e
@@ -46,7 +46,7 @@ SH
 # The basename of each argument passed to `make_shims` will be
 # registered for installation as a shim. In this way, plugins may call
 # `make_shims` with a glob to register many shims at once.
-make_shims() {
+function make_shims() {
   local shims="$@"
 
   for file in $shims; do
@@ -63,7 +63,7 @@ registered_shims=()
 # shim. The array will let us iterate over all registered shims. The
 # global variables will let us quickly check whether a shim with the
 # given name has been registered or not.
-register_shim() {
+function register_shim() {
   local shim="$@"
   local var="$(shim_variable_name "$shim")"
 
@@ -78,7 +78,7 @@ register_shim() {
 # alphanumeric (including a hyphen or underscore) we can take a
 # shorter path. Otherwise, we must iterate over each character and
 # escape the non-alphanumeric ones using `printf`.
-shim_variable_name() {
+function shim_variable_name() {
   local shim="$1"
   local result="_shim_"
 
@@ -106,7 +106,7 @@ shim_variable_name() {
 # To install all the registered shims, we iterate over the
 # `registered_shims` array and create a link if one does not already
 # exist.
-install_registered_shims() {
+function install_registered_shims() {
   for shim in "${registered_shims[@]}"; do
     [ -e "$shim" ] || ln -f "$PROTOTYPE_SHIM_PATH" "$shim"
   done
@@ -116,12 +116,12 @@ install_registered_shims() {
 # over the contents of the shims directory. Any file that is present
 # in the directory but has not been registered as a shim should be
 # removed.
-remove_stale_shims() {
+function remove_stale_shims() {
   local var
   for shim in *; do
     var="$(shim_variable_name "$shim")"
     if [ -z "${!var}" ]; then
-      rm -f "$shim" 
+      rm -f "$shim"
     fi
   done
 }
