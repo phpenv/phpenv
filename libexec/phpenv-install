@@ -404,14 +404,11 @@ install_release
 trap - ERR
 trap - EXIT
 
-# Display a notice if build warnings got logged.
-if [[ -n $LOG_PATH ]]; then
-  log "Info" "The Log File is not empty, but the build did not fail.
-       Maybe just warnings got logged?
-       You can review the log at $LOG_PATH"
-fi
-
-log "Success" "Built $RELEASE successfully."
+# Display a success Notice
+log "Success" "The installation of the $RELEASE release was successfully completed."
+log "Info" "The log files produced by the procedure are available, in the tmp folder, for your review:"
+log "" " - Any warnings or messeages sent to STDERR was logged to $LOG_PATH.err"
+log "" " - All messeages sent to STDOUT was logged to $LOG_PATH"
 [[ -z $PAGER ]] && PAGER=less
 test `which pbcopy` && (echo $PAGER $LOG_PATH | `which pbcopy`) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
 
