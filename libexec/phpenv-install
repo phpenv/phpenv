@@ -299,8 +299,29 @@ function install_release() {
   local cwd="$(pwd)"
   local valid=
   cd "$SRC_DIR"
+function build_extensions() {
   continue_after 7 "Extensions" && return
 
+  if [ 0 -lt ${#MANUAL_EXTENSIONS[@]} ]; then
+    ext_dir=$("$PREFIX/bin/php" -r "echo ini_get('extension_dir');")
+    mkdir -p "$ext_dir"
+    log "Extensions" "Manually installing shared extensions."
+    for extension in ${MANUAL_EXTENSIONS[@]}; do
+      cd "$SRC_DIR/ext/$extension"
+      "$PREFIX/bin/phpize"
+      ./configure --with-php-config="$PREFIX/bin/php-config"
+      make
+      make install
+      if [ ${extension} == "xdebug" ]; then
+        echo "zend_extension=\"$ext_dir/xdebug.so\"" >> "$PREFIX/etc/php.ini"
+      else
+        extension=${extension/-/_}
+        extension=${extension%%/*}
+        echo "extension=$extension.so" >> "$PREFIX/etc/php.ini"
+      fi
+    done
+  fi
+}
 
   # verify chosen release before continuing
   for release in $($GIT tag | sed '/php-/!d' | cut -f3 -d/); do
