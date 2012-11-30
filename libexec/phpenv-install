@@ -517,6 +517,15 @@ fi
 if [[ "$3" = "-c" || "$3" = "--continue" ]]; then
   CONTINUE=${4}
 fi
+if [ "${RELEASE:0:1}" = '-' ]; then
+  log "Error" "Unknown option $RELEASE, expected release identifier, aborting."
+  exit 1
+fi
+if [ "${BUILD:0:1}" = '-' ]; then
+  log "Error" "Unknown option $BUILD, expected a build identifier, aborting."
+  exit 1
+fi
+
 # Generate the Path for the build log.
 LOG_PATH="/tmp/phpenv-install-$RELEASE.$(date "+%Y%m%d%H%M%S").log"
 # Redirect everything logged to STDOUT to the Log file.
