@@ -140,6 +140,7 @@ function list_releases() {
 # Handles build errors, and displays the last 10 line of the build log.
 function build_error() {
   {
+    [[ ${STATUS} -eq 0 ]] && echo "Aborting installation." && exit ${STATUS}
     echo
     echo "BUILD ERROR: STATUS is $STATUS"
     echo "The script aborted unexpectedly when a command returned a non zero exit code."
