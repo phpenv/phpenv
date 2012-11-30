@@ -241,9 +241,6 @@ EOF
 # and sends output to the log file
 function install_release {
   {
-    VERSION=$( echo $RELEASE | sed 's/php-//' )
-    VERSION_MAJOR=$(echo $VERSION | cut -f1 -d.)
-    VERSION_MINOR=$(echo $VERSION | cut -f2 -d.)
     PREFIX="$PHPENV_ROOT/versions/$VERSION"
     build_release
   } >&4 2>&1
