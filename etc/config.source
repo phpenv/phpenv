@@ -1,0 +1,52 @@
+# Install PRE buildconf hook is called before ./configure is executed
+#/tmp/phpenv-install-php-5.3.19.20121123062639.log
+#
+
+DEFAULT_INI="php.ini-development"
+E_RELEASE_NOT_FOUND=127
+CONFIGURE_OPTIONS="--without-pear \
+                   --with-gd \
+                   --enable-sockets \
+                   --with-jpeg-dir=/usr \
+                   --with-png-dir=/usr \
+                   --enable-exif \
+                   --enable-zip \
+                   --with-zlib \
+                   --with-zlib-dir=/usr \
+                   --with-kerberos \
+                   --with-imap-ssl \
+                   --with-openssl \
+                   --with-mcrypt=/usr \
+                   --with-pdo-sqlite \
+                   --enable-soap \
+                   --enable-xmlreader \
+                   --with-xsl \
+                   --enable-ftp \
+                   --enable-cgi \
+                   --with-curl=/usr \
+                   --with-tidy \
+                   --with-xmlrpc \
+                   --enable-sysvsem \
+                   --enable-sysvshm \
+                   --enable-shmop \
+                   --with-mysql=mysqlnd \
+                   --with-mysqli=mysqlnd \
+                   --with-pdo-mysql=mysqlnd \
+                   --enable-pcntl \
+                   --with-readline \
+                   --enable-mbstring \
+                   --disable-debug"
+
+export VERSION=${RELEASE/php-/}            # 5.3.19
+export RELEASE_VERSION=${VERSION%.*}       # 5.3
+export VERSION_MAJOR=${RELEASE_VERSION%.*} # 5
+export VERSION_MINOR=${RELEASE_VERSION#*.} # 3
+conf_source="$PHPENV_ROOT/etc/php-$RELEASE_VERSION.$(uname).source"
+
+[[ -f "$conf_source" ]] && source "$conf_source"
+
+if [ -n "$PHPENV_CONFIGURE_OPTS" ]; then
+  CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $PHPENV_CONFIGURE_OPTS"
+fi
+
+

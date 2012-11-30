@@ -31,44 +31,6 @@ GIT=$(which git)
 PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
 SRC_DIR="$PHPENV_ROOT/php-src"
 SRC_URL="https://github.com/php/php-src.git"
-DEFAULT_INI="php.ini-development"
-E_RELEASE_NOT_FOUND=127
-CONFIGURE_OPTIONS="--without-pear \
-                   --with-gd \
-                   --enable-sockets \
-                   --with-jpeg-dir=/usr \
-                   --with-png-dir=/usr \
-                   --enable-exif \
-                   --enable-zip \
-                   --with-zlib \
-                   --with-zlib-dir=/usr \
-                   --with-kerberos \
-                   --with-imap-ssl \
-                   --with-openssl \
-                   --with-mcrypt=/usr \
-                   --with-pdo-sqlite \
-                   --enable-soap \
-                   --enable-xmlreader \
-                   --with-xsl \
-                   --enable-ftp \
-                   --enable-cgi \
-                   --with-curl=/usr \
-                   --with-tidy \
-                   --with-xmlrpc \
-                   --enable-sysvsem \
-                   --enable-sysvshm \
-                   --enable-shmop \
-                   --with-mysql=mysqlnd \
-                   --with-mysqli=mysqlnd \
-                   --with-pdo-mysql=mysqlnd \
-                   --enable-pcntl \
-                   --with-readline \
-                   --enable-mbstring \
-                   --disable-debug"
-
-if [ -n "$PHPENV_CONFIGURE_OPTS" ]; then
-  CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $PHPENV_CONFIGURE_OPTS"
-fi
 
 # If `-i` or `--ini` is given as first argument, then
 # treat the second argument as `php.ini` file.
