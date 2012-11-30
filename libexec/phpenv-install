@@ -285,20 +285,53 @@ EOF
 
 # Install / Build Functions
 # -------------------------
-
 # kicks off the entire build / install process
 # and sends output to the log file
 function install_release() {
   {
     PREFIX="$PHPENV_ROOT/versions/$VERSION"
-    build_release
+    local cwd="$(pwd)"
+    cd "$SRC_DIR"
+    if [[ ! valid_release ]]; then
+      log "Error" "Release $RELEASE not found."
+      exit ${E_RELEASE_NOT_FOUND}
+    fi
+    [[ ${CONTINUE} -eq 0 ]] && check_existing
+
+    while [ 7 -ge ${STATUS} ]; do
+      workflow ${STATUS}
+    done
+#    export INSTALL_ROOT="" # $PREFIX"
+#    mkdir -p $PREFIX/private/etc/apache2
+#    echo "#LoadModule php5_module libexec/apache2/libphp5.so" > $PREFIX/private/etc/apache2/httpd.conf
+#    echo "#LoadModule php5_module libexec/apache2/libphp5.so" >> $PREFIX/private/etc/apache2/httpd.conf
+
+
+
+    # install Pyrus if PHP version > 5.2
+
+    $PHPENV_ROOT/bin/phpenv rehash
+    cd "$cwd"
+
+#    ln -sf ./phar.phar "$PREFIX/bin/phar"
+#    sed -i '' -e "s#prefix=\"/\"#prefix=\"${PREFIX}\"#" \
+#              -e "s#include_dir=\"#include_dir=\"\`eval echo \${prefix}\`#" \
+#              -e "s#extension_dir=\'#extension_dir=\`eval echo \${prefix}\`\'#" \
+#              "${PREFIX}/bin/php-config"
+#    sed -i '' -e "s#prefix=\'/\'#prefix=\"${PREFIX}\"#" \
+#              -e "s#\${prefix}##" \
+#              -e "s#eval echo #eval echo \${prefix}#" \
+#              "${PREFIX}/bin/phpize"
+#    "s#extension_dir=\'#extension_dir=\`eval echo \${prefix}\`\'#"
+#    local extension_dir="$PREFIX$("$PREFIX/bin/php"  -r 'echo ini_get("extension_dir");')"
+#    mkdir -p $extension_dir
+#    echo extension_dir=\"$extension_dir\" >> $PREFIX/etc/php.ini
+#    mkdir -p "${extension_parent%/*}/build"
+#    mkdir -p "$PREFIX$extension_dir"
+#    [[ -L "$extension_dir" ]] || ln -fs "$PREFIX$extension_dir" "$extension_dir"
   } 2>&4
 }
 
-# handles all the heavy lifting when building $RELEASE
-  local cwd="$(pwd)"
-  local valid=
-  cd "$SRC_DIR"
 function build_extensions() {
   continue_after 7 "Extensions" && return
 
