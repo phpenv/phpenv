@@ -434,7 +434,19 @@ function configure_release() {
 
   phpenv-hooks install post-configure
 
+function clean_repository() {
+  repo=$1
+  cd "$repo"
+  ${GIT} reset --hard
+  [[ -f "$repo/.gitignore" ]] && mv .gitignore .gitignore_
+  ${GIT} -c color.status=never status|\
+    sed -e'/gitignore/d' -e'/#[^ ]/!c\' -e's///'|\
+    xargs -t rm -rf
+  # ' # To block the escaped quote from function c\
+  [[ -f "$repo/.gitignore_" ]] && mv .gitignore_ .gitignore
+  echo $repo
 }
+
 
 # Here the magic begins
 # ---------------------
