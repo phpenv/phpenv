@@ -37,7 +37,7 @@ function display_usage() {
 function init() {
   if [[ ! -d "$SRC_DIR" ]]; then
     log "Cloning" "source from php-src Github repo"
-    $GIT clone "$SRC_URL" "$SRC_DIR" &> /dev/null
+    ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
   fi
 }
 
@@ -57,9 +57,9 @@ function is_osx() {
 
 # gets latest code from github repo
 function fetch_releases() {
-  if git branch|grep -q '* master'; then
+  if ${GIT} branch|grep -q '* master'; then
     log "Fetching" "latest code from Github repo"
-    $GIT pull &> /dev/null
+    ${GIT} pull &> /dev/null
   else
     cleanup
     fetch_releases
@@ -71,12 +71,12 @@ function list_releases() {
   cd "$SRC_DIR"
   fetch_releases
   local release_out=""
-  for release in $($GIT tag | sed '/php-/!d'); do
+  for release in $(${GIT} tag | sed '/php-/!d'); do
     release_out="$release_out\n$release"
   done
   release_out="PHP releases as were available on:\n$(date)
   \n$(echo -e "$release_out" | sort -bt. -k1,1r -k2,2nr -k3.1,3.2nr)"
-  [[ -n $PAGER ]] && echo -e "$release_out" | $PAGER || echo -e "$release_out" | less
+  [[ -n ${PAGER} ]] && echo -e "$release_out" | ${PAGER} || echo -e "$release_out" | less
   unset release_out
 }
 
@@ -125,7 +125,7 @@ function configure_option() {
     # This variable will contain the filtered arguments.
     local filtered=
 
-    for option in $CONFIGURE_OPTIONS; do
+    for option in ${CONFIGURE_OPTIONS}; do
       # If the argument starts with the given string in `$1`
       # then skip it from concatenation. Otherwise add it to
       # the filtered options.
