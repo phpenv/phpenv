@@ -75,9 +75,14 @@ function display_usage() {
 # clones the php-src repo if it doesn't exist
 function init() {
   if [[ ! -d "$SRC_DIR" ]]; then
-    log "Cloning" "source from php-src Github repo"
+    log "init" "cloning source from php-src Github repo"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
+    cd "$PHPENV_ROOT"
+    ${GIT} submodule update --init --rebase --recursive &> /dev/null
   fi
+  cd "$SRC_DIR"/ext
+  find "$PHPENV_ROOT"/php-ext -maxdepth 1 \! -name "*ext" -exec ln -sf {} \;
+  cd "$SRC_DIR"
 }
 
 # logs the given log text with a [marker] to STDERR.
