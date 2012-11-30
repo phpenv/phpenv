@@ -352,16 +352,19 @@ function build_branch() {
   ${GIT} branch | grep -q "\* build" || ${GIT} checkout -b build ${RELEASE}
 }
 
-  log "Configuring" "build options for selected release"
-  configure_release
-  
+# handles all the heavy lifting when building $RELEASE
 function build_release() {
   continue_after 4 "Compiling" && return
 
   log "Compiling" "$PREFIX"
-    make
-    make install
-    make clean
+  make
+  log "make" "success"
+  make install
+  log "make install" "success"
+  make clean
+  log "make clean" "success"
+}
+
 function make_php_ini() {
   continue_after 5 "Config ini" && return
 
