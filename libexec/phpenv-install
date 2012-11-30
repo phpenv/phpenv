@@ -109,10 +109,20 @@ function list_releases {
 function build_error {
   {
     echo
-    echo "BUILD ERROR"
-    echo $(tail -n10 "$LOG_PATH")
+    echo "BUILD ERROR: STATUS is $STATUS"
+    echo "The script aborted unexpectedly when a command returned a non zero exit code."
+    if awk 'END{exit NR == 0};' $LOG_PATH.err; then
+      echo "Last 10 linens from the error log file may shed some light"
+      echo "-------------------------------------------------------------------------------------"
+      echo "$(tail -n10 "$LOG_PATH.err")"
+      echo
+      echo "-------------------------------------------------------------------------------------"
+    else
+      echo "Unfortunately the error log file appears to be empty, perhaps the STDOUT log may be of help to you."
+    fi
     echo
-    echo "The full Log is available here ${LOG_PATH}"
+    echo "The full STDERR Log is available here $LOG_PATH.err"
+    echo "The full STDOUT Log is available here $LOG_PATH"
     echo
   } >&3
   
