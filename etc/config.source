@@ -37,7 +37,7 @@ CONFIGURE_OPTIONS="--without-pear \
                    --enable-mbstring \
                    --disable-debug"
 
-if [ -n $BUILD ]; then
+if [ 0 -lt ${#BUILD} ]; then
   BUILD="-$BUILD"
 fi
 export VERSION=${RELEASE/php-/}${BUILD}    # 5.3.19-debug
