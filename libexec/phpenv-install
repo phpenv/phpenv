@@ -23,6 +23,42 @@ set -e
 # Preserve STDERR on FD3, so we can easily log build errors on
 # FD2 to a file and use FD3 for visible error messages.
 exec 3<&2
+STATUS=0
+# Process flow and continuation
+# ------------------------------
+function workflow() {
+  case "$1" in
+
+    0)  # update the repo
+        fetch_releases
+      ;;
+    1)  # checkout re/ease to branch build
+        build_branch
+      ;;
+    2)  # run configure
+        patch_bingo
+      ;;
+    3)  # run configure
+        configure_release
+      ;;
+    4)  # compile
+        build_release
+      ;;
+    5)  # create configuration
+        make_php_ini
+      ;;
+    6)  # install pyrus
+        install_pyrus
+      ;;
+    7)  # install custom extensions
+        build_extensions
+      ;;
+    *)  # This should not happen
+        log "Error" "Unexpected workflow status $1, aborting"
+        exit $1
+      ;;
+  esac
+}
 
 
 # Utility Functions
@@ -44,8 +80,19 @@ function init() {
 # logs the given log text with a [marker] to STDERR.
   [[ -n $1 ]] && local marker="[$1]"
 function log() {
+  local marker=""
   local text="$2"
-  printf "%35s : %-65s\n" "$marker" "$text"  >&3
+  if [ 0 -lt ${#1} ]; then
+    if [[ 7 -ge ${STATUS} && ${1:0:4} != 'make' ]]; then
+      let "STATUS+=1"
+      marker="[$1]"
+      text="|$STATUS| $2"
+    else
+      marker="$1:"
+    fi
+  fi
+
+  printf "%35s %-65s\n" "$marker" "$text"  >&3
 }
 
 # uses uname to check if running OSX
