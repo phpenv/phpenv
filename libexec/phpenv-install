@@ -243,7 +243,7 @@ function install_release {
   {
     PREFIX="$PHPENV_ROOT/versions/$VERSION"
     build_release
-  } >&4 2>&1
+  } 2>&4
 }
 
 # handles all the heavy lifting when building $RELEASE
@@ -272,11 +272,9 @@ function build_release {
   configure_release
   
   log "Compiling" "$PREFIX"
-  {
     make
     make install
     make clean
-  } > /dev/null
 
   if [[ -n "$DEFAULT_INI" ]]; then
     if [[ -f "$PREFIX/$DEFAULT_INI" ]]; then
@@ -364,15 +362,16 @@ if [[ "$1" = "--releases" ]]; then
   exit 0
 fi
 
-# Generate the Path for the build log.
-TIME="$(date "+%Y%m%d%H%M%S")"
-LOG_PATH="/tmp/phpenv-install-$RELEASE.$TIME.log"
 
-# Redirect everything logged to STDERR (except messages by php-build itself)
-# to the Log file.
-exec 4<> "$LOG_PATH"
 
 echo "$DEFAULT_INI gets used as php.ini"
+# Generate the Path for the build log.
+LOG_PATH="/tmp/phpenv-install-$RELEASE.$(date "+%Y%m%d%H%M%S").log"
+# Redirect everything logged to STDOUT to the Log file.
+exec 5>$1
+exec >$LOG_PATH
+# Redirect everything logged to STDERR to the .err Log file.
+exec 4<>$LOG_PATH.err
 
 echo
 echo "Building $RELEASE"
