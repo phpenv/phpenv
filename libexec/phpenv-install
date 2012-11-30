@@ -477,6 +477,20 @@ if [[ "$1" = "--clean" ]]; then
   exit 0
 fi
 
+
+# thoroughly clean build environment
+if [[ "$1" = "--deep-clean" ]]; then
+  cd "$SRC_DIR"
+  phpenv-install --clean
+  which ccache && `which ccache` -Cz
+  for extension in $(find "$PHPENV_ROOT/php-ext" -maxdepth 1 ! -name "php-ext" -print); do
+    clean_repository "$extension"
+  done
+  rm /tmp/phpenv* &> /dev/null
+  test -e ../var/pyrus.phar && rm -rf ../var/pyrus.phar
+  exit 0
+fi
+
 # If `-i` or `--ini` is given as first argument, then
 # treat the second argument as `php.ini` file.
 if [[ "$1" = "-i" || "$1" = "--ini" ]]; then
