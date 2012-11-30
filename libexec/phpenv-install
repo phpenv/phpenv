@@ -345,12 +345,12 @@ function valid_release() {
   return 1
 }
 
-  # update the repo
-  fetch_releases
+function build_branch() {
   continue_after 1 "Branching" && return
 
   log "Branching" "for a clean build environment"
-  $GIT checkout -b build $RELEASE > /dev/null
+  ${GIT} branch | grep -q "\* build" || ${GIT} checkout -b build ${RELEASE}
+}
 
   log "Configuring" "build options for selected release"
   configure_release
