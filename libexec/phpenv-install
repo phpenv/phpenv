@@ -336,15 +336,14 @@ function check_existing() {
     fi
   fi
 }
-  # verify chosen release before continuing
-  for release in $($GIT tag | sed '/php-/!d' | cut -f3 -d/); do
-    [[ $RELEASE = $release ]] && valid=true
-  done
 
-  if [[ ! $valid ]]; then
-    log "Error" "Release $RELEASE not found."
-    exit $E_RELEASE_NOT_FOUND
-  fi
+function valid_release() {
+  # verify chosen release before continuing
+  for release in $(${GIT} tag | sed '/php-/!d'); do
+    [[ ${RELEASE} = ${release} ]] && return 0
+  done
+  return 1
+}
 
   # update the repo
   fetch_releases
