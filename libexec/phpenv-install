@@ -123,6 +123,9 @@ function build_error {
     echo
     echo "The full STDERR Log is available here $LOG_PATH.err"
     echo "The full STDOUT Log is available here $LOG_PATH"
+    [[ -z $PAGER ]] && PAGER=less
+    test `which pbcopy` && (echo $PAGER $LOG_PATH | `which pbcopy`) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
+
     echo
   } >&3
   
@@ -409,6 +412,8 @@ if [[ -n $LOG_PATH ]]; then
 fi
 
 log "Success" "Built $RELEASE successfully."
+[[ -z $PAGER ]] && PAGER=less
+test `which pbcopy` && (echo $PAGER $LOG_PATH | `which pbcopy`) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
 
 trap - SIGINT
 trap - SIGTERM
