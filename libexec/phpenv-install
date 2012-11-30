@@ -82,8 +82,13 @@ function is_osx {
 
 # gets latest code from github repo
 function fetch_releases {
-  log "Fetching" "latest code from Github repo"
-  $GIT fetch &> /dev/null
+  if git branch|grep -q '* master'; then
+    log "Fetching" "latest code from Github repo"
+    $GIT pull &> /dev/null
+  else
+    cleanup
+    fetch_releases
+  fi
 }
 
 # lists all releases found in the github repo
