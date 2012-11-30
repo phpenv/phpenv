@@ -219,6 +219,11 @@ function enable_pear() {
 function install_pyrus() {
   continue_after 6 "Pyrus" && return
 
+  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -le 2 || ${VERSION_MAJOR} -lt 5 ]]; then
+    log "Pyrus" "Not compatible with $RELEASE_VERSION skipping"
+    return
+  fi
+
   local pyrus_url="http://pear2.php.net/pyrus.phar"
   local pyrus_bin="$PREFIX/bin/pyrus"
   local pyrus_home="$PREFIX/share/pyrus"
@@ -334,9 +339,6 @@ function make_php_ini() {
       fi
     fi
   fi
-
-  # install Pyrus if PHP version > 5.2
-  [[ $VERSION_MAJOR = 5 && $VERSION_MINOR > 2 ]] && install_pyrus
 
   # remove build branch
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
