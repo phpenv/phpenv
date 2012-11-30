@@ -68,9 +68,9 @@ function init {
 
 # logs the given log text with a [marker] to STDERR.
 function log {
-  local marker="$1"
+  [[ -n $1 ]] && local marker="[$1]"
   local text="$2"
-  echo "    [$marker]:  $text" >&3
+  printf "%35s : %-65s\n" "$marker" "$text"  >&3
 }
 
 # uses uname to check if running OSX
