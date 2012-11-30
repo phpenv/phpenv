@@ -323,6 +323,19 @@ function build_extensions() {
   fi
 }
 
+function check_existing() {
+  if [ -d "$PREFIX" ]; then
+    echo "The version $VERSION was previously installed." >&3
+    printf "Would you like to remove the current installation and re-install? Y/n: " >&3
+    read -n 1 -t 10 YN >&3 || YN='y'
+    echo -e "\n" >&3
+    if echo ${YN}|grep -qi y; then
+      rm -rf "$PREFIX"
+    else
+      false
+    fi
+  fi
+}
   # verify chosen release before continuing
   for release in $($GIT tag | sed '/php-/!d' | cut -f3 -d/); do
     [[ $RELEASE = $release ]] && valid=true
