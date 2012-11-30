@@ -29,12 +29,12 @@ exec 3<&2
 # -----------------
 
 # processes the usage message for the script and displays it on STDERR.
-function display_usage {
+function display_usage() {
   grep '^#/' <"$0" | cut -c4- >&3
 }
 
 # clones the php-src repo if it doesn't exist
-function init {
+function init() {
   if [[ ! -d "$SRC_DIR" ]]; then
     log "Cloning" "source from php-src Github repo"
     $GIT clone "$SRC_URL" "$SRC_DIR" &> /dev/null
@@ -42,8 +42,8 @@ function init {
 }
 
 # logs the given log text with a [marker] to STDERR.
-function log {
   [[ -n $1 ]] && local marker="[$1]"
+function log() {
   local text="$2"
   printf "%35s : %-65s\n" "$marker" "$text"  >&3
 }
@@ -51,12 +51,12 @@ function log {
 # uses uname to check if running OSX
 # this is used later on to enable specifc fixes for
 # OSX oddnesses in library file placement
-function is_osx {
+function is_osx() {
   return $(test $(uname) == "Darwin")
 }
 
 # gets latest code from github repo
-function fetch_releases {
+function fetch_releases() {
   if git branch|grep -q '* master'; then
     log "Fetching" "latest code from Github repo"
     $GIT pull &> /dev/null
@@ -67,7 +67,7 @@ function fetch_releases {
 }
 
 # lists all releases found in the github repo
-function list_releases {
+function list_releases() {
   cd "$SRC_DIR"
   fetch_releases
   local release_out=""
@@ -81,7 +81,7 @@ function list_releases {
 }
 
 # Handles build errors, and displays the last 10 line of the build log.
-function build_error {
+function build_error() {
   {
     echo
     echo "BUILD ERROR: STATUS is $STATUS"
@@ -107,20 +107,20 @@ function build_error {
 }
 
 # cleans up our build environment
-function cleanup {
+function cleanup() {
   cd "$SRC_DIR"
   ${GIT} checkout -f master && ${GIT} branch -D build &> /dev/null
 }
 
 # Reset the default streams and close file descriptors
-function reset_streams {
+function reset_streams() {
   exec 2>&3 4>&- 3>&- 1>&5 5>&-
 }
 
 # sets and unsets arguments for `configure`. Pass it the `-D` option to unset
 # the argument given in `$2`. Otherwise the first argument is the name of the
 # option and the second argument contains the optional value.
-function configure_option {
+function configure_option() {
   if [[ "$1" = "-D" ]]; then
     # This variable will contain the filtered arguments.
     local filtered=
@@ -158,13 +158,13 @@ function configure_option {
 # -------------------------
 
 # configures a `pear` install in `$PREFIX/pear`
-function enable_pear {
+function enable_pear() {
   [[ ! -d "$PREFIX/pear" ]] && mkdir -p "$PREFIX/pear"
   configure_option "--with-pear" "$PREFIX/pear"
 }
 
 # installs Pyrus
-function install_pyrus {
+function install_pyrus() {
   local pyrus_url="http://pear2.php.net/pyrus.phar"
   local pyrus_bin="$PREFIX/bin/pyrus"
   local pyrus_home="$PREFIX/share/pyrus"
@@ -227,7 +227,7 @@ EOF
 
 # kicks off the entire build / install process
 # and sends output to the log file
-function install_release {
+function install_release() {
   {
     PREFIX="$PHPENV_ROOT/versions/$VERSION"
     build_release
@@ -235,7 +235,6 @@ function install_release {
 }
 
 # handles all the heavy lifting when building $RELEASE
-function build_release {
   local cwd="$(pwd)"
   local valid=
   cd "$SRC_DIR"
@@ -259,6 +258,7 @@ function build_release {
   log "Configuring" "build options for selected release"
   configure_release
   
+function build_release() {
   log "Compiling" "$PREFIX"
     make
     make install
@@ -288,7 +288,7 @@ function build_release {
 # This is invoked by `build_release` and is used to
 # build PHP with the arguments in `$CONFIGURE_OPTIONS`.
 # It also determines whether or not to install PEAR or Pyrus
-function configure_release {
+function configure_release() {
 
   # Mac OSX stores some libraries (for example `libpng`)
   # in `/usr/X11/lib` instead of `/usr/lib`.
