@@ -1,19 +1,12 @@
 #!/bin/bash
+  # alias autoconf=autoconf213
+  # shopt -s expand_aliases
+  # autoconf --version
+
+
 # The most important line in every shell script. Basically this says:
 # This script should fail once a command invocation itself fails.
 set -e
-
-#/ Usage: phpenv install [--releases] [--ini|i <environment>] [<release>]
-#/
-#/ Arguments:
-#/   release:    What release should be built
-#/
-#/ Options:
-#/   --releases: Lists all available definitions
-#/
-#/   --ini|i:    Specifies which php.ini-<environment> from the
-#/               source distribution is used as default php.ini
-#/
 
 # Set the `PHPENV_DEBUG` environment variable to
 # `yes` to trigger the `set -x` call, which in turn
@@ -24,6 +17,7 @@ set -e
 # FD2 to a file and use FD3 for visible error messages.
 exec 3<&2
 STATUS=0
+CONTINUE=0
 # Process flow and continuation
 # ------------------------------
 function workflow() {
@@ -60,6 +54,15 @@ function workflow() {
   esac
 }
 
+function continue_after() {
+  if [ ${CONTINUE} -gt $1 ]; then
+    log "$2" "Omitted continue from $CONTINUE"
+    echo $
+    [[ ${STATUS} -le 7 ]] && workflow ${STATUS}
+    return 0
+  fi
+  return 1
+}
 
 # Utility Functions
 # -----------------
@@ -104,6 +107,8 @@ function is_osx() {
 
 # gets latest code from github repo
 function fetch_releases() {
+  continue_after 0 "Fetching" && return
+
   if ${GIT} branch|grep -q '* master'; then
     log "Fetching" "latest code from Github repo"
     ${GIT} pull &> /dev/null
@@ -212,6 +217,8 @@ function enable_pear() {
 
 # installs Pyrus
 function install_pyrus() {
+  continue_after 6 "Pyrus" && return
+
   local pyrus_url="http://pear2.php.net/pyrus.phar"
   local pyrus_bin="$PREFIX/bin/pyrus"
   local pyrus_home="$PREFIX/share/pyrus"
@@ -285,6 +292,8 @@ function install_release() {
   local cwd="$(pwd)"
   local valid=
   cd "$SRC_DIR"
+  continue_after 7 "Extensions" && return
+
 
   # verify chosen release before continuing
   for release in $($GIT tag | sed '/php-/!d' | cut -f3 -d/); do
@@ -298,6 +307,7 @@ function install_release() {
 
   # update the repo
   fetch_releases
+  continue_after 1 "Branching" && return
 
   log "Branching" "for a clean build environment"
   $GIT checkout -b build $RELEASE > /dev/null
@@ -306,10 +316,14 @@ function install_release() {
   configure_release
   
 function build_release() {
+  continue_after 4 "Compiling" && return
+
   log "Compiling" "$PREFIX"
     make
     make install
     make clean
+function make_php_ini() {
+  continue_after 5 "Config ini" && return
 
   if [[ -n "$DEFAULT_INI" ]]; then
     if [[ -f "$PREFIX/$DEFAULT_INI" ]]; then
@@ -328,6 +342,7 @@ function build_release() {
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
 
   $PHPENV_ROOT/bin/phpenv rehash
+  continue_after 2 "Patching" && return
 
   cd "$cwd"
 }
@@ -336,6 +351,8 @@ function build_release() {
 # build PHP with the arguments in `$CONFIGURE_OPTIONS`.
 # It also determines whether or not to install PEAR or Pyrus
 function configure_release() {
+  continue_after 3 "Configuring" && return
+
 
   # Mac OSX stores some libraries (for example `libpng`)
   # in `/usr/X11/lib` instead of `/usr/lib`.
@@ -420,6 +437,13 @@ fi
 # grab the release that the user wants to build
 RELEASE=$1
 BUILD=$2
+if [[ "$2" = "-c" || "$2" = "--continue" ]]; then
+  CONTINUE=${3}
+  BUILD=""
+fi
+if [[ "$3" = "-c" || "$3" = "--continue" ]]; then
+  CONTINUE=${4}
+fi
 # Generate the Path for the build log.
 LOG_PATH="/tmp/phpenv-install-$RELEASE.$(date "+%Y%m%d%H%M%S").log"
 # Redirect everything logged to STDOUT to the Log file.
