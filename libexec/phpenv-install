@@ -93,14 +93,16 @@ function fetch_releases {
 
 # lists all releases found in the github repo
 function list_releases {
-  {
-    cd "$SRC_DIR"
-    fetch_releases
-
-    for release in "$($GIT tag | sed '/php-/!d' | cut -f3 -d/)"; do
-      echo "$release"
-    done
-  }
+  cd "$SRC_DIR"
+  fetch_releases
+  local release_out=""
+  for release in $($GIT tag | sed '/php-/!d'); do
+    release_out="$release_out\n$release"
+  done
+  release_out="PHP releases as were available on:\n$(date)
+  \n$(echo -e "$release_out" | sort -bt. -k1,1r -k2,2nr -k3.1,3.2nr)"
+  [[ -n $PAGER ]] && echo -e "$release_out" | $PAGER || echo -e "$release_out" | less
+  unset release_out
 }
 
 # Handles build errors, and displays the last 10 line of the build log.
