@@ -108,13 +108,14 @@ function build_error {
   cleanup_abort
 }
 
+# cleans up our build environment
+function cleanup {
+  cd "$SRC_DIR"
+  ${GIT} checkout -f master && ${GIT} branch -D build &> /dev/null
+}
+
 # cleans up our build environment if we error out
 function cleanup_abort {
-  {
-    rm -rf "$PREFIX"
-    cd "$SRC_DIR"
-    $GIT checkout . && $GIT checkout master && $GIT branch -D build &> /dev/null
-  }
   exec 2>&3 4>&- 3>&- 1>&5 5>&-
 }
 
