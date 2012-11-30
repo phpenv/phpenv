@@ -77,11 +77,7 @@ function log {
 # this is used later on to enable specifc fixes for
 # OSX oddnesses in library file placement
 function is_osx {
-  if [[ $(uname -o) == "Darwin" ]]; then
-    return 0
-  else
-    return 1
-  fi
+  return $(test $(uname) == "Darwin")
 }
 
 # gets latest code from github repo
