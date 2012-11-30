@@ -86,7 +86,6 @@ function init() {
 }
 
 # logs the given log text with a [marker] to STDERR.
-  [[ -n $1 ]] && local marker="[$1]"
 function log() {
   local marker=""
   local text="$2"
@@ -156,11 +155,13 @@ function build_error() {
     echo
     echo "The full STDERR Log is available here $LOG_PATH.err"
     echo "The full STDOUT Log is available here $LOG_PATH"
-    [[ -z $PAGER ]] && PAGER=less
-    test `which pbcopy` && (echo $PAGER $LOG_PATH | `which pbcopy`) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
+    [[ -z ${PAGER} ]] && PAGER=less
+    test `which pbcopy` && (echo ${PAGER} ${LOG_PATH} | `which pbcopy`) && \
+      echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
 
     echo
     reset_streams
+    exit ${STATUS}
   } >&3
 }
 
