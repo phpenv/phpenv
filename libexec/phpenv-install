@@ -416,6 +416,9 @@ function make_php_ini() {
       fi
     fi
   fi
+  log "Config ini" "appending add-on extention configuration to php.ini"
+  cat "$PHPENV_ROOT/etc/ext"/* >> "$PREFIX/etc/php.ini"
+}
 
   # remove build branch
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
