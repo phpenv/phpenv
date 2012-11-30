@@ -444,14 +444,12 @@ function configure_release() {
 
   # Add the config-file-path, config-file-scan-dir aswell as the
   # prefix to the build options, these cannot be changed by definitions.
-  local argv="$CONFIGURE_OPTIONS \
---with-config-file-path="$PREFIX/etc" \
---with-config-file-scan-dir="$PREFIX/etc/conf.d" \
---prefix=$PREFIX"
-  
-  if [ ! -d "$PREFIX/etc/conf.d" ]; then
-    mkdir -p "$PREFIX/etc/conf.d"
-  fi
+  local argv="$CONFIGURE_OPTIONS
+        --with-config-file-path=$PREFIX/etc
+        --with-config-file-scan-dir=$PREFIX/etc/conf.d
+        --prefix=$PREFIX"
+
+  mkdir -p "$PREFIX/etc/conf.d"
 
   # Set the lib dir to `lib64` on **x86_64** systems.
   if [ "$(uname -p)" = "x86_64" ]; then
