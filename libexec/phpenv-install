@@ -379,11 +379,14 @@ function make_php_ini() {
   $GIT checkout . && $GIT checkout master && $GIT branch -D build > /dev/null
 
   $PHPENV_ROOT/bin/phpenv rehash
+function patch_bingo() {
   continue_after 2 "Patching" && return
 
-  cd "$cwd"
+  log "Patching" "Applying patches to the source if any are applicable."
+  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -gt 2 ]]; then
+    patch ~/.phpenv/php-src/Makefile.global ~/.phpenv/patches/readline-x86_64-fix.patch
+  fi
 }
-
 # This is invoked by `build_release` and is used to
 # build PHP with the arguments in `$CONFIGURE_OPTIONS`.
 # It also determines whether or not to install PEAR or Pyrus
