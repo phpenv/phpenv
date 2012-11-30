@@ -231,8 +231,10 @@ function install_pyrus() {
   log "Pyrus" "downloading and installing from $pyrus_url"
 
   # if pyrus doesn't exist, download it
-  [[ ! -f "$PREFIX/bin/pyrus.phar" ]] && wget -qP "$PREFIX/bin/" $pyrus_url
-  
+  [[ -d "$PHPENV_ROOT/var" ]] || mkdir -p "$PHPENV_ROOT/var"
+  [[ ! -e "$PHPENV_ROOT/var/pyrus.phar" ]] && wget -qP "$PHPENV_ROOT/var/" $pyrus_url
+  [[ ! -e "$PREFIX/bin/pyrus.phar" ]] && cp "$PHPENV_ROOT/var/pyrus.phar" "$PREFIX/bin/."
+
   # if $pyrus_home doesn't exist, create it
   [[ ! -d "$pyrus_home" ]] && mkdir -p "$pyrus_home"
 
