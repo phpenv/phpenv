@@ -7,7 +7,7 @@ if [ "$1" = "--complete" ]; then
   exec phpenv shims --short
 fi
 
-functions expand_path() {
+function expand_path() {
   if [ ! -d "$1" ]; then
     return 1
   fi
@@ -18,7 +18,7 @@ functions expand_path() {
   cd "$cwd"
 }
 
-functions remove_from_path() {
+function remove_from_path() {
   local path_to_remove="$(expand_path "$1")"
   local result=""
 
