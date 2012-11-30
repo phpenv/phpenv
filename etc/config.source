@@ -37,12 +37,18 @@ CONFIGURE_OPTIONS="--without-pear \
                    --enable-mbstring \
                    --disable-debug"
 
-export VERSION=${RELEASE/php-/}            # 5.3.19
+if [ -n $BUILD ]; then
+  BUILD="-$BUILD"
+fi
+export VERSION=${RELEASE/php-/}${BUILD}    # 5.3.19-debug
 export RELEASE_VERSION=${VERSION%.*}       # 5.3
 export VERSION_MAJOR=${RELEASE_VERSION%.*} # 5
 export VERSION_MINOR=${RELEASE_VERSION#*.} # 3
-conf_source="$PHPENV_ROOT/etc/php-$RELEASE_VERSION.$(uname).source"
+conf_source="$PHPENV_ROOT/etc/php-$RELEASE_VERSION$BUILD.$(uname).source"
 
+if [ ! -f "$conf_source" ]; then
+  conf_source="$PHPENV_ROOT/etc/php-$RELEASE_VERSION.$(uname).source"
+fi
 [[ -f "$conf_source" ]] && source "$conf_source"
 
 if [ -n "$PHPENV_CONFIGURE_OPTS" ]; then
