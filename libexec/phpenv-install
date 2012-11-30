@@ -461,6 +461,10 @@ function configure_release() {
 
   # perform build / configure
   ./buildconf --force > /dev/null
+  echo
+  printf './configure '
+  echo $argv
+  echo
 
   phpenv-hooks install pre-configure
 
