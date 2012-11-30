@@ -102,10 +102,8 @@ function build_error {
     test `which pbcopy` && (echo $PAGER $LOG_PATH | `which pbcopy`) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
 
     echo
+    reset_streams
   } >&3
-  
-  # Removes the prefix when the build fails.
-  cleanup_abort
 }
 
 # cleans up our build environment
@@ -114,8 +112,8 @@ function cleanup {
   ${GIT} checkout -f master && ${GIT} branch -D build &> /dev/null
 }
 
-# cleans up our build environment if we error out
-function cleanup_abort {
+# Reset the default streams and close file descriptors
+function reset_streams {
   exec 2>&3 4>&- 3>&- 1>&5 5>&-
 }
 
@@ -414,4 +412,4 @@ trap - SIGINT
 trap - SIGTERM
 
 # Reset the default streams and close file descriptors
-exec 2>&3 4>&- 3>&- 1>&5 5>&-
+reset_streams
