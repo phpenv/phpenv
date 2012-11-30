@@ -24,31 +24,6 @@ set -e
 # FD2 to a file and use FD3 for visible error messages.
 exec 3<&2
 
-# Useful Variables
-# ----------------
-
-GIT=$(which git)
-PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
-SRC_DIR="$PHPENV_ROOT/php-src"
-SRC_URL="https://github.com/php/php-src.git"
-
-# If `-i` or `--ini` is given as first argument, then
-# treat the second argument as `php.ini` file.
-if [[ "$1" = "-i" || "$1" = "--ini" ]]; then
-  # If an existing path is passed (and the path is a file)
-  # then use this file, otherwise use `php.ini-<value>`
-  # from the tarball.
-  if [[ -f "$2" ]]; then
-    DEFAULT_INI="$2"
-  else
-    DEFAULT_INI="php.ini-$2"
-  fi
-  shift
-  shift
-fi
-
-# grab the release that the user wants to build
-RELEASE=$1
 
 # Utility Functions
 # -----------------
@@ -360,6 +335,9 @@ function configure_release {
 
 # Here the magic begins
 # ---------------------
+GIT=$(which git)
+SRC_DIR="$PHPENV_ROOT/php-src"
+SRC_URL="https://github.com/php/php-src.git"
 
 # always ensure we have cloned the php-src repo
 init
@@ -377,8 +355,25 @@ if [[ "$1" = "--releases" ]]; then
 fi
 
 
+# If `-i` or `--ini` is given as first argument, then
+# treat the second argument as `php.ini` file.
+if [[ "$1" = "-i" || "$1" = "--ini" ]]; then
+  # If an existing path is passed (and the path is a file)
+  # then use this file, otherwise use `php.ini-<value>`
+  # from the tarball.
+  if [[ -f "$2" ]]; then
+    DEFAULT_INI="$2"
+  else
+    DEFAULT_INI="php.ini-$2"
+  fi
+  shift
+  shift
+  echo "$DEFAULT_INI gets used as php.ini"
+fi
 
-echo "$DEFAULT_INI gets used as php.ini"
+# grab the release that the user wants to build
+RELEASE=$1
+BUILD=$2
 # Generate the Path for the build log.
 LOG_PATH="/tmp/phpenv-install-$RELEASE.$(date "+%Y%m%d%H%M%S").log"
 # Redirect everything logged to STDOUT to the Log file.
@@ -387,9 +382,11 @@ exec >$LOG_PATH
 # Redirect everything logged to STDERR to the .err Log file.
 exec 4<>$LOG_PATH.err
 
-echo
-echo "Building $RELEASE"
-echo
+# Source the build configuration
+PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
+source "$PHPENV_ROOT/etc/config.source"
+
+echo -e "Building $VERSION\n" >&2
 
 # Handle script termination with the `cleanup_abort`.
 trap cleanup_abort SIGINT SIGTERM
