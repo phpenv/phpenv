@@ -127,6 +127,7 @@ function cleanup_abort {
     cd "$SRC_DIR"
     $GIT checkout . && $GIT checkout master && $GIT branch -D build &> /dev/null
   }
+  exec 2>&3 4>&- 3>&- 1>&5 5>&-
 }
 
 # sets and unsets arguments for `configure`. Pass it the `-D` option to unset
@@ -401,3 +402,6 @@ log "Success" "Built $RELEASE successfully."
 
 trap - SIGINT
 trap - SIGTERM
+
+# Reset the default streams and close file descriptors
+exec 2>&3 4>&- 3>&- 1>&5 5>&-
