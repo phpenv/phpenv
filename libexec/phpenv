@@ -43,7 +43,6 @@ else
 fi
 export PHPENV_DIR
 
-
 shopt -s nullglob
 
 bin_path="$(abs_dirname "$0")"
