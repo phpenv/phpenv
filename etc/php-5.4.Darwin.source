@@ -1,0 +1,69 @@
+# Configure options for PHP 5.4 releases Darwin specific.
+#
+if [ -n $PHP_AUTOCONF ]; then
+  unset PHP_AUTOCONF
+fi
+
+CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
+                   --enable-option-checking
+                   --enable-phar
+                   --disable-intl
+                   --with-libxml-dir=/usr/local/opt/libxml2
+                   --with-openssl=/usr/local/opt/openssl
+                   --with-openssl-dir=/usr/local/opt/openssl
+                   --with-kerberos=/usr
+                   --with-zlib
+                   --with-zlib-dir=/usr/local/opt/zlib
+                   --enable-bcmath
+                   --with-bz2=/usr
+                   --enable-calendar
+                   --enable-exif
+                   --with-png-dir=/usr/local
+                   --with-jpeg-dir=/usr/local
+                   --with-freetype-dir=/usr/local
+                   --with-gd
+                   --enable-gd-native-ttf
+                   --with-pear
+                   --enable-mbstring
+                   --enable-mbregex
+                   --enable-shmop
+                   --enable-soap
+                   --enable-sockets
+                   --enable-sysvmsg
+                   --enable-sysvsem
+                   --enable-sysvshm
+                   --enable-wddx
+                   --with-xmlrpc
+                   --with-xsl=/usr/local/opt/libxslt
+                   --enable-zip
+                   --with-pcre-regex=/usr/local/opt/pcre
+                   --with-vpx-dir=/usr/local
+                   --with-xpm-dir=/usr/X11
+                   --with-pcre-dir=/usr/local/opt/pcre
+                   --with-curl=/usr/local/opt/curl
+                   --with-curlwrappers
+                   --with-iconv-dir=/usr/local/opt/libiconv
+                   --with-mcrypt=/usr/local/opt/mcrypt
+                   --with-libexpat-dir=/usr/local/opt/expat
+                   --with-gettext=/usr/local/opt/gettext
+                   --enable-pcntl
+                   --with-mysql=mysqlnd
+                   --with-mysqli=mysqlnd
+                   --with-pdo-mysql=mysqlnd
+                   --with-mysql-sock=/tmp/mysql.sock
+                   --with-readline=/usr/local/opt/readline
+                   --enable-apc
+                   --enable-apc-debug
+                   --enable-apc-filehits
+                   --enable-igbinary
+                   --enable-memcached
+                   --with-libmemcached-dir=/usr/local/opt/libmemcached
+                   --enable-memcached-igbinary
+                   --enable-http
+                   --with-http-curl-requests=/usr/local/opt/curl
+                   --with-http-curl-libevent=/usr/local/opt/libevent
+                   --with-http-zlib-compression=/usr/local/opt/zlib
+                   --with-http-magic-mime=/usr/local/opt/libmagic
+                   "
+
+MANUAL_EXTENSIONS=('ncurses' 'xdebug' 'uri-template')
