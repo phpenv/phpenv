@@ -228,7 +228,7 @@ function configure_option() {
         *) filtered="$filtered $option";;
       esac
     done
-    
+
     # Trim the leading whitespace added in the concatenation.
     filtered=$(echo "$filtered" | sed -e 's/[ ]*//')
 
