@@ -627,7 +627,6 @@ echo -e "Building $VERSION\n" >&2
 
 # Handle script termination with the `cleanup_abort`.
 trap cleanup_abort SIGINT SIGTERM
-
 # Handle Script Errors with `build_error`.
 trap build_error ERR EXIT
 
