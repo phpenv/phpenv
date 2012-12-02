@@ -477,12 +477,12 @@ function configure_release() {
   #
   # This currently builds PHP without the `gettext` and `readline`
   # extensions, as I've currently not got them to work on my machine.
-  if is_osx; then
-    configure_option -D "--with-gettext"
-    configure_option -D "--with-readline"
-    configure_option    "--with-libedit"
-    configure_option -R "--with-png-dir" "/usr/X11"
-  fi
+  # if is_osx; then
+  #  configure_option -D "--with-gettext"
+  #  configure_option -D "--with-readline"
+  #  configure_option -R "--with-libedit"
+  #  configure_option -R "--with-libedit --with-png-dir" "/usr/X11"
+  # fi
 
   # Add the config-file-path, config-file-scan-dir aswell as the
   # prefix to the build options, these cannot be changed by definitions.
