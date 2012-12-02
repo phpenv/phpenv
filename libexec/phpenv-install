@@ -494,9 +494,9 @@ function configure_release() {
   mkdir -p "$PREFIX/etc/conf.d"
 
   # Set the lib dir to `lib64` on **x86_64** systems.
-  if [ "$(uname -p)" = "x86_64" ]; then
-    argv="$argv --with-libdir=lib64"
-  fi
+#  if [ "$(uname -m)" = "x86_64" ]; then
+#    argv="$argv --with-libdir=lib64"
+#  fi
 
   # enable PEAR if PHP version < 5.3
   [[ ${VERSION_MAJOR} -le 5 || ${VERSION_MINOR} -lt 3 ]] && enable_pear
