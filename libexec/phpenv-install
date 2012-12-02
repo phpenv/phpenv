@@ -18,6 +18,41 @@ set -e
 exec 3<&2
 STATUS=0
 CONTINUE=0
+
+#/ Usage: phpenv install [--[deep-]clean] [--releases] [--ini|i <environment>] [<release>] [<build>] [--continue|c status]
+#/
+#/ Arguments:
+#/   release:    Which PHP release to build and install
+#/     build:    Optionally supply a build identifier to enable
+#/               installation of multiple versions of the same
+#/               release ie debug, mysql, mssql, postgres, intl
+#/
+#/ Options:
+#/   --releases: Lists all available definitions
+#/      --clean: Clean the build directory of any generated files
+#/ --deep-clean: Thoroughly clean generated files, clear ccache
+#/               clear generated files for extensions and delete
+#/               downloaded or cached content content.
+#/               NOTE: these do not remove the source repository
+#/                     or any of the extension submodules.
+#/      --ini|i: Specifies which php.ini-<environment> from the
+#/               source distribution is used as default php.ini
+#/  --continue|c continue from a specific workflow status index
+#/               by skipping the steps that were already completed
+#/               leading up to this point, where status is one of:
+#/
+#/                   0 (default) start from the beginning
+#/                   1 Start from [Fetching] skipping first steps
+#/                   2 Start from [Branching] skip branching release
+#/                   3 Start from [Patching] applying patches
+#/                   4 Start from [Configuring] skip running ./configure
+#/                   5 Start from [Compiling] skip make, install, clean
+#/                   6 Start from [Config ini] Skip updating php.ini
+#/                   7 Start from [Pyrus] |7| skip downloading and installing
+#/                   8 Start from [Extensions] skip installing extensions
+#/
+#/
+
 # Process flow and continuation
 # ------------------------------
 function workflow() {
