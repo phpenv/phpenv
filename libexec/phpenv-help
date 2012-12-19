@@ -41,10 +41,14 @@ commands) echo "usage: phpenv commands
 List all phpenv commands."
 ;;
 global) echo "usage: phpenv global <version>
+       phpenv global system
 
 Sets the global PHP version. You can override the global version at
 any time by setting a directory-specific version with \`phpenv local'
 or by setting the PHPENV_VERSION environment variable.
+
+Use revert back to the system default use:
+       phpenv global system
 
 $(print_set_version)"
 ;;
