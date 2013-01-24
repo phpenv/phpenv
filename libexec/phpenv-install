@@ -438,8 +438,18 @@ function patch_roulette() {
   continue_after 2 "Patching" && return
 
   log "Patching" "Applying patches to the source if any are applicable."
+
+  find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i '' "s/(built:/(built with phpenv v0.0.2:/g" {} \;
+
   if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -gt 2 ]]; then
-    patch ~/.phpenv/php-src/Makefile.global ~/.phpenv/patches/readline-x86_64-fix.patch
+    # patch for x86_64 linking problems building with readline
+    patch "$SRC_DIR/Makefile.global" "$PHPENV_ROOT/patches/readline-x86_64-fix.patch"
+  fi
+
+  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -eq 2 ]]; then
+    patch "$SRC_DIR/scripts/php-config.in" "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-scripts-php-config.in.diff"
+    patch "$SRC_DIR/ext/standard/config.m4" "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-bind.diff"
+    patch -p1 -d "$SRC_DIR" < "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-pcre-8.30.diff"
   fi
 }
 # This is invoked by `build_release` and is used to
