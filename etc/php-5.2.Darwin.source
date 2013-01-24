@@ -1,0 +1,56 @@
+# Configure options for PHP 5.2 releases Darwin specific.
+#
+
+export PHP_AUTOCONF=autoconf213
+
+CONFIGURE_OPTIONS="--libdir=/usr/local/lib
+                   --includedir=/usr/local/include
+                   --enable-zend-multibyte
+                   --with-vpx-dir=/usr/local
+                   --with-xpm-dir=/usr/X11
+                   --enable-calendar
+                   --with-iconv=$/usr/local/opt/libiconv
+                   --enable-exif
+                   --enable-ftp
+                   --enable-wddx
+                   --with-zlib=/usr/local/opt/zlib
+                   --with-bz2=/usr
+                   --with-libexpat-dir=/usr
+                   --with-xmlrpc
+                   --enable-soap
+                   --enable-bcmath
+                   --enable-dba
+                   --enable-zip
+                   --with-mcrypt=/usr/local/opt/mcrypt
+                   --with-mime-magic
+                   --with-pcre-regex=/usr/local/opt/pcre
+                   --with-kerberos=/usr
+                   --with-apxs2=/usr/sbin/apxs
+                   --with-tidy=/usr/local/opt/tidy
+                   --with-snmp=/usr
+                   --enable-shmop
+                   --enable-sysvsem
+                   --enable-sysvshm
+                   --enable-sysvmsg
+                   --with-readline=/usr/local/opt/readline
+                   --enable-sockets
+                   --with-mhash=/usr/local/opt/mhash
+                   --enable-mbstring
+                   --with-openssl=/usr/local/opt/openssl
+                   --with-libxml-dir=/usr/local/opt/libxml2
+                   --with-png-dir=/usr/local
+                   --with-jpeg-dir=/usr/local
+                   --with-freetype-dir=/usr/local
+                   --with-gd
+                   --enable-gd-native-ttf
+                   --with-ldap=/usr
+                   --with-mysql=/usr/local/Cellar/mariadb/5.5.28
+                   --with-mysqli=/usr/local/Cellar/mariadb/5.5.28/bin/mysql_config
+                   --with-pdo-mysql=/usr/local/Cellar/mariadb/5.5.28
+                   --with-mysql-sock=/tmp/mysql.sock
+                   --with-gettext=/usr/local/opt/gettext
+                   --with-curl=/usr/local/opt/curl
+                   --enable-pcntl"
+
+MANUAL_EXTENSIONS=('apc' 'igbinary' 'http' 'uri-template' 'xdebug')
+
