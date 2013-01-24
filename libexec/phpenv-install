@@ -546,6 +546,20 @@ GIT=$(which git)
 SRC_DIR="$PHPENV_ROOT/php-src"
 SRC_URL="https://github.com/php/php-src.git"
 
+# Provide phpenv completions
+if [ "$1" = "--complete" ]; then
+  echo --releases
+  echo --clean
+  echo --deep-clean
+  echo -i
+  echo --ini
+  echo -c
+  echo --continue
+  [[ -d "$SRC_DIR/.git" ]] && list_releases
+  exit 0
+fi
+
+
 # always ensure we have cloned the php-src repo
 init
 
