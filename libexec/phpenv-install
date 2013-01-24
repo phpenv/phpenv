@@ -497,12 +497,10 @@ function clean_repository() {
   repo=$1
   cd "$repo"
   ${GIT} reset --hard
-  [[ -f "$repo/.gitignore" ]] && mv .gitignore .gitignore_
-  ${GIT} -c color.status=never status|\
+  ${GIT} -c color.status=never status --ignored|\
     sed -e'/gitignore/d' -e'/#[^ ]/!c\' -e's///'|\
     xargs -t rm -rf
   # ' # To block the escaped quote from function c\
-  [[ -f "$repo/.gitignore_" ]] && mv .gitignore_ .gitignore
   echo $repo
 }
 
@@ -551,6 +549,7 @@ if [[ "$1" = "--clean" ]]; then
   cd "$SRC_DIR"
   ${GIT} branch|grep -q '* master' || cleanup
   clean_repository "$SRC_DIR"
+  which ccache && `which ccache` -Cz
   exit 0
 fi
 
@@ -559,12 +558,10 @@ fi
 if [[ "$1" = "--deep-clean" ]]; then
   cd "$SRC_DIR"
   phpenv-install --clean
-  which ccache && `which ccache` -Cz
-  for extension in $(find "$PHPENV_ROOT/php-ext" -maxdepth 1 ! -name "php-ext" -print); do
+  for extension in $(find "$PHPENV_ROOT/php-ext" -maxdepth 1 ! -name "php-ext" ! -name ".*" -print); do
     clean_repository "$extension"
   done
   rm /tmp/phpenv* &> /dev/null
-  test -e ../var/pyrus.phar && rm -rf ../var/pyrus.phar
   exit 0
 fi
 
