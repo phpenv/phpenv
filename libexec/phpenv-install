@@ -162,14 +162,11 @@ function fetch_releases() {
 # lists all releases found in the github repo
 function list_releases() {
   cd "$SRC_DIR"
-  fetch_releases
   local release_out=""
   for release in $(${GIT} tag | sed '/php-/!d'); do
     release_out="$release_out\n$release"
   done
-  release_out="PHP releases as were available on:\n$(date)
-  \n$(echo -e "$release_out" | sort -bt. -k1,1r -k2,2nr -k3.1,3.2nr)"
-  [[ -n ${PAGER} ]] && echo -e "$release_out" | ${PAGER} || echo -e "$release_out" | less
+  echo -e "$release_out" | sort -bt. -k1,1r -k2,2nr -k3.1,3.2nr
   unset release_out
 }
 
@@ -571,7 +568,11 @@ fi
 
 # display list of available releases if --releases was passed in
 if [[ "$1" = "--releases" ]]; then
-  list_releases
+  fetch_releases
+  release_out="PHP releases as were available on:\n$(date)
+  \n$(list_releases)"
+  [[ -n ${PAGER} ]] && echo -e "$release_out" | ${PAGER} || echo -e "$release_out" | less
+  unset release_out
   exit 0
 fi
 
