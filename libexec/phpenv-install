@@ -430,6 +430,7 @@ function make_php_ini() {
   fi
   log "Config ini" "appending add-on extention configuration to php.ini"
   cat "$PHPENV_ROOT/etc/ext"/* >> "$PREFIX/etc/php.ini"
+  echo -e "date.timezone=\"GMT\"\ndetect_unicode=0" >> "$PREFIX/etc/php.ini"
 }
 
 # Apply predefined patches as required
