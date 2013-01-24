@@ -116,7 +116,8 @@ function init() {
     ${GIT} submodule update --init --rebase --recursive &> /dev/null
   fi
   cd "$SRC_DIR"/ext
-  find "$PHPENV_ROOT"/php-ext -maxdepth 1 \! -name "*ext" -exec ln -sf {} \;
+  find "$PHPENV_ROOT"/php-ext -maxdepth 1 \! -name "*ext" -exec ln -s {} \; 2>/dev/null || true
+  [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -le 2 || ${VERSION_MAJOR} -lt 5 ]] && [[ -L ncurses ]] && rm ncurses
   cd "$SRC_DIR"
 }
 
@@ -148,6 +149,7 @@ function is_osx() {
 function fetch_releases() {
   continue_after 0 "Fetching" && return
 
+  cd "$SRC_DIR"
   if ${GIT} branch|grep -q '* master'; then
     log "Fetching" "latest code from Github repo"
     ${GIT} pull &> /dev/null
@@ -263,7 +265,7 @@ function install_pyrus() {
 
   if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -le 2 || ${VERSION_MAJOR} -lt 5 ]]; then
     log "Pyrus" "Not compatible with $RELEASE_VERSION skipping"
-    return
+    return 0
   fi
 
   local pyrus_url="http://pear2.php.net/pyrus.phar"
@@ -485,6 +487,9 @@ function configure_release() {
   #  configure_option -R "--with-libedit"
   #  configure_option -R "--with-libedit --with-png-dir" "/usr/X11"
   # fi
+  if is_osx; then
+    export ac_cv_exeext=''
+  fi
 
   # Add the config-file-path, config-file-scan-dir aswell as the
   # prefix to the build options, these cannot be changed by definitions.
