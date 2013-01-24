@@ -2,8 +2,8 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-  echo -e "phpenv 0.0.1\n" >&2
 if ! echo "init:commands:exec:completions" | grep -q "$1"; then
+  echo -e "phpenv v0.0.2\n" >&2
 fi
 
 function resolve_link() {
