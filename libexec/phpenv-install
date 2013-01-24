@@ -342,34 +342,10 @@ function install_release() {
     while [ 7 -ge ${STATUS} ]; do
       workflow ${STATUS}
     done
-#    export INSTALL_ROOT="" # $PREFIX"
-#    mkdir -p $PREFIX/private/etc/apache2
-#    echo "#LoadModule php5_module libexec/apache2/libphp5.so" > $PREFIX/private/etc/apache2/httpd.conf
-#    echo "#LoadModule php5_module libexec/apache2/libphp5.so" >> $PREFIX/private/etc/apache2/httpd.conf
-
-
-
-    # install Pyrus if PHP version > 5.2
 
     $PHPENV_ROOT/bin/phpenv rehash
     cd "$cwd"
 
-#    ln -sf ./phar.phar "$PREFIX/bin/phar"
-#    sed -i '' -e "s#prefix=\"/\"#prefix=\"${PREFIX}\"#" \
-#              -e "s#include_dir=\"#include_dir=\"\`eval echo \${prefix}\`#" \
-#              -e "s#extension_dir=\'#extension_dir=\`eval echo \${prefix}\`\'#" \
-#              "${PREFIX}/bin/php-config"
-#    sed -i '' -e "s#prefix=\'/\'#prefix=\"${PREFIX}\"#" \
-#              -e "s#\${prefix}##" \
-#              -e "s#eval echo #eval echo \${prefix}#" \
-#              "${PREFIX}/bin/phpize"
-#    "s#extension_dir=\'#extension_dir=\`eval echo \${prefix}\`\'#"
-#    local extension_dir="$PREFIX$("$PREFIX/bin/php"  -r 'echo ini_get("extension_dir");')"
-#    mkdir -p $extension_dir
-#    echo extension_dir=\"$extension_dir\" >> $PREFIX/etc/php.ini
-#    mkdir -p "${extension_parent%/*}/build"
-#    mkdir -p "$PREFIX$extension_dir"
-#    [[ -L "$extension_dir" ]] || ln -fs "$PREFIX$extension_dir" "$extension_dir"
   } 2>&4
 }
 
@@ -473,17 +449,6 @@ function configure_release() {
 
   log "Configuring" "build options for selected release"
 
-  # Mac OSX stores some libraries (for example `libpng`)
-  # in `/usr/X11/lib` instead of `/usr/lib`.
-  #
-  # This currently builds PHP without the `gettext` and `readline`
-  # extensions, as I've currently not got them to work on my machine.
-  # if is_osx; then
-  #  configure_option -D "--with-gettext"
-  #  configure_option -D "--with-readline"
-  #  configure_option -R "--with-libedit"
-  #  configure_option -R "--with-libedit --with-png-dir" "/usr/X11"
-  # fi
   if is_osx; then
     export ac_cv_exeext=''
   fi
@@ -497,14 +462,8 @@ function configure_release() {
 
   mkdir -p "$PREFIX/etc/conf.d"
 
-  # Set the lib dir to `lib64` on **x86_64** systems.
-#  if [ "$(uname -m)" = "x86_64" ]; then
-#    argv="$argv --with-libdir=lib64"
-#  fi
-
   # enable PEAR if PHP version < 5.3
   [[ ${VERSION_MAJOR} -le 5 || ${VERSION_MINOR} -lt 3 ]] && enable_pear
-  # patch for x86_64 linking problems building with readline
 
   echo
   printf './configure '
