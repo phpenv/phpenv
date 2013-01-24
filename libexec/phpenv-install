@@ -440,6 +440,7 @@ function build_release() {
   log "make clean" "success"
 }
 
+# Create php.ini, set defaults, and append extension settings
 function make_php_ini() {
   continue_after 5 "Config ini" && return
 
