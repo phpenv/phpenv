@@ -65,7 +65,7 @@ function workflow() {
         build_branch
       ;;
     2)  # run configure
-        patch_bingo
+        patch_roulette
       ;;
     3)  # run configure
         configure_release
@@ -456,7 +456,8 @@ function make_php_ini() {
   cat "$PHPENV_ROOT/etc/ext"/* >> "$PREFIX/etc/php.ini"
 }
 
-function patch_bingo() {
+# Apply predefined patches as required
+function patch_roulette() {
   continue_after 2 "Patching" && return
 
   log "Patching" "Applying patches to the source if any are applicable."
