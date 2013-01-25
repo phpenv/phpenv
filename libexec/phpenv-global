@@ -4,12 +4,17 @@ set -e
 
 # Provide phpenv completions
 if [ "$1" = "--complete" ]; then
-  echo system
+  echo system --unset
   exec phpenv-versions --bare
 fi
 
 PHPENV_VERSION="$1"
 PHPENV_VERSION_FILE="${PHPENV_ROOT}/version"
+
+if [ "$1" == "--unset" ]; then
+  rm -f "$PHPENV_VERSION_FILE"
+  PHPENV_VERSION=""
+fi
 
 if [ -n "$PHPENV_VERSION" ]; then
   phpenv-version-file-write "$PHPENV_VERSION_FILE" "$PHPENV_VERSION"
