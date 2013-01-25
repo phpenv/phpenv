@@ -24,3 +24,5 @@ else
   PHPENV_VERSION=$(phpenv-version-file-read "${PHPENV_ROOT}/default") ||
   PHPENV_VERSION=system
 fi
+
+echo ${PHPENV_VERSION}
