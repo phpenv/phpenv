@@ -19,8 +19,8 @@ fi
 if [ -n "$PHPENV_VERSION" ]; then
   phpenv-version-file-write "$PHPENV_VERSION_FILE" "$PHPENV_VERSION"
 else
-  phpenv-version-file-read "$PHPENV_VERSION_FILE" ||
-  phpenv-version-file-read "${PHPENV_ROOT}/global" ||
-  phpenv-version-file-read "${PHPENV_ROOT}/default" ||
-  echo system
+  PHPENV_VERSION=$(phpenv-version-file-read "$PHPENV_VERSION_FILE") ||
+  PHPENV_VERSION=$(phpenv-version-file-read "${PHPENV_ROOT}/global") ||
+  PHPENV_VERSION=$(phpenv-version-file-read "${PHPENV_ROOT}/default") ||
+  PHPENV_VERSION=system
 fi
