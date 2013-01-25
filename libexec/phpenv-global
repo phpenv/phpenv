@@ -26,3 +26,9 @@ else
 fi
 
 echo ${PHPENV_VERSION}
+
+# Link Apache apxs lib
+[[ ! -d "${PHPENV_ROOT}/lib" ]] && mkdir "${PHPENV_ROOT}/lib"
+[[ "${PHPENV_VERSION}" == "system" ]] &&
+ln -fs "`/usr/sbin/apxs -q LIBEXECDIR`/libphp5.so" "${PHPENV_ROOT}/lib/libphp5.so" ||
+ln -fs "${PHPENV_ROOT}/versions/${PHPENV_VERSION}/libexec/libphp5.so" "${PHPENV_ROOT}/lib/libphp5.so"
