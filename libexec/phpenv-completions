@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
+# Usage: phpenv completions <command> [arg1 arg2...]
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
 COMMAND="$1"
 if [ -z "$COMMAND" ]; then
-  echo "usage: phpenv completions COMMAND [arg1 arg2...]" >&2
+  phpenv-help --usage completions >&2
   exit 1
 fi
 

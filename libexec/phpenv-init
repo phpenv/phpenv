@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Summary: Configure the shell environment for phpenv
+# Usage: eval "$(phpenv init - [--no-rehash] [<shell>])"
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
@@ -22,11 +25,11 @@ if [ -z "$shell" ]; then
   shell="$(basename "$SHELL")"
 fi
 
-function resolve_link() {
+resolve_link() {
   $(type -p greadlink readlink | head -1) $1
 }
 
-function abs_dirname() {
+abs_dirname() {
   local cwd="$(pwd)"
   local path="$1"
 
@@ -82,11 +85,12 @@ if [ -z "$no_rehash" ]; then
   echo 'phpenv rehash 2>/dev/null'
 fi
 
-commands=(`phpenv commands --sh`)
+commands=(`phpenv-commands --sh`)
 IFS="|"
 cat <<EOS
-function phpenv() {
-  local command="\$1"
+phpenv() {
+  typeset command
+  command="\$1"
   if [ "\$#" -gt 0 ]; then
     shift
   fi

@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 set -e
-[ -n "$PHPENV_DEBUG" ] && set -x
+export -n CDPATH
 
-if ! echo "init:commands:exec:completions" | grep -q "$1"; then
-  echo -e "phpenv v0.0.2\n" >&2
+if [ "$1" = "--debug" ]; then
+  export PHPENV_DEBUG=1
+  shift
 fi
 
-function resolve_link() {
+if [ -n "$PHPENV_DEBUG" ]; then
+  export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] '
+  set -x
+fi
+
+resolve_link() {
   $(type -p greadlink readlink | head -1) "$1"
 }
 
-function abs_dirname() {
+abs_dirname() {
   local cwd="$(pwd)"
   local path="$1"
 
@@ -43,6 +49,7 @@ else
 fi
 export PHPENV_DIR
 
+
 shopt -s nullglob
 
 bin_path="$(abs_dirname "$0")"
@@ -59,11 +66,17 @@ export PHPENV_HOOK_PATH="$hook_path"
 
 shopt -u nullglob
 
+if ! echo "init:commands:exec:completions" | grep -q "$1"; then
+  echo -e  "$(phpenv---version)-$1\n" >&2
+fi
 
 command="$1"
 case "$command" in
 "" | "-h" | "--help" )
-  echo "$(phpenv-help)" >&2
+  echo -e "$(phpenv-help)" >&2
+  ;;
+"-v" )
+  exec phpenv---version
   ;;
 * )
   command_path="$(command -v "phpenv-$command" || true)"

@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+# Summary: Display prefix for a PHP version
+# Usage: phpenv prefix [<version>]
+#
+# Displays the directory where a PHP version is installed. If no
+# version is given, `phpenv prefix' displays the location of the
+# currently selected version.
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
@@ -16,7 +23,8 @@ fi
 
 if [ "$PHPENV_VERSION" = "system" ]; then
   PHP_PATH="$(phpenv-which php)"
-  echo "${PHP_PATH%/*}"
+  PHP_PATH="${PHP_PATH%/*}"
+  echo "${PHP_PATH%/bin}"
   exit
 fi
 

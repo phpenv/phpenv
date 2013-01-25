@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+#
+# Summary: Display the full path to an executable
+#
+# Usage: phpenv which <command>
+#
+# Displays the full path to the executable that phpenv will invoke when
+# you run the given command.
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
@@ -7,7 +15,7 @@ if [ "$1" = "--complete" ]; then
   exec phpenv shims --short
 fi
 
-function expand_path() {
+expand_path() {
   if [ ! -d "$1" ]; then
     return 1
   fi
@@ -18,7 +26,7 @@ function expand_path() {
   cd "$cwd"
 }
 
-function remove_from_path() {
+remove_from_path() {
   local path_to_remove="$(expand_path "$1")"
   local result=""
 
@@ -44,13 +52,13 @@ PHPENV_VERSION="$(phpenv-version-name)"
 PHPENV_COMMAND="$1"
 
 if [ -z "$PHPENV_COMMAND" ]; then
-  echo "usage: phpenv which COMMAND" >&2
+  phpenv-help --usage which >&2
   exit 1
 fi
 
 if [ "$PHPENV_VERSION" = "system" ]; then
   PATH="$(remove_from_path "${PHPENV_ROOT}/shims")"
-  PHPENV_COMMAND_PATH="$(command -v "$PHPENV_COMMAND")"
+  PHPENV_COMMAND_PATH="$(command -v "$PHPENV_COMMAND" || true)"
 else
   PHPENV_COMMAND_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}/bin/${PHPENV_COMMAND}"
 fi

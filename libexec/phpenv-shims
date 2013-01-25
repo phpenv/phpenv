@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Summary: List existing phpenv shims
+# Usage: phpenv shims [--short]
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
