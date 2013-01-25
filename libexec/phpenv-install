@@ -1,11 +1,5 @@
 #!/bin/bash
-  # alias autoconf=autoconf213
-  # shopt -s expand_aliases
-  # autoconf --version
 
-
-# The most important line in every shell script. Basically this says:
-# This script should fail once a command invocation itself fails.
 set -e
 
 # Set the `PHPENV_DEBUG` environment variable to
