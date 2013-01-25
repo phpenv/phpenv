@@ -32,7 +32,7 @@ Some useful phpenv commands are:
    whence        List all PHP versions with the given command
 
 See 'phpenv help <command>' for information on a specific command.
-For full documentation, see: https://github.com/humanshell/phpenv#readme"
+For full documentation, see: https://github.com/phpenv/phpenv#readme"
 ;;
 commands) echo "usage: phpenv commands
        phpenv commands --sh
