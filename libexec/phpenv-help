@@ -109,16 +109,13 @@ print_help() {
   [ -n "$help" ] || help="$summary"
 
   if [ -n "$usage" -o -n "$summary" ]; then
-    if [ -n "$usage" ]; then
-      echo "$usage"
-    else
-      echo "Usage: phpenv ${command}"
-    fi
-    if [ -n "$help" ]; then
-      echo
-      echo "$help"
-      echo
-    fi
+    local buffer="$(
+      print_usage $command;
+      if [ -n "$help" ]; then \
+        echo -e "\n$help\n";
+      fi
+    )"
+    echo "${buffer}"|$([[ $(tput lines) -lt $(echo "${buffer}"| wc -l ) ]] && echo less || echo cat)
   else
     echo "Sorry, this command isn't documented yet." >&2
     return 1
@@ -129,7 +126,11 @@ print_usage() {
   local command="$1"
   local summary usage help
   eval "$(documentation_for "$command")"
-  [ -z "$usage" ] || echo "$usage"
+  echo "${command^}:"
+  printf "%s" $(seq -f'=' 1 ${#command})
+  echo -e "="
+  [[ -n "$summary" ]] && printf "   %s\n\n" "$summary"
+  [[ -z "$usage" ]] || echo "$usage"
 }
 
 unset usage
