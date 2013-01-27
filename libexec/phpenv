@@ -66,8 +66,8 @@ export PHPENV_HOOK_PATH="$hook_path"
 
 shopt -u nullglob
 
-if ! echo "init:commands:exec:completions" | grep -q "$1"; then
-  echo -e  "$(phpenv---version)-$1\n" >&2
+if ! echo "init:commands:exec:completions:version" | grep -q "${1##*-}"; then
+  echo -e  "$(phpenv---version)\n" >&2
 fi
 
 command="$1"
