@@ -4,6 +4,7 @@
 # library link
 #
 # Usage: phpenv global <version>
+#        phpenv global --unset
 #
 # Sets the global PHP version. You can override the global version at
 # any time by setting a directory-specific version with `phpenv local'
