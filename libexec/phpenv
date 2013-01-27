@@ -71,6 +71,12 @@ if ! echo "init:commands:exec:completions" | grep -q "$1"; then
 fi
 
 command="$1"
+
+if [[ "$2" = "--help"  || "$2" = "-h"  ]]; then
+  phpenv-help "$command" >&2
+  exit 1
+fi
+
 case "$command" in
 "" | "-h" | "--help" )
   echo -e "$(phpenv-help)" >&2
