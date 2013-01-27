@@ -1,4 +1,74 @@
 #!/bin/bash
+#
+# Summary: Configure, build and install a PHP release version
+#
+# Usage: phpenv install <release> [<build>]
+#        phpenv install <release> [--continue|c step]
+#        phpenv install <release> [--ini|i <environment>]
+#        phpenv install --clean
+#        phpenv install --deep-clean
+#        phpenv install --releases
+#
+# Kicks off a multi-step process, which can resumed at any point,
+# by ensuring repository is up to date, checkout the supplied
+# release into a build branch, applying any possible patches,
+# execute configure, make, make install - to the prefix for the
+# .phpenv/versions/X.X.X-xxx folder. creating a php.ini file
+# with default settings, install pyrus and phpize, configure,
+# make, make install on any additional extensions, based on
+# the instructions from a .phpenv/etc/xxx.source build configuration
+# source file.
+#
+# The configuration source files are identified based on the
+# following legend:
+#      php-<major-version>-<build>.<environment>
+# an example of a debug build for PHP 5.3 on Linux would be named:
+#      php-5.3-debug.Linux.source
+# If no specific build can be found the major version, without build
+# is used, for example
+#      php-5.3.Darwin.source
+# will be used for any 5.3.x release with or without a specific build
+# identifier being compiled on Mac OS X.
+#
+# --releases will pull the latest updates from the source repository
+# and display a list of available php releases.
+#
+# --clean and --deep-clean will Clean the build directory of any
+# generated files and thoroughly clean generated files, clear ccache
+# clear generated files for extensions and delete downloaded or cached
+# content content, respectively without removing the source repository.
+# This is useful when doing building different major versions and faced
+# with strange errors as a result of caches and files not being
+# re-generated.
+#
+# 2 log files are kept 1 for STDOUT and another exclusively for STDERR
+# which will be presented when the script exits, due to an error or
+# not. The current state of the ~/.phpenv/php-src folder reflects the
+# state at termination. This is useful to debug a problem by manually
+# continuing the build process from the source folder.
+#
+# By means of the --continue argument it is possible to continue
+# after a specific task not requiring you to start from scratch.
+# The steps are defined as follows:
+#
+#        0 (default) start from the beginning
+#        1 Start from [Fetching] skipping first steps
+#        2 Start from [Branching] skip branching release
+#        3 Start from [Patching] applying patches
+#        4 Start from [Configuring] skip running ./configure
+#        5 Start from [Compiling] skip make, install, clean
+#        6 Start from [Config ini] Skip updating php.ini
+#        7 Start from [Pyrus] |7| skip downloading and installing
+#        8 Start from [Extensions] skip installing extensions
+#
+# The use of ccache is advised when initially getting the environment
+# configured as this will greatly reduce the compilation time for
+# subsequent builds, while fine tuning your build configuration
+# source files. Once this was successful any subsequent releases
+# will continue to build without any problems and if it should fail
+# we hope to provide you with all the information you need at your
+# finger tips to get a resolve.
+
 
 set -e
 
@@ -13,39 +83,6 @@ exec 3<&2
 STATUS=0
 CONTINUE=0
 
-#/ Usage: phpenv install [--[deep-]clean] [--releases] [--ini|i <environment>] [<release>] [<build>] [--continue|c status]
-#/
-#/ Arguments:
-#/   release:    Which PHP release to build and install
-#/     build:    Optionally supply a build identifier to enable
-#/               installation of multiple versions of the same
-#/               release ie debug, mysql, mssql, postgres, intl
-#/
-#/ Options:
-#/   --releases: Lists all available definitions
-#/      --clean: Clean the build directory of any generated files
-#/ --deep-clean: Thoroughly clean generated files, clear ccache
-#/               clear generated files for extensions and delete
-#/               downloaded or cached content content.
-#/               NOTE: these do not remove the source repository
-#/                     or any of the extension submodules.
-#/      --ini|i: Specifies which php.ini-<environment> from the
-#/               source distribution is used as default php.ini
-#/  --continue|c continue from a specific workflow status index
-#/               by skipping the steps that were already completed
-#/               leading up to this point, where status is one of:
-#/
-#/                   0 (default) start from the beginning
-#/                   1 Start from [Fetching] skipping first steps
-#/                   2 Start from [Branching] skip branching release
-#/                   3 Start from [Patching] applying patches
-#/                   4 Start from [Configuring] skip running ./configure
-#/                   5 Start from [Compiling] skip make, install, clean
-#/                   6 Start from [Config ini] Skip updating php.ini
-#/                   7 Start from [Pyrus] |7| skip downloading and installing
-#/                   8 Start from [Extensions] skip installing extensions
-#/
-#/
 
 # Process flow and continuation
 # ------------------------------
@@ -95,12 +132,6 @@ function continue_after() {
 
 # Utility Functions
 # -----------------
-
-# processes the usage message for the script and displays it on STDERR.
-function display_usage() {
-  grep '^#/' <"$0" | cut -c4- >&3
-}
-
 # clones the php-src repo if it doesn't exist
 function init() {
   if [[ ! -d "$SRC_DIR" ]]; then
@@ -523,8 +554,8 @@ fi
 init
 
 # Display the Usage message if no arguments are given.
-if [[ -z $1 || "$1" = "--help" || "$1" = "-h" ]]; then
-  display_usage
+if [[ -z $1 ]]; then
+  phpenv-help --usage install
   exit 1
 fi
 
