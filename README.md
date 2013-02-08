@@ -5,10 +5,11 @@
  * Based on the totally awesome [rbenv](https://github.com/sstephenson/rbenv) and
 [ruby-build](https://github.com/sstephenson/ruby-build), the way you like it
  * Build php directly from the git repository source, saves you bandwidth
- * Easily customisable configuration options, gives you freedom 
+ * Build multiple versions of the same release, exactly what you need
+ * Easily customizable configuration options, gives you freedom 
  * Restart a failed installation from anywhere, saves you time
  * Include custom build extensions both static and shared, gives you options
- * Includes Apache apxs support and switching versions, at your leasure
+ * Includes Apache apxs support and switching versions, as you wish 
  * Installs pear and pyrus for each installation (where supportod), as you prefer
  * Developed by humans for humans, just like you
 
