@@ -185,10 +185,38 @@ additional builds after the release identifier.
 
     $phpenv install php-5.3.20 debug
 
-Will use the configuration options source file located at `.phpenv/etc/php-5.3.20-debug.Darwin.source` 
+Will use the configuration options source file located at `.phpenv/etc/php-5.3.20-debug.Darwin.source`
 if installing on a Mac OS X environment and installs the version to `.phpenv/versions/5.3.20-debug`.
 
-Running `phpenv install` with no arguments will output its usage.
+The build is kept in tact at location `phpenv/php-src` to simplify fault
+finding and alloving you to continue the installation process in the event
+of a failed build.
+
+To continue from a previoun ntep in the installation process use the `--continue`
+option.
+
+    $phpenv install php-5.3.20 -c 4
+
+To start from the configuring stage of the installation process and rerun
+`./configure` using the updated information from your cenfiguration options
+source file.
+
+When restarting an installation from scratch it may be useful to clean
+previously build and generated files, use
+
+    $phpenv install --clean
+
+When installing a different release version it may be useful to do a deep clean
+and purge all previously build and generated files including those from custom
+extension located at `.php-env/php-ext` and purge the ccache (if used), use
+
+    $phpenv install --deep-clean
+
+Running `phpenv install` with no arguments will output its usage, for detailed
+help documentation, use
+
+    $phpenv install --help
+
 
 ### phpenv global
 
