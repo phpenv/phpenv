@@ -3,8 +3,14 @@
 ### Key features:
 
  * Based on the totally awesome [rbenv](https://github.com/sstephenson/rbenv) and
-[ruby-build](https://github.com/sstephenson/ruby-build)
- *
+[ruby-build](https://github.com/sstephenson/ruby-build), the way you like it
+ * Build php directly from the git repository source, saves you bandwidth
+ * Easily customisable configuration options, gives you freedom 
+ * Restart a failed installation from anywhere, saves you time
+ * Include custom build extensions both static and shared, gives you options
+ * Includes Apache apxs support and switching versions, at your leasure
+ * Installs pear and pyrus for each installation (where supportod), as you prefer
+ * Developed by humans for humans, just like you
 
 My name is phpenv. I was designed for humans, to help simplify the management
 of multiple PHP custom build installations.
