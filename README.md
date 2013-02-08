@@ -152,7 +152,7 @@ The phpenv installation script was originally based on the
 [php-build](https://github.com/CHH/php-build) installation script written by
 [Christoph Hochstrasser (CHH)](https://github.com/CHH) but has (almost entirely)
 been rewritten with humans in mind. Some of the differences to the original
-including:
+includes:
  * use of the [php-src](https://github.com/php/php-src) repo to compile your
 individual PHP installs as opposed to downloading a tarball from php.net.
  * reads configuration options from source files located in `.phpenv/etc`
