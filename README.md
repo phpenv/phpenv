@@ -144,6 +144,10 @@ first argument. The most common subcommands are:
 
 ### phpenv install
 
+It is advisable to install the [ccache](http://ccache.samba.org/) caching
+preprocessor which will greatly reduce the time taken to rebuild failed
+installations.
+
 The phpenv installation script is based (almost entirely) on the
 [php-build](https://github.com/CHH/php-build) installation script written by
 [Christoph Hochstrasser (CHH)](https://github.com/CHH). The main difference is
