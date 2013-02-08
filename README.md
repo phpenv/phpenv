@@ -6,10 +6,10 @@
 [ruby-build](https://github.com/sstephenson/ruby-build), the way you like it
  * Build php directly from the git repository source, saves you bandwidth
  * Build multiple versions of the same release, exactly what you need
- * Easily customizable configuration options, gives you freedom 
+ * Easily customizable configuration options, gives you freedom
  * Restart a failed installation from anywhere, saves you time
  * Include custom build extensions both static and shared, gives you options
- * Includes Apache apxs support and switching versions, as you wish 
+ * Includes Apache apxs support and switching versions, as you wish
  * Installs pear and pyrus for each installation (where supportod), as you prefer
  * Developed by humans for humans, just like you
 
@@ -165,7 +165,7 @@ To build one of the listed releases run:
 This command will checkout a branch to build in and install that release to
 its own subdirectory in ~/.phpenv/versions/
 
-The installation script gets its configuration options from source files in the 
+The installation script gets its configuration options from source files in the
 `.phpenv/etc` folder and also includes instructions to build extensions or sets
 appropriate environment variables where required. These configuration options
 are usually specific to your development environment but several defaults for
@@ -177,7 +177,7 @@ The configuration files are using the following naming convention:
 <php major release><-optional specific build>.<platform>.source
 ```
 
-If no qualifying specific build was found we fall back to the default major release 
+If no qualifying specific build was found we fall back to the default major release
 version (without specific build).
 
 To install multiple builds of the same release simply add a unique name for your
