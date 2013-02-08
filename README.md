@@ -160,6 +160,29 @@ To build one of the listed releases run:
 This command will checkout a branch to build in and install that release to
 its own subdirectory in ~/.phpenv/versions/
 
+The installation script gets its configuration options from source files in the 
+`.phpenv/etc` folder and also includes instructions to build extensions or sets
+appropriate environment variables where required. These configuration options
+are usually specific to your development environment but several defaults for
+Darwin and dependencies installed with [homebrew](http://mxcl.github.com/homebrew/)
+have been included for your convenience.
+
+The configuration files are using the following naming convention:
+```
+<php major release><-optional specific build>.<platform>.source
+```
+
+If no qualifying specific build was found we fall back to the default major release 
+version (without specific build).
+
+To install multiple builds of the same release simply add a unique name for your
+additional builds after the release identifier.
+
+    $phpenv install php-5.3.20 debug
+
+Will use the configuration options source file located at `.phpenv/etc/php-5.3.20-debug.Darwin.source` 
+if installing on a Mac OS X environment and installs the version to `.phpenv/versions/5.3.20-debug`.
+
 Running `phpenv install` with no arguments will output its usage.
 
 ### phpenv global
