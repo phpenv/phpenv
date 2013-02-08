@@ -155,7 +155,7 @@ You can list the available PHP releases by running:
 
 To build one of the listed releases run:
 
-    $ phpenv install php-5.3.13
+    $ phpenv install php-5.3.20
 
 This command will checkout a branch to build in and install that release to
 its own subdirectory in ~/.phpenv/versions/
