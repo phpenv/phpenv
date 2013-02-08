@@ -148,11 +148,19 @@ It is advisable to install the [ccache](http://ccache.samba.org/) caching
 preprocessor which will greatly reduce the time taken to rebuild failed
 installations.
 
-The phpenv installation script is based (almost entirely) on the
+The phpenv installation script was originally based on the
 [php-build](https://github.com/CHH/php-build) installation script written by
-[Christoph Hochstrasser (CHH)](https://github.com/CHH). The main difference is
-that it uses the [php-src](https://github.com/php/php-src) repo to compile your
+[Christoph Hochstrasser (CHH)](https://github.com/CHH) but has (almost entirely)
+been rewritten with humans in mind. Some of the differences to the original
+including:
+ * use of the [php-src](https://github.com/php/php-src) repo to compile your
 individual PHP installs as opposed to downloading a tarball from php.net.
+ * reads configuration options from source files located in `.phpenv/etc`
+ * allows you to do multiple builds per release
+ * includes building custom extensions located in the ".phpenv/php-ext`
+folder, as per the configuration source files, both static or shared.
+ * allows you to continue a failed installation from anywhere
+ * and more...
 
 You can list the available PHP releases by running:
 
