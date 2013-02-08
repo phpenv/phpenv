@@ -126,7 +126,7 @@ print_usage() {
   local command="$1"
   local summary usage help
   eval "$(documentation_for "$command")"
-  echo "${command^}:"
+  echo "${command}:"
   printf "%s" $(seq -f'=' 1 ${#command})
   echo -e "="
   [[ -n "$summary" ]] && printf "   %s\n\n" "$summary"
