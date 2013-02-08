@@ -1,9 +1,30 @@
-## Hello World!
+## phpenv - PHP multi-version installation and management for humans.
 
-My name is phpenv. I was designed to help simplify the management of multiple
-PHP installations, and was inspired by the outstanding work of both the
-[rbenv](https://github.com/sstephenson/rbenv) and
-[ruby-build](https://github.com/sstephenson/ruby-build) projects.
+### Key features:
+
+ * Based on the totally awesome [rbenv](https://github.com/sstephenson/rbenv) and
+[ruby-build](https://github.com/sstephenson/ruby-build)
+ *
+
+My name is phpenv. I was designed for humans, to help simplify the management
+of multiple PHP custom build installations.
+
+I was originally inspired by the outstanding work of both the
+ projects which
+you already know and love with a whole bunch of PHP scentric additions
+to help you build your first release, simplify managing and working
+with diffirent releases and keep you building new release after new
+release like there's nothing to it.
+
+You are a PHP developer, like we are, and you not only have to have the
+latest and freshest interpreter to spin your scripts but you also care to
+see what how they get treated when submitted to older inturpretations.
+Ever wondered why you can't run a CI on your own development machine? Well
+you just founh the answer doing when taken for a ride building PHP
+on their dev machines. Easily customize your configuration options and even
+build pecl extensions into PHP or manually afterwards. Configure and install
+custom builds of the same PHP release version directly from the PHP source
+code repository kept in your local `.phpenv` folder.
 
 ## How It Works
 
@@ -23,7 +44,8 @@ directory for the selected version at the beginning of your `$PATH`
 and then execute the corresponding binary.
 
 Because of the simplicity of the shim approach, all you need to use
-phpenv is `~/.phpenv/shims` in your `$PATH`.
+phpenv is `~/.phpenv/shims` in your `$PATH` which will do the version
+switching automagically.
 
 ## Installation
 
@@ -66,39 +88,16 @@ To upgrade to the latest development version of phpenv, use `git pull`:
     $ cd ~/.phpenv
     $ git pull
 
-### Apache (httpd.conf) Setup
+### Apache Setup
 
-phpenv has been designed as a tool for a local development environment.
-Currently, phpenv does not build the libphp5.so module. This is due to
-permission issues during `make install` that make it difficult to compile
-multiple modules and link to them for each installed PHP version dynamically.
-Therefore, phpenv executes PHP as a cgi binary. To accomplish this, add the
-following code to the end of your httpd.conf file:
+phpenv support dynamic switching for Apache apxs libraries and `install`
+will build and install a `libphp5.so` shared library for Apache under
+the `versions` `libexec` folder.
 
-```
-# PHPENV Setup
-<IfModule alias_module>
-    ScriptAlias /phpenv "/PATH-TO-YOUR-HOME-FOLDER/.phpenv/shims"
-    <Directory "/PATH-TO-YOUR-HOME-FOLDER/.phpenv/shims">
-        Order allow,deny
-        Allow from all
-    </Directory>
-</IfModule>
-
-<IfModule mime_module>
-    AddType application/x-httpd-php5 .php
-</IfModule>
-
-<IfModule dir_module>
-    DirectoryIndex index.php index.html
-</IfModule>
-
-Action application/x-httpd-php5 "/phpenv/php-cgi"
-```
-
-**NOTE: running php as a cgi binary can be considered insecure, which you can
-read about [here](http://www.php.net/manual/en/security.cgi-bin.php). PLEASE DO
-NOT RUN PHPENV ON A PRODUCTION SERVER.**
+By calling `phpenv global` to show or change the global PHP version
+a link is created under `~/.phpenv/lib/libphp5.so` for the appropriate
+release build. This link can be used for Apache's `LoadModule php5_module`
+directive and requires Apache to restart when changed.
 
 ### Neckbeard Configuration
 
