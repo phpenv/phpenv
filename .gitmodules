@@ -25,6 +25,4 @@
 [submodule "php-ext/yaf"]
 	path = php-ext/yaf
 	url = https://github.com/laruence/php-yaf
-[submodule "php-ext/php-python"]
-	path = php-ext/php-python
-	url = git@github.com:jparise/php-python.git
+
