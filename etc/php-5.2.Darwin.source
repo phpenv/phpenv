@@ -37,7 +37,7 @@ CONFIGURE_OPTIONS="--libdir=/usr/local/lib
                    --with-mhash=/usr/local/opt/mhash
                    --enable-mbstring
                    --with-openssl=/usr/local/opt/openssl
-                   --with-libxml-dir=/usr/local/opt/libxml2
+                   --with-libxml-dir=/usr/local/Cellar/libxml2/2.7.8
                    --with-png-dir=/usr/local/opt/libpng
                    --with-jpeg-dir=/usr/local/opt/jpeg
                    --with-freetype-dir=/usr/local/opt/freetype
