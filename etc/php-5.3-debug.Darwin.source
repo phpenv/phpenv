@@ -20,9 +20,9 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --enable-calendar
                    --enable-exif
                    --enable-ftp
-                   --with-png-dir=/usr/local
-                   --with-jpeg-dir=/usr/local
-                   --with-freetype-dir=/usr/local
+                   --with-png-dir=/usr/local/opt/libpng
+                   --with-jpeg-dir=/usr/local/opt/jpeg
+                   --with-freetype-dir=/usr/local/opt/freetype
                    --with-gd
                    --enable-gd-native-ttf
                    --with-pear

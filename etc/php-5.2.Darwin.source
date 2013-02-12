@@ -38,15 +38,15 @@ CONFIGURE_OPTIONS="--libdir=/usr/local/lib
                    --enable-mbstring
                    --with-openssl=/usr/local/opt/openssl
                    --with-libxml-dir=/usr/local/opt/libxml2
-                   --with-png-dir=/usr/local
-                   --with-jpeg-dir=/usr/local
-                   --with-freetype-dir=/usr/local
+                   --with-png-dir=/usr/local/opt/libpng
+                   --with-jpeg-dir=/usr/local/opt/jpeg
+                   --with-freetype-dir=/usr/local/opt/freetype
                    --with-gd
                    --enable-gd-native-ttf
                    --with-ldap=/usr
-                   --with-mysql=/usr/local/Cellar/mariadb/5.5.28
-                   --with-mysqli=/usr/local/Cellar/mariadb/5.5.28/bin/mysql_config
-                   --with-pdo-mysql=/usr/local/Cellar/mariadb/5.5.28
+                   --with-mysql=/usr/local/opt/mariadb
+                   --with-mysqli=/usr/local/opt/mariadb/bin/mysql_config
+                   --with-pdo-mysql=/usr/local/opt/mariadb
                    --with-mysql-sock=/tmp/mysql.sock
                    --with-gettext=/usr/local/opt/gettext
                    --with-curl=/usr/local/opt/curl

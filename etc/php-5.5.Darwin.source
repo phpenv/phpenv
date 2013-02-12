@@ -18,9 +18,9 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --with-bz2=/usr
                    --enable-calendar
                    --enable-exif
-                   --with-png-dir=/usr/local
-                   --with-jpeg-dir=/usr/local
-                   --with-freetype-dir=/usr/local
+                   --with-png-dir=/usr/local/opt/libpng
+                   --with-jpeg-dir=/usr/local/opt/jpeg
+                   --with-freetype-dir=/usr/local/opt/freetype
                    --with-gd
                    --enable-gd-native-ttf
                    --with-pear
@@ -37,7 +37,7 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --with-xsl=/usr/local/opt/libxslt
                    --enable-zip
                    --with-pcre-regex=/usr/local/opt/pcre
-                   --with-vpx-dir=/usr/local
+                   --with-vpx-dir=/usr/local/opt/libvpx
                    --with-xpm-dir=/usr/X11
                    --with-pcre-dir=/usr/local/opt/pcre
                    --with-curl=/usr/local/opt/curl
