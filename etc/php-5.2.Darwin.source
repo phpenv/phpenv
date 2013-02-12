@@ -2,6 +2,7 @@
 #
 
 export PHP_AUTOCONF=autoconf213
+export PATH=/usr/local/opt/flex/bin:$PATH
 
 CONFIGURE_OPTIONS="--libdir=/usr/local/lib
                    --includedir=/usr/local/include
