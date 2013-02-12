@@ -92,7 +92,7 @@ function workflow() {
     0)  # update the repo
         fetch_releases
       ;;
-    1)  # checkout re/ease to branch build
+    1)  # checkout release to branch build
         build_branch
       ;;
     2)  # run configure
@@ -639,8 +639,9 @@ source "$PHPENV_ROOT/etc/config.source"
 
 echo -e "Building $VERSION\n" >&2
 
-# Handle script termination with the `cleanup_abort`.
-trap cleanup_abort SIGINT SIGTERM
+# Handle script termination
+# Reset the default streams and close file descriptors
+trap reset_streams SIGINT SIGTERM
 # Handle Script Errors with `build_error`.
 trap build_error ERR EXIT
 
@@ -657,10 +658,7 @@ log "Info" "The log files produced by the procedure are available, in the tmp fo
 log "" " - Any warnings or messeages sent to STDERR was logged to $LOG_PATH.err"
 log "" " - All messeages sent to STDOUT was logged to $LOG_PATH"
 [[ -z $PAGER ]] && PAGER=less
-test `which pbcopy` && (echo $PAGER $LOG_PATH | `which pbcopy`) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
+which pbcopy &> /dev/null && (echo $PAGER $LOG_PATH | $(which pbcopy)) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
 
 trap - SIGINT
 trap - SIGTERM
-
-# Reset the default streams and close file descriptors
-reset_streams
