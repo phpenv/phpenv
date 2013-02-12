@@ -135,14 +135,20 @@ function continue_after() {
 # clones the php-src repo if it doesn't exist
 function init() {
   if [[ ! -d "$SRC_DIR" ]]; then
+    cd "$PHPENV_ROOT"
     log "init" "cloning source from php-src Github repo"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
-    cd "$PHPENV_ROOT"
-    ${GIT} submodule update --init --rebase --recursive &> /dev/null
+    ${GIT} submodule init &> /dev/null
   fi
+  cd "$PHPENV_ROOT"
+  ${GIT} submodule update --checkout --recursive &> /dev/null
+}
+
+function linkextensions() {
   cd "$SRC_DIR"/ext
-  find "$PHPENV_ROOT"/php-ext -maxdepth 1 \! -name "*ext" -exec ln -s {} \; 2>/dev/null || true
-  [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -le 2 || ${VERSION_MAJOR} -lt 5 ]] && [[ -L ncurses ]] && rm ncurses
+  MORE=""
+  [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -le 2 || ${VERSION_MAJOR} -lt 5 ]] && MORE="ncurses"
+  find "$PHPENV_ROOT"/php-ext -maxdepth 1 \! -name "*ext" \! -name ".*" \! -name "${MORE}" -exec ln -s {} \; 2>/dev/null || true
   cd "$SRC_DIR"
 }
 
@@ -425,6 +431,8 @@ function build_branch() {
 
   log "Branching" "for a clean build environment"
   ${GIT} branch | grep -q "\* build" || ${GIT} checkout -b build ${RELEASE}
+  clean_repository
+  linkextensions
 }
 
 # handles all the heavy lifting when building $RELEASE
