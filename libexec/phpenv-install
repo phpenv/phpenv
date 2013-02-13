@@ -82,7 +82,7 @@ set -e
 exec 3<&2
 STATUS=0
 CONTINUE=0
-
+RELEASE=""
 
 # Process flow and continuation
 # ------------------------------
@@ -157,7 +157,10 @@ function log() {
   local marker=""
   local text="$2"
   if [ 0 -lt ${#1} ]; then
-    if [[ 7 -ge ${STATUS} && ${1:0:4} != 'make' ]]; then
+    if [ "releases" == "${RELEASE}" ]; then
+      marker=$1
+      text=" the ${2/code/PHP releases}"
+    elif [[ 7 -ge ${STATUS} && ${1:0:4} != 'make' ]]; then
       let "STATUS+=1"
       marker="[$1]"
       text="|$STATUS| $2"
@@ -569,6 +572,7 @@ fi
 
 # display list of available releases if --releases was passed in
 if [[ "$1" = "--releases" ]]; then
+  export RELEASE=releases
   fetch_releases
   release_out="PHP releases as were available on:\n$(date)
   \n$(list_releases)"
