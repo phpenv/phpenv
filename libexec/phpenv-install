@@ -560,10 +560,6 @@ if [ "$1" = "--complete" ]; then
   exit 0
 fi
 
-
-# always ensure we have cloned the php-src repo
-init
-
 # Display the Usage message if no arguments are given.
 if [[ -z $1 ]]; then
   phpenv-help --usage install
@@ -573,6 +569,7 @@ fi
 # display list of available releases if --releases was passed in
 if [[ "$1" = "--releases" ]]; then
   export RELEASE=releases
+  init
   fetch_releases
   release_out="PHP releases as were available on:\n$(date)
   \n$(list_releases)"
@@ -580,6 +577,9 @@ if [[ "$1" = "--releases" ]]; then
   unset release_out
   exit 0
 fi
+
+# always ensure we have cloned the php-src repo
+init
 
 # clean build environment
 if [[ "$1" = "--clean" ]]; then
