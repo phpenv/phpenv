@@ -178,7 +178,9 @@ function log() {
 function is_osx() {
   return $(test $(uname) == "Darwin")
 }
-
+function is_linux() {
+  return $(test $(uname) == "Linux")
+}
 # gets latest code from github repo
 function fetch_releases() {
   continue_after 0 "Fetching" && return
