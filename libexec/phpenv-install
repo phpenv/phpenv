@@ -476,8 +476,10 @@ function patch_roulette() {
   continue_after 2 "Patching" && return
 
   log "Patching" "Applying patches to the source if any are applicable."
+  local min_i="-i"
+  is_osx && min_i="-i ''"
 
-  find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i '' "s/(built:/(built with phpenv v0.0.2:/g" {} \;
+  find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed $(echo "${min_i}") "s/(built:/(built with phpenv v0.0.2:/g" {} \;
 
   if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -gt 2 ]]; then
     # patch for x86_64 linking problems building with readline
@@ -526,7 +528,10 @@ function configure_release() {
   phpenv-hooks install pre-configure
   ./configure $argv
   phpenv-hooks install post-configure
-  sed -i '' 's#INSTALL_IT =.*$#INSTALL_IT=mkdir -p \${prefix}/libexec \&\& cp libs/libphp5.so  \${prefix}/libexec/.#' Makefile
+  local min_i="-i"
+  is_osx && min_i="-i ''"
+
+  sed $(echo "${min_i}") -e 's#INSTALL_IT =.*$#INSTALL_IT=mkdir -p \${prefix}/libexec \&\& cp libs/libphp5.so  \${prefix}/libexec/.#' Makefile
   mkdir -p "$PREFIX/etc"
   echo "LoadModule php5_module $PREFIX/libexec/libphp5.so" > "$PREFIX/etc/httpd.conf"
 }
