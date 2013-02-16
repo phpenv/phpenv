@@ -43,7 +43,9 @@ fi
 echo ${PHPENV_VERSION}
 
 # Link Apache apxs lib
-APXS="$(which apxs)"
+APXS=""
+php-config --configure-options 2>/dev/null | grep -q apxs  && \
+    APXS="$(php-config --configure-options| sed 's/.*=\(.*apxs[^ ]*\) .*/\1/')"
 
 [[ -d "${PHPENV_ROOT}/lib" ]] || mkdir "${PHPENV_ROOT}/lib"
 if [ -n "${APXS}" ]; then
