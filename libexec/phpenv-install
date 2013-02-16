@@ -660,7 +660,7 @@ echo -e "Building $VERSION\n" >&2
 
 # Handle script termination
 # Reset the default streams and close file descriptors
-trap reset_streams SIGINT SIGTERM
+trap build_error SIGINT SIGTERM
 # Handle Script Errors with `build_error`.
 trap build_error ERR EXIT
 
