@@ -26,3 +26,6 @@
 	path = php-ext/yaf
 	url = https://github.com/laruence/php-yaf
 
+[submodule "php-ext/mongo"]
+	path = php-ext/mongo
+	url = git://github.com/mongodb/mongo-php-driver.git
