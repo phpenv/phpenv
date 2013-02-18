@@ -1,0 +1,9 @@
+# Configure options for PHP 5.3 releases Darwin specific.
+#
+
+export PHP_AUTOCONF=autoconf213
+
+CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
+                   --enable-phar"
+
+MANUAL_EXTENSIONS=()
