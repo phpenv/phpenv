@@ -188,7 +188,7 @@ function fetch_releases() {
   cd "$SRC_DIR"
   if ${GIT} branch|grep -q '* master'; then
     log "Fetching" "latest code from Github repo"
-    ${GIT} pull &> /dev/null
+    ${GIT} fetch --tags &> /dev/null
   else
     cleanup
     fetch_releases
