@@ -48,7 +48,6 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --with-xpm-dir=/usr/X11
                    --with-pcre-dir=/usr/local/opt/pcre
                    --with-curl=/usr/local/opt/curl
-                   --with-curlwrappers
                    --with-iconv-dir=/usr/local/opt/libiconv
                    --with-mcrypt=/usr/local/opt/mcrypt
                    --with-libexpat-dir=/usr/local/opt/expat
