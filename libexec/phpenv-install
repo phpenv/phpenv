@@ -244,7 +244,7 @@ function cleanup() {
 
 # Reset the default streams and close file descriptors
 function reset_streams() {
-  exec 2>&3 4>&- 3>&- 1>&5 5>&-
+  exec 2>&3 3>&- 4>&- 1>&5 5>&-
 }
 
 # sets and unsets arguments for `configure`. Pass it the `-D` option to unset
@@ -651,8 +651,8 @@ fi
 # Generate the Path for the build log.
 LOG_PATH="/tmp/phpenv-install-$RELEASE.$(date "+%Y%m%d%H%M%S").log"
 # Redirect everything logged to STDOUT to the Log file.
-exec 5>$1
-exec >$LOG_PATH
+exec 5<&1
+exec 1>$LOG_PATH
 # Redirect everything logged to STDERR to the .err Log file.
 exec 4<>$LOG_PATH.err
 
@@ -682,3 +682,4 @@ which pbcopy &> /dev/null && (echo $PAGER $LOG_PATH | $(which pbcopy)) && echo "
 
 trap - SIGINT
 trap - SIGTERM
+reset_streams
