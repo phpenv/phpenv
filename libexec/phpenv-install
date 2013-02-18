@@ -671,6 +671,7 @@ install_release
 # Unbind the error handler.
 trap - ERR
 trap - EXIT
+trap reset_streams SIGINT SIGTERM
 
 # Display a success Notice
 log "Success" "The installation of the $RELEASE release was successfully completed."
