@@ -406,6 +406,8 @@ function build_extensions() {
         echo "extension=$extension.so" >> "$PREFIX/etc/php.ini"
       fi
     done
+  else
+      log "Extensions" "No additional extensions configured for manual installation."
   fi
 }
 
