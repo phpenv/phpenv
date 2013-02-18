@@ -69,7 +69,6 @@
 # we hope to provide you with all the information you need at your
 # finger tips to get a resolve.
 
-
 set -e
 
 # Set the `PHPENV_DEBUG` environment variable to
@@ -172,15 +171,17 @@ function log() {
   printf "%35s %-65s\n" "$marker" "$text"  >&3
 }
 
-# uses uname to check if running OSX
-# this is used later on to enable specifc fixes for
-# OSX oddnesses in library file placement
+# using uname to identifye the platform
+# Darwin as Mac OS X 
 function is_osx() {
   return $(test $(uname) == "Darwin")
 }
+
+# Linux as several linux kernel distros
 function is_linux() {
   return $(test $(uname) == "Linux")
 }
+
 # gets latest code from github repo
 function fetch_releases() {
   continue_after 0 "Fetching" && return
@@ -494,6 +495,7 @@ function patch_roulette() {
     patch -p1 -d "$SRC_DIR" < "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-pcre-8.30.diff"
   fi
 }
+
 # This is invoked by `build_release` and is used to
 # build PHP with the arguments in `$CONFIGURE_OPTIONS`.
 # It also determines whether or not to install PEAR or Pyrus
@@ -538,6 +540,7 @@ function configure_release() {
   echo "LoadModule php5_module $PREFIX/libexec/libphp5.so" > "$PREFIX/etc/httpd.conf"
 }
 
+# clean repository by removing any ignored files
 function clean_repository() {
   repo=$1
   cd "$repo"
@@ -599,7 +602,6 @@ if [[ "$1" = "--clean" ]]; then
   exit 0
 fi
 
-
 # thoroughly clean build environment
 if [[ "$1" = "--deep-clean" ]]; then
   cd "$SRC_DIR"
@@ -660,10 +662,7 @@ source "$PHPENV_ROOT/etc/config.source"
 
 echo -e "Building $VERSION\n" >&2
 
-# Handle script termination
-# Reset the default streams and close file descriptors
-trap build_error SIGINT SIGTERM
-# Handle Script Errors with `build_error`.
+# Handle script termination and Errors with `build_error`.
 trap build_error ERR EXIT
 
 # start build / install process
