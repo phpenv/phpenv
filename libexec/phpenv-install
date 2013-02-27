@@ -437,9 +437,10 @@ function valid_release() {
 function build_branch() {
   continue_after 1 "Branching" && return
 
+  cd "${SRC_DIR}"
   log "Branching" "for a clean build environment"
   ${GIT} branch | grep -q "\* build" || ${GIT} checkout -b build ${RELEASE}
-  clean_repository
+  clean_repository "${SRC_DIR}"
   linkextensions
 }
 
