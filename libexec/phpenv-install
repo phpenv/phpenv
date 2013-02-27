@@ -604,11 +604,10 @@ fi
 
 # thoroughly clean build environment
 if [[ "$1" = "--deep-clean" ]]; then
-  cd "$SRC_DIR"
   phpenv-install --clean
-  for extension in $(find "$PHPENV_ROOT/php-ext" -maxdepth 1 ! -name "php-ext" ! -name ".*" -print); do
+  while read extension; do
     clean_repository "$extension"
-  done
+  done < <(find "$PHPENV_ROOT/php-ext" -maxdepth 1 ! -name "php-ext" ! -name ".*" -print)
   rm /tmp/phpenv* &> /dev/null
   exit 0
 fi
