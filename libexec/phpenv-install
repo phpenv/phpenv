@@ -545,12 +545,11 @@ function configure_release() {
 function clean_repository() {
   repo=$1
   cd "$repo"
-  ${GIT} reset --hard
-  ${GIT} -c color.status=never status --ignored|\
-    sed -e'/gitignore/d' -e'/#[^ ]/!c\' -e's///'|\
-    xargs -t rm -rf
+  ${GIT} reset --hard &>/dev/null
+  ${GIT} -c color.status=never status --ignored | \
+    sed -e'/gitignore/d' -e'/#[^ ]/!c\' -e's///' | \
+    xargs -t rm -rf &>/dev/null
   # ' # To block the escaped quote from function c\
-  echo $repo
 }
 
 
@@ -599,7 +598,7 @@ if [[ "$1" = "--clean" ]]; then
   cd "$SRC_DIR"
   ${GIT} branch|grep -q '* master' || cleanup
   clean_repository "$SRC_DIR"
-  which ccache && `which ccache` -Cz
+  which ccache &>/dev/null && `which ccache` -Cz
   exit 0
 fi
 
