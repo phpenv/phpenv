@@ -557,7 +557,7 @@ function clean_repository() {
 # ---------------------
 GIT=$(which git)
 SRC_DIR="$PHPENV_ROOT/php-src"
-SRC_URL="https://github.com/php/php-src.git"
+SRC_URL="git://github.com/php/php-src.git"
 
 # Provide phpenv completions
 if [ "$1" = "--complete" ]; then
