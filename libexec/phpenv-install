@@ -138,6 +138,8 @@ function init() {
     log "init" "cloning source from php-src Github repo"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
     ${GIT} submodule init &> /dev/null
+    log "init extensions" "clone source for additional extensions"
+    ${GIT} submodule update &> /dev/null
   fi
   cd "$PHPENV_ROOT"
   ${GIT} submodule update --checkout --recursive &> /dev/null
