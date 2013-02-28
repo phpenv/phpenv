@@ -139,7 +139,7 @@ if [ "$1" = "--usage" ]; then
 fi
 
 if [ -z "$1" ] || [ "$1" == "phpenv" ]; then
-  echo "phpenv::"
+  echo "phpenv:"
   printf "%0.1s" "="{1..7}
   echo -e "\n   PHP multi-version installation and management utility.\n"
   echo "Usage: phpenv <command> [<args>]"
