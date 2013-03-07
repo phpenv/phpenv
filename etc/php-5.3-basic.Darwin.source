@@ -3,7 +3,8 @@
 
 export PHP_AUTOCONF=autoconf213
 
-CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
+CONFIGURE_OPTIONS="--enable-cli
+                   --enable-pcntl
                    --enable-phar"
 
 MANUAL_EXTENSIONS=()
