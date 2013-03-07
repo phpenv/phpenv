@@ -659,8 +659,6 @@ exec 4<>$LOG_PATH.err
 PHPENV_ROOT="$( dirname $( dirname "$0" ) )"
 source "$PHPENV_ROOT/etc/config.source"
 
-echo -e "Building $VERSION\n" >&2
-
 # Handle script termination and Errors with `build_error`.
 trap build_error ERR EXIT
 

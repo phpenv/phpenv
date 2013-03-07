@@ -49,7 +49,8 @@ conf_source="$PHPENV_ROOT/etc/php-$RELEASE_VERSION$BUILD.$(uname).source"
 if [ ! -f "$conf_source" ]; then
   conf_source="$PHPENV_ROOT/etc/php-$RELEASE_VERSION.$(uname).source"
 fi
-[[ -f "$conf_source" ]] && source "$conf_source"
+printf "Building $VERSION with config options from: " >&2
+[[ -f "$conf_source" ]] && echo -e "${conf_source##*/}\n" >&2 && source "$conf_source" || echo -e "No suitable source found.\n" >&2
 
 if [ -n "$PHPENV_CONFIGURE_OPTS" ]; then
   CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS $PHPENV_CONFIGURE_OPTS"
