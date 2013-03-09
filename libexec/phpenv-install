@@ -133,24 +133,24 @@ function continue_after() {
 # -----------------
 # clones the php-src repo if it doesn't exist
 function init() {
+  pushd "$PHPENV_ROOT" &> /dev/null
   if [[ ! -d "$SRC_DIR" ]]; then
-    cd "$PHPENV_ROOT"
     log "init" "cloning source from php-src Github repo"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
     ${GIT} submodule init &> /dev/null
     log "init extensions" "clone source for additional extensions"
     ${GIT} submodule update &> /dev/null
   fi
-  cd "$PHPENV_ROOT"
   ${GIT} submodule update --checkout --recursive &> /dev/null
+  popd &> /dev/null
 }
 
 function linkextensions() {
-  cd "$SRC_DIR"/ext
+  pushd "$SRC_DIR"/ext
   MORE=""
   [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -le 2 || ${VERSION_MAJOR} -lt 5 ]] && MORE="ncurses"
   find "$PHPENV_ROOT"/php-ext -maxdepth 1 \! -name "*ext" \! -name ".*" \! -name "${MORE}" -exec ln -s {} \; 2>/dev/null || true
-  cd "$SRC_DIR"
+  popd
 }
 
 # logs the given log text with a [marker] to STDERR.
@@ -188,7 +188,6 @@ function is_linux() {
 function fetch_releases() {
   continue_after 0 "Fetching" && return
 
-  cd "$SRC_DIR"
   if ${GIT} branch|grep -q '* master'; then
     log "Fetching" "latest code from Github repo"
     ${GIT} fetch --tags &> /dev/null
@@ -200,7 +199,6 @@ function fetch_releases() {
 
 # lists all releases found in the github repo
 function list_releases() {
-  cd "$SRC_DIR"
   local release_out=""
   for release in $(${GIT} tag | sed '/php-/!d'); do
     release_out="$release_out\n$release"
@@ -240,12 +238,12 @@ function build_error() {
 
 # cleans up our build environment
 function cleanup() {
-  cd "$SRC_DIR"
   ${GIT} checkout -f master && ${GIT} branch -D build &> /dev/null
 }
 
 # Reset the default streams and close file descriptors
 function reset_streams() {
+  popd
   exec 2>&3 3>&- 4>&- 1>&5 5>&-
 }
 
@@ -370,8 +368,6 @@ EOF
 function install_release() {
   {
     PREFIX="$PHPENV_ROOT/versions/$VERSION"
-    local cwd="$(pwd)"
-    cd "$SRC_DIR"
     if [[ ! valid_release ]]; then
       log "Error" "Release $RELEASE not found."
       exit ${E_RELEASE_NOT_FOUND}
@@ -383,8 +379,6 @@ function install_release() {
     done
 
     $PHPENV_ROOT/bin/phpenv rehash
-    cd "$cwd"
-
   } 2>&4
 }
 
@@ -396,7 +390,7 @@ function build_extensions() {
     mkdir -p "$ext_dir"
     log "Extensions" "Manually installing shared extensions."
     for extension in ${MANUAL_EXTENSIONS[@]}; do
-      cd "$SRC_DIR/ext/$extension"
+      pushd "$SRC_DIR/ext/$extension"
       "$PREFIX/bin/phpize"
       ./configure --with-php-config="$PREFIX/bin/php-config"
       make
@@ -408,6 +402,7 @@ function build_extensions() {
         extension=${extension%%/*}
         echo "extension=$extension.so" >> "$PREFIX/etc/php.ini"
       fi
+      popd
     done
   else
       log "Extensions" "No additional extensions configured for manual installation."
@@ -439,7 +434,6 @@ function valid_release() {
 function build_branch() {
   continue_after 1 "Branching" && return
 
-  cd "${SRC_DIR}"
   log "Branching" "for a clean build environment"
   ${GIT} branch | grep -q "\* build" || ${GIT} checkout -b build ${RELEASE}
   clean_repository "${SRC_DIR}"
@@ -543,13 +537,13 @@ function configure_release() {
 
 # clean repository by removing any ignored files
 function clean_repository() {
-  repo=$1
-  cd "$repo"
+  pushd "$1" &> /dev/null
   ${GIT} reset --hard &>/dev/null
   ${GIT} -c color.status=never status --ignored | \
     sed -e'/gitignore/d' -e'/#[^ ]/!c\' -e's///' | \
     xargs -t rm -rf &>/dev/null
   # ' # To block the escaped quote from function c\
+  popd &> /dev/null
 }
 
 
@@ -580,6 +574,7 @@ fi
 
 # display list of available releases if --releases was passed in
 if [[ "$1" = "--releases" ]]; then
+  pushd "$SRC_DIR" &> /dev/null
   export RELEASE=releases
   init
   fetch_releases
@@ -587,18 +582,20 @@ if [[ "$1" = "--releases" ]]; then
   \n$(list_releases)"
   [[ -n ${PAGER} ]] && echo -e "$release_out" | ${PAGER} || echo -e "$release_out" | less
   unset release_out
+  popd &> /dev/null
   exit 0
 fi
 
 # always ensure we have cloned the php-src repo
+pushd "$SRC_DIR" &> /dev/null
 init
 
 # clean build environment
 if [[ "$1" = "--clean" ]]; then
-  cd "$SRC_DIR"
   ${GIT} branch|grep -q '* master' || cleanup
   clean_repository "$SRC_DIR"
   which ccache &>/dev/null && `which ccache` -Cz
+  popd &> /dev/null
   exit 0
 fi
 
@@ -609,6 +606,7 @@ if [[ "$1" = "--deep-clean" ]]; then
     clean_repository "$extension"
   done < <(find "$PHPENV_ROOT/php-ext" -maxdepth 1 ! -name "php-ext" ! -name ".*" -print)
   rm /tmp/phpenv* &> /dev/null
+  popd &> /dev/null
   exit 0
 fi
 
@@ -640,10 +638,12 @@ if [[ "$3" = "-c" || "$3" = "--continue" ]]; then
 fi
 if [ "${RELEASE:0:1}" = '-' ]; then
   log "Error" "Unknown option $RELEASE, expected release identifier, aborting."
+  popd &> /dev/null
   exit 1
 fi
 if [ "${BUILD:0:1}" = '-' ]; then
   log "Error" "Unknown option $BUILD, expected a build identifier, aborting."
+  popd &> /dev/null
   exit 1
 fi
 
