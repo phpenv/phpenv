@@ -29,3 +29,6 @@
 [submodule "php-ext/mongo"]
 	path = php-ext/mongo
 	url = git://github.com/mongodb/mongo-php-driver.git
+[submodule "php-ext/.xhprof"]
+	path = php-ext/.xhprof
+	url = https://github.com/facebook/xhprof
