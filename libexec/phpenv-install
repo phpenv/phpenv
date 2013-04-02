@@ -135,11 +135,11 @@ function continue_after() {
 function init() {
   pushd "$PHPENV_ROOT" &> /dev/null
   if [[ ! -d "$SRC_DIR" ]]; then
+    log "init extensions" "clone source for additional extensions"
+    ${GIT} submodule init &> /dev/null
+    ${GIT} submodule update &> /dev/null
     log "init" "cloning source from php-src Github repo"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
-    ${GIT} submodule init &> /dev/null
-    log "init extensions" "clone source for additional extensions"
-    ${GIT} submodule update &> /dev/null
   fi
   ${GIT} submodule update --checkout --recursive &> /dev/null
   popd &> /dev/null
