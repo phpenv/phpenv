@@ -137,10 +137,13 @@ function init() {
   if [[ ! -d "$SRC_DIR" ]]; then
     log "init" "cloning source from php-src Github repo"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
+    pushd "$SRC_DIR" &> /dev/null
     ${GIT} submodule init &> /dev/null
     log "init extensions" "clone source for additional extensions"
     ${GIT} submodule update &> /dev/null
+    popd &> /dev/null
   fi
+  pushd "$SRC_DIR" &> /dev/null
   ${GIT} submodule update --checkout --recursive &> /dev/null
   popd &> /dev/null
 }
@@ -174,7 +177,7 @@ function log() {
 }
 
 # using uname to identifye the platform
-# Darwin as Mac OS X 
+# Darwin as Mac OS X
 function is_osx() {
   return $(test $(uname) == "Darwin")
 }
@@ -574,9 +577,9 @@ fi
 
 # display list of available releases if --releases was passed in
 if [[ "$1" = "--releases" ]]; then
+  init
   pushd "$SRC_DIR" &> /dev/null
   export RELEASE=releases
-  init
   fetch_releases
   release_out="PHP releases as were available on:\n$(date)
   \n$(list_releases)"
@@ -587,8 +590,8 @@ if [[ "$1" = "--releases" ]]; then
 fi
 
 # always ensure we have cloned the php-src repo
-pushd "$SRC_DIR" &> /dev/null
 init
+pushd "$SRC_DIR" &> /dev/null
 
 # clean build environment
 if [[ "$1" = "--clean" ]]; then
