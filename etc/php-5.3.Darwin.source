@@ -55,6 +55,7 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --enable-memcached
                    --with-libmemcached-dir=/usr/local/opt/libmemcached
                    --enable-memcached-igbinary
+                   --enable-xhprof
                    "
 
 MANUAL_EXTENSIONS=('http' 'uri-template' 'xdebug')

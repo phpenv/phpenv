@@ -63,6 +63,7 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --with-http-curl-libevent=/usr/local/opt/libevent
                    --with-http-zlib-compression=/usr/local/opt/zlib
                    --with-http-magic-mime=/usr/local/opt/libmagic
+                   --enable-xhprof
                    "
 
 MANUAL_EXTENSIONS=('ncurses' 'xdebug' 'uri-template')

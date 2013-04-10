@@ -574,9 +574,9 @@ fi
 
 # display list of available releases if --releases was passed in
 if [[ "$1" = "--releases" ]]; then
-  pushd "$SRC_DIR" &> /dev/null
   export RELEASE=releases
   init
+  pushd "$SRC_DIR" &> /dev/null
   fetch_releases
   release_out="PHP releases as were available on:\n$(date)
   \n$(list_releases)"
