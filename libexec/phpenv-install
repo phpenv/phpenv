@@ -673,8 +673,8 @@ trap reset_streams SIGINT SIGTERM
 # Display a success Notice
 log "Success" "The installation of the $RELEASE release was successfully completed."
 log "Info" "The log files produced by the procedure are available, in the tmp folder, for your review:"
-log "" " - Any warnings or messeages sent to STDERR was logged to $LOG_PATH.err"
-log "" " - All messeages sent to STDOUT was logged to $LOG_PATH"
+log "" " - Any warnings or messages sent to STDERR was logged to $LOG_PATH.err"
+log "" " - All messages sent to STDOUT was logged to $LOG_PATH"
 [[ -z $PAGER ]] && PAGER=less
 which pbcopy &> /dev/null && (echo $PAGER $LOG_PATH | $(which pbcopy)) && echo "The command to view the logfile with \$PAGER has been copied to your clipboard."
 
