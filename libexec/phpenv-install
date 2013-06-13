@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Summary: Configure, build and install a PHP release version
 #
@@ -174,7 +174,7 @@ function log() {
 }
 
 # using uname to identifye the platform
-# Darwin as Mac OS X 
+# Darwin as Mac OS X
 function is_osx() {
   return $(test $(uname) == "Darwin")
 }
