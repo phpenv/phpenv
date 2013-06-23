@@ -476,9 +476,9 @@ function patch_roulette() {
   continue_after 2 "Patching" && return
 
   log "Patching" "Applying patches to the source if any are applicable."
-
-  is_osx && find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i '' -e 's/(built:/(built with phpenv v0.0.2:/g' {} \; || \
-            find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i -e 's/(built:/(built with phpenv v0.0.2:/g' {} \;
+  ver=`phpenv --version`
+  is_osx && find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i '' -e "s/(built:/(built with ${ver}:/g" {} \; || \
+            find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i -e "s/(built:/(built with ${ver}:/g" {} \;
 
   if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -gt 2 ]]; then
     # patch for x86_64 linking problems building with readline
