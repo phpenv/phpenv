@@ -6,6 +6,7 @@ if [ -n $PHP_AUTOCONF ]; then
 fi
 
 CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
+                   --enable-fpm
                    --enable-option-checking
                    --enable-phar
                    --disable-intl

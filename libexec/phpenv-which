@@ -61,6 +61,9 @@ if [ "$PHPENV_VERSION" = "system" ]; then
   PHPENV_COMMAND_PATH="$(command -v "$PHPENV_COMMAND" || true)"
 else
   PHPENV_COMMAND_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}/bin/${PHPENV_COMMAND}"
+  if ! [ -x "$PHPENV_COMMAND_PATH" ]; then
+    PHPENV_COMMAND_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}/sbin/${PHPENV_COMMAND}"
+  fi
 fi
 
 for script in $(phpenv-hooks which); do
