@@ -60,7 +60,6 @@ CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
                    --enable-memcached
                    --with-libmemcached-dir=/usr/local/opt/libmemcached
                    --enable-memcached-igbinary
-                   --enable-http
                    --with-http-curl-requests=/usr/local/opt/curl
                    --with-http-curl-libevent=/usr/local/opt/libevent
                    --with-http-zlib-compression=/usr/local/opt/zlib
