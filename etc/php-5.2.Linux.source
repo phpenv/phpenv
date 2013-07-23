@@ -1,0 +1,23 @@
+# Configure options for PHP 5.2 releases Linux specific.
+#
+
+export PHP_AUTOCONF=autoconf213
+export PATH=/usr/local/opt/flex254/bin:$PATH
+export PATH=/usr/local/opt/bison241/bin:$PATH
+
+CONFIGURE_OPTIONS="--with-libdir=lib/x86_64-linux-gnu
+                   --with-xmlrpc
+                   --with-mime-magic
+                   --with-kerberos=/usr
+                   --with-apxs2=/usr/bin/apxs2
+                   --enable-mbstring
+                   --enable-mbregex
+                   --with-gd
+                   --enable-gd-native-ttf
+                   --with-mysql
+                   --with-mysqli
+                   --with-pdo-mysql
+                   "
+
+MANUAL_EXTENSIONS=('apc' 'igbinary' 'http' 'uri-template' 'xdebug')
+
