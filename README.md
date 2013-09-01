@@ -197,16 +197,16 @@ Will use the configuration options source file located at `.phpenv/etc/php-5.3.2
 if installing on a Mac OS X environment and installs the version to `.phpenv/versions/5.3.20-debug`.
 
 The build is kept in tact at location `phpenv/php-src` to simplify fault
-finding and alloving you to continue the installation process in the event
+finding and allowing you to continue the installation process in the event
 of a failed build.
 
-To continue from a previoun ntep in the installation process use the `--continue`
+To continue from a previous step in the installation process use the `--continue`
 option.
 
     $phpenv install php-5.3.20 -c 4
 
 To start from the configuring stage of the installation process and rerun
-`./configure` using the updated information from your cenfiguration options
+`./configure` using the updated information from your configuration options
 source file.
 
 When restarting an installation from scratch it may be useful to clean
