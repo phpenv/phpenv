@@ -486,7 +486,7 @@ function patch_roulette() {
   fi
   local patch_folder="$PHPENV_ROOT/patches/php-$RELEASE_VERSION.$(uname)"
   [[ -d "${patch_folder}" ]] && find "${patch_folder}" -type f -not -name ".*" -exec patch -p1 -d "$SRC_DIR" -i "{}" \;
-  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -eq 2 ]]; then
+  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -eq 2 && is_osx ]]; then
     patch "$SRC_DIR/scripts/php-config.in" "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-scripts-php-config.in.diff"
     patch "$SRC_DIR/ext/standard/config.m4" "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-bind.diff"
     patch -p1 -d "$SRC_DIR" < "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-pcre-8.30.diff"
