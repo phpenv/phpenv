@@ -624,8 +624,11 @@ if [[ "$1" = "-i" || "$1" = "--ini" ]]; then
   fi
   shift
   shift
-  echo "$DEFAULT_INI gets used as php.ini"
+else
+  DEFAULT_INI="$PHPENV_ROOT/php-src/php.ini-recommended"
 fi
+echo "$DEFAULT_INI gets used as php.ini"
+
 
 # grab the release that the user wants to build
 RELEASE=$1
