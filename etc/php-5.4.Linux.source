@@ -6,7 +6,6 @@ fi
                    
 CONFIGURE_OPTIONS="--with-apxs2=/usr/bin/apxs2
                    --enable-fpm
-                   --enable-zend-multibyte
                    --enable-phar
                    --disable-intl
                    --with-libxml-dir=/usr/local
