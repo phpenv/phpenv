@@ -187,8 +187,7 @@ function is_linux() {
 # gets latest code from github repo
 function fetch_releases() {
   continue_after 0 "Fetching" && return
-
-  if ${GIT} branch|grep -q '* master'; then
+  if ${GIT} rev-parse --abbrev-ref HEAD | grep -q "master"; then
     log "Fetching" "latest code from Github repo"
     ${GIT} fetch --tags &> /dev/null
   else
