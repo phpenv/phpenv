@@ -588,7 +588,9 @@ if [[ "$1" = "--releases" ]]; then
 fi
 
 # always ensure we have cloned the php-src repo
-pushd "$SRC_DIR" &> /dev/null
+if [ -d "$SRC_DIR"]; then
+  pushd "$SRC_DIR" &> /dev/null
+fi
 init
 
 # clean build environment
