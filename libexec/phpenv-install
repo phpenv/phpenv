@@ -527,6 +527,12 @@ function configure_release() {
   rm -rf configure autom4te.cache
   ./buildconf --force
   phpenv-hooks install pre-configure
+
+  # Compiling PHP with Bison 2.7+
+  sed -i -r 's/(bison_version_list=.*)"/\1 2.7 3.0"/' configure
+  # Compiling PHP with Bison x.y.any.version.scheme.your.distro.want
+  sed -i -r "s;(bison_version_vars=.*)/ /'(.*);\1/ /g\2;" configure
+
   ./configure $argv
   phpenv-hooks install post-configure
 
