@@ -529,7 +529,7 @@ function configure_release() {
   phpenv-hooks install pre-configure
 
   # Compiling PHP with Bison 2.7+
-  sed -i -e 's/2.4.2 2.4.3 2.5/& 2.7 3.0/' configure
+  sed -i -r 's/(bison_version_list=.*)"/\1 2.7 3.0"/' configure
   # Compiling PHP with Bison x.y.any.version.scheme.your.distro.want
   sed -i -r "s;(bison_version_vars=.*)/ /'(.*);\1/ /g\2;" configure
 
