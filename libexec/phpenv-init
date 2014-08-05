@@ -11,7 +11,7 @@ for args in "$@"
 do
   if [ "$args" = "-" ]; then
     print=1
-		shift
+	shift
   fi
 
   if [ "$args" = "--no-rehash" ]; then
@@ -73,7 +73,16 @@ fi
 
 mkdir -p "${PHPENV_ROOT}/"{shims,versions}
 
-echo 'export PATH="'${PHPENV_ROOT}'/shims:${PATH}"'
+if [[ ":${PATH}:" != *:"${PHPENV_ROOT}/shims":* ]]; then
+  case "$shell" in
+  fish )
+    echo "setenv PATH '${PHPENV_ROOT}/shims' \$PATH"
+  ;;
+  * )
+    echo 'export PATH="'${PHPENV_ROOT}'/shims:${PATH}"'
+  ;;
+  esac
+fi
 
 case "$shell" in
 bash | zsh )
@@ -86,10 +95,39 @@ if [ -z "$no_rehash" ]; then
 fi
 
 commands=(`phpenv-commands --sh`)
+case "$shell" in
+fish )
+  cat <<EOS
+function phpenv
+  set command \$argv[1]
+  set -e argv[1]
+
+  switch "\$command"
+  case ${commands[*]}
+    eval (phpenv "sh-\$command" \$argv)
+  case '*'
+    command phpenv "\$command" \$argv
+  end
+end
+EOS
+  ;;
+ksh )
+  cat <<EOS
+function phpenv() {
+  typeset command
+EOS
+  ;;
+* )
+  cat <<EOS
+phpenv() {
+  local command
+EOS
+  ;;
+esac
+
+if [ "$shell" != "fish" ]; then
 IFS="|"
 cat <<EOS
-phpenv() {
-  typeset command
   command="\$1"
   if [ "\$#" -gt 0 ]; then
     shift
@@ -103,3 +141,4 @@ phpenv() {
   esac
 }
 EOS
+fi
