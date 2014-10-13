@@ -67,7 +67,7 @@ easy to fork and contribute any changes back upstream.
         $ git clone git://github.com/phpenv/phpenv.git .phpenv
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
-   command-line utility.
+   command-line utility. If you login graphically, put the following also to ~/.profile, else phpenv command will not work. 
 
         $ echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bash_profile
 
