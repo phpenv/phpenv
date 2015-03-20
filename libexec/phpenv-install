@@ -26,7 +26,7 @@
 #      php-5.3-debug.Linux.source
 # If no specific build can be found the major version, without build
 # is used, for example
-#      php-5.3.Darwin.source
+#      php-5.3-Darwin.source
 # will be used for any 5.3.x release with or without a specific build
 # identifier being compiled on Mac OS X.
 #
