@@ -4,32 +4,32 @@
 
  * Based on the totally awesome [rbenv](https://github.com/sstephenson/rbenv) and
 [ruby-build](https://github.com/sstephenson/ruby-build), the way you like it
- * Build php directly from the git repository source, saves you bandwidth
+ * Build PHP directly from the Git repository source, saves you bandwidth
  * Build multiple versions of the same release, exactly what you need
  * Easily customizable configuration options, gives you freedom
  * Restart a failed installation from anywhere, saves you time
  * Include custom build extensions both static and shared, gives you options
  * Includes Apache apxs support and switching versions, as you wish
- * Installs pear and pyrus for each installation (where supportod), as you prefer
+ * Installs PEAR and Pyrus for each installation (where supportod), as you prefer
  * Developed by humans for humans, just like you
 
 My name is phpenv. I was designed for humans, to help simplify the management
 of multiple PHP custom build installations.
 
 I was originally inspired by the outstanding work of both the
- projects which
-you already know and love with a whole bunch of PHP scentric additions
+projects which
+you already know and love with a whole bunch of PHP-centric additions
 to help you build your first release, simplify managing and working
-with diffirent releases and keep you building new release after new
+with diffirent releases, and keep you building new release after new
 release like there's nothing to it.
 
 You are a PHP developer, like we are, and you not only have to have the
 latest and freshest interpreter to spin your scripts but you also care to
-see what how they get treated when submitted to older inturpretations.
-Ever wondered why you can't run a CI on your own development machine? Well
-you just founh the answer doing when taken for a ride building PHP
-on their dev machines. Easily customize your configuration options and even
-build pecl extensions into PHP or manually afterwards. Configure and install
+see how they get treated when submitted to older inturpretations.
+Ever wondered why you can't run CI on your own development machine? Well
+you just found the answer when taken for a ride building PHP
+on your dev machines. Easily customize your configuration options and even
+build PECL extensions into PHP or manually afterwards. Configure and install
 custom builds of the same PHP release version directly from the PHP source
 code repository kept in your local `.phpenv` folder.
 
