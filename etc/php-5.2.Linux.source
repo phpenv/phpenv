@@ -1,0 +1,88 @@
+# Configure options for PHP 5.2 releases Linux specific.
+#
+# apt-get install libxml2-dev libpcre3-dev libbz2-dev libcurl4-openssl-dev libdb4.8-dev libjpeg-dev libpng12-dev libxpm-dev libfreetype6-dev libmysqlclient-dev postgresql-server-dev-9.1 libt1-dev libgd2-xpm-dev libgmp-dev libsasl2-dev libmhash-dev unixodbc-dev freetds-dev libpspell-dev libsnmp-dev libtidy-dev libxslt1-dev libmcrypt-dev libmemcached-dev
+
+export PHP_AUTOCONF=/usr/bin/autoconf2.13
+                   
+CONFIGURE_OPTIONS="--with-libdir=/lib/x86_64-linux-gnu
+                   --with-apxs2=/usr/bin/apxs2
+                   --enable-zend-multibyte
+                   --enable-phar
+                   --disable-intl
+                   --disable-debug
+                   --with-regex=php
+                   --disable-rpath
+                   --disable-static
+                   --disable-posix
+                   --with-pic
+                   --with-layout=GNU
+                   --with-pear
+                   --enable-calendar
+                   --enable-sysvsem
+                   --enable-sysvshm
+                   --enable-sysvmsg
+                   --enable-bcmath
+                   --with-bz2
+                   --enable-ctype
+                   --without-gdbm
+                   --with-iconv
+                   --enable-exif
+                   --enable-ftp
+                   --enable-cli
+                   --with-gettext
+                   --enable-mbstring
+                   --with-pcre-regex=/usr
+                   --enable-shmop
+                   --enable-sockets
+                   --enable-wddx
+                   --with-libxml-dir=/usr
+                   --with-zlib
+                   --with-kerberos=/usr
+                   --with-openssl=/usr
+                   --enable-soap
+                   --enable-zip
+                   --with-mhash
+                   --without-mm
+                   --with-curl=/usr
+                   --with-zlib-dir=/usr
+                   --with-gd=/usr
+                   --enable-gd-native-ttf
+                   --with-gmp=/usr
+                   --with-jpeg-dir=/usr
+                   --with-xpm-dir=/usr/X11R6
+                   --with-png-dir=/usr
+                   --with-freetype-dir=/usr
+                   --with-ttf=/usr
+                   --with-t1lib=/usr
+                   --with-ldap=/usr
+                   --with-mysql=/usr
+                   --with-mysql-sock=/var/run/mysqld/mysqld.sock
+                   --with-mysqli=/usr/bin/mysql_config
+                   --with-pgsql=/usr
+                   --with-pspell=/usr
+                   --with-unixODBC=/usr
+                   --with-xsl=/usr
+                   --with-snmp=/usr
+                   --with-sqlite=/usr
+                   --with-tidy=/usr
+                   --with-xmlrpc
+                   --enable-pdo
+                   --without-pdo-dblib
+                   --with-pdo-mysql=/usr
+                   --with-pdo-pgsql=/usr
+                   --with-pdo-odbc=unixODBC,/usr
+                   --with-pdo-dblib=/usr
+                   --with-pdo-sqlite
+                   --enable-force-cgi-redirect  
+                   --enable-fastcgi
+                   --with-sqlite
+                   --enable-ipv6
+                   --with-mcrypt
+                   --with-imap-ssl
+                   --with-readline
+                   --enable-apc
+                   --with-ncurses
+                   --enable-igbinary
+                   "
+
+MANUAL_EXTENSIONS=('http' 'uri-template' 'xdebug')

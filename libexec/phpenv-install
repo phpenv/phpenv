@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Summary: Configure, build and install a PHP release version
 #
@@ -135,10 +135,10 @@ function continue_after() {
 function init() {
   pushd "$PHPENV_ROOT" &> /dev/null
   if [[ ! -d "$SRC_DIR" ]]; then
-    log "init extensions" "clone source for additional extensions"
+    log "init extensions" "cloning of repositories for additional extensions"
     ${GIT} submodule init &> /dev/null
     ${GIT} submodule update &> /dev/null
-    log "init" "cloning source from php-src Github repo"
+    log "init" "cloning of PHP source repository for the first time - please be patient this will only take a minute"
     ${GIT} clone "$SRC_URL" "$SRC_DIR" &> /dev/null
   fi
   ${GIT} submodule update --checkout --recursive &> /dev/null
@@ -174,7 +174,7 @@ function log() {
 }
 
 # using uname to identifye the platform
-# Darwin as Mac OS X 
+# Darwin as Mac OS X
 function is_osx() {
   return $(test $(uname) == "Darwin")
 }
@@ -476,16 +476,17 @@ function patch_roulette() {
   continue_after 2 "Patching" && return
 
   log "Patching" "Applying patches to the source if any are applicable."
-
-  is_osx && find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i '' -e 's/(built:/(built with phpenv v0.0.2:/g' {} \; || \
-            find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i -e 's/(built:/(built with phpenv v0.0.2:/g' {} \;
+  ver=`phpenv --version`
+  is_osx && find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i '' -e "s/(built:/(built with ${ver}:/g" {} \; || \
+            find "$SRC_DIR/sapi" -type f -name "*.c" -exec env LANG=C sed -i -e "s/(built:/(built with ${ver}:/g" {} \;
 
   if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -gt 2 ]]; then
     # patch for x86_64 linking problems building with readline
     patch "$SRC_DIR/Makefile.global" "$PHPENV_ROOT/patches/readline-x86_64-fix.patch"
   fi
-
-  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -eq 2 ]]; then
+  local patch_folder="$PHPENV_ROOT/patches/php-$RELEASE_VERSION.$(uname)"
+  [[ -d "${patch_folder}" ]] && find "${patch_folder}" -type f -not -name ".*" -exec patch -p1 -d "$SRC_DIR" -i "{}" \;
+  if [[ ${VERSION_MAJOR} -eq 5 && ${VERSION_MINOR} -eq 2 && is_osx ]]; then
     patch "$SRC_DIR/scripts/php-config.in" "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-scripts-php-config.in.diff"
     patch "$SRC_DIR/ext/standard/config.m4" "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-bind.diff"
     patch -p1 -d "$SRC_DIR" < "$PHPENV_ROOT/patches/php-5.2.Darwin/patch-pcre-8.30.diff"
@@ -623,8 +624,11 @@ if [[ "$1" = "-i" || "$1" = "--ini" ]]; then
   fi
   shift
   shift
-  echo "$DEFAULT_INI gets used as php.ini"
+else
+  DEFAULT_INI="$PHPENV_ROOT/php-src/php.ini-recommended"
 fi
+echo "$DEFAULT_INI gets used as php.ini"
+
 
 # grab the release that the user wants to build
 RELEASE=$1
