@@ -1,17 +1,8 @@
 ## phpenv - PHP multi-version installation and management for humans.
 
-### Key features:
+This is a maintenance fork of [phpenv/phpenv](https://github.com/phpenv/phpenv). Build functionality is currently delegated to [php-build](https://github.com/php-build/php-build).
 
- * Based on the totally awesome [rbenv](https://github.com/sstephenson/rbenv) and
-[ruby-build](https://github.com/sstephenson/ruby-build), the way you like it
- * Build php directly from the git repository source, saves you bandwidth
- * Build multiple versions of the same release, exactly what you need
- * Easily customizable configuration options, gives you freedom
- * Restart a failed installation from anywhere, saves you time
- * Include custom build extensions both static and shared, gives you options
- * Includes Apache apxs support and switching versions, as you wish
- * Installs pear and pyrus for each installation (where supportod), as you prefer
- * Developed by humans for humans, just like you
+### Key features:
 
 My name is phpenv. I was designed for humans, to help simplify the management
 of multiple PHP custom build installations.
@@ -66,6 +57,13 @@ easy to fork and contribute any changes back upstream.
         $ cd
         $ git clone git://github.com/phpenv/phpenv.git .phpenv
 
+1.1. Create a plugins directory and install php-build into it
+
+        $ cd .phpenv
+        $ mkdir plugins
+        $ cd plugins
+        $ git clone https://github.com/php-build/php-build
+
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
 
@@ -97,13 +95,9 @@ To upgrade to the latest development version of phpenv, use `git pull`:
 
 ### Apache Setup
 
-phpenv support dynamic switching for Apache apxs libraries and `install`
-will build and install a `libphp5.so` shared library for Apache under
-the `versions` `libexec` folder.
+The preferred way of connecting phpenv applications is by using php-fpm after building php. Apache can then be configured to connect to the php-fpm instance by following instructions at the [apache wiki](https://wiki.apache.org/httpd/PHP-FPM). In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
 
-By calling `phpenv global` to show or change the global PHP version
-a link is created under `~/.phpenv/lib/libphp5.so` for the appropriate
-release build. This link can be used for Apache's `LoadModule php5_module`
+Alternatively, you may still use the php5_module by configuring [php-build](https://github.com/php-build/php-build) to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
 directive and requires Apache to restart when changed.
 
 ### Neckbeard Configuration
@@ -144,87 +138,9 @@ first argument. The most common subcommands are:
 
 ### phpenv install
 
-It is advisable to install the [ccache](http://ccache.samba.org/) caching
-preprocessor which will greatly reduce the time taken to rebuild failed
-installations.
+[php-build](https://github.com/php-bbuild/php-build) is a phpenv-compatible plugin that builds and installs php. To bbe able to use phpenvi install, download and install the php- plugin build as described in step 1.1. of the  install instructions above.
 
-The phpenv installation script was originally based on the
-[php-build](https://github.com/CHH/php-build) installation script written by
-[Christoph Hochstrasser (CHH)](https://github.com/CHH) but has (almost entirely)
-been rewritten with humans in mind. Some of the differences to the original
-includes:
- * use of the [php-src](https://github.com/php/php-src) repo to compile your
-individual PHP installs as opposed to downloading a tarball from php.net.
- * reads configuration options from source files located in `.phpenv/etc`
- * allows you to do multiple builds per release
- * includes building custom extensions located in the ".phpenv/php-ext`
-folder, as per the configuration source files, both static or shared.
- * allows you to continue a failed installation from anywhere
- * and more...
-
-You can list the available PHP releases by running:
-
-    $ phpenv install --releases
-
-To build one of the listed releases run:
-
-    $ phpenv install php-5.3.20
-
-This command will checkout a branch to build in and install that release to
-its own subdirectory in ~/.phpenv/versions/
-
-The installation script gets its configuration options from source files in the
-`.phpenv/etc` folder and also includes instructions to build extensions or sets
-appropriate environment variables where required. These configuration options
-are usually specific to your development environment but several defaults for
-Darwin and dependencies installed with [homebrew](http://mxcl.github.com/homebrew/)
-have been included for your convenience.
-
-The configuration files are using the following naming convention:
-```
-<php major release><-optional specific build>.<platform>.source
-```
-
-If no qualifying specific build was found we fall back to the default major release
-version (without specific build).
-
-To install multiple builds of the same release simply add a unique name for your
-additional builds after the release identifier.
-
-    $phpenv install php-5.3.20 debug
-
-Will use the configuration options source file located at `.phpenv/etc/php-5.3.20-debug.Darwin.source`
-if installing on a Mac OS X environment and installs the version to `.phpenv/versions/5.3.20-debug`.
-
-The build is kept in tact at location `phpenv/php-src` to simplify fault
-finding and allowing you to continue the installation process in the event
-of a failed build.
-
-To continue from a previous step in the installation process use the `--continue`
-option.
-
-    $phpenv install php-5.3.20 -c 4
-
-To start from the configuring stage of the installation process and rerun
-`./configure` using the updated information from your configuration options
-source file.
-
-When restarting an installation from scratch it may be useful to clean
-previously build and generated files, use
-
-    $phpenv install --clean
-
-When installing a different release version it may be useful to do a deep clean
-and purge all previously build and generated files including those from custom
-extension located at `.php-env/php-ext` and purge the ccache (if used), use
-
-    $phpenv install --deep-clean
-
-Running `phpenv install` with no arguments will output its usage, for detailed
-help documentation, use
-
-    $phpenv install --help
-
+Before running phpenv install, make sure the development versions needed to build php are installed in your system. In particular, if you want to build the apache extension, make sure that libapache2-dev (or your OS's equivalent) is installed.
 
 ### phpenv global
 
@@ -313,7 +229,7 @@ run the given command.
 ## Development
 
 The phpenv source code is [hosted on
-GitHub](https://github.com/phpenv/phpenv). It's clean, modular,
+GitHub](https://github.com/madumlao/phpenv). It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
@@ -326,7 +242,7 @@ tracker](https://github.com/phpenv/phpenv/issues).
 
 (The MIT license)
 
-Copyright (c) 2012 Dominic Giglio
+Copyright (c) 2012 Dominic Giglio, madumlao
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
