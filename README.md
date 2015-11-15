@@ -59,7 +59,7 @@ switching automagically.
 ### Basic GitHub Checkout
 
 This will get you going with the latest version of phpenv and make it
-easy to fork and contribute any changes back upstream.
+easy to fork and contribute any changes back upstream. For ubuntu change ~/.bash_profile by ~/.bashrc
 
 1. Check out phpenv into `~/.phpenv`.
 
