@@ -44,6 +44,12 @@ echo ${PHPENV_VERSION}
 
 # Link Apache apxs lib
 APXS=""
+if [ "${PHPENV_VERSION}" == "system" ]; then
+    DEFAULT_APXS="$(which apxs 2>/dev/null)"
+    if [ -n "${DEFAULT_APXS}" -a -f "$(${DEFAULT_APXS} -q LIBEXECDIR)/libphp5.so" ]; then
+	APXS="${DEFAULT_APXS}"
+    fi
+fi
 php-config --configure-options 2>/dev/null | grep -q apxs  && \
     APXS="$(php-config --configure-options| sed 's/.*=\(.*apxs[^ ]*\) .*/\1/')"
 
