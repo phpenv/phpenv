@@ -55,7 +55,7 @@ easy to fork and contribute any changes back upstream.
 1. Check out phpenv into `~/.phpenv`.
 
         $ cd
-        $ git clone git://github.com/phpenv/phpenv.git .phpenv
+        $ git clone git://github.com/madumlao/phpenv.git .phpenv
 
 1.1. Create a plugins directory and install php-build into it
 
