@@ -138,7 +138,7 @@ first argument. The most common subcommands are:
 
 ### phpenv install
 
-[php-build](https://github.com/php-bbuild/php-build) is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php- plugin build as described in step 1.1. of the  install instructions above.
+[php-build](https://github.com/php-build/php-build) is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php- plugin build as described in step 1.1. of the  install instructions above.
 
 Before running phpenv install, make sure the development versions needed to build php are installed in your system. In particular, if you want to build the apache extension, make sure that libapache2-dev (or your OS's equivalent) is installed.
 
