@@ -9,16 +9,16 @@ of multiple PHP custom build installations.
 
 I was originally inspired by the outstanding work of both the
  projects which
-you already know and love with a whole bunch of PHP scentric additions
+you already know and love with a whole bunch of PHP centric additions
 to help you build your first release, simplify managing and working
 with diffirent releases and keep you building new release after new
 release like there's nothing to it.
 
 You are a PHP developer, like we are, and you not only have to have the
 latest and freshest interpreter to spin your scripts but you also care to
-see what how they get treated when submitted to older inturpretations.
-Ever wondered why you can't run a CI on your own development machine? Well
-you just founh the answer doing when taken for a ride building PHP
+see what how they get treated when submitted to older interpretations.
+Ever wondered why you can't run a PHP app on your own development machine? Well
+you just found the answer doing when taken for a ride building PHP
 on their dev machines. Easily customize your configuration options and even
 build pecl extensions into PHP or manually afterwards. Configure and install
 custom builds of the same PHP release version directly from the PHP source
