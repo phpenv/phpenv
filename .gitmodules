@@ -1,0 +1,34 @@
+[submodule "php-ext/igbinary"]
+	path = php-ext/igbinary
+	url = git://github.com/igbinary/igbinary.git
+[submodule "php-ext/xdebug"]
+	path = php-ext/xdebug
+	url = git://github.com/xdebug/xdebug.git
+[submodule "php-ext/uri-template"]
+	path = php-ext/uri-template
+	url = git://github.com/ioseb/uri-template.git
+[submodule "php-ext/apc"]
+	path = php-ext/apc
+	url = git://github.com/nickl-/pecl-apc.git
+[submodule "php-ext/memcached"]
+	path = php-ext/memcached
+	url = git://github.com/php-memcached-dev/php-memcached.git
+[submodule "php-ext/http"]
+	path = php-ext/http
+	url = git://github.com/nickl-/pecl-http.git
+[submodule "php-ext/ncurses"]
+	path = php-ext/ncurses
+	url = git://github.com/nickl-/pecl-ncurses.git
+[submodule "php-ext/phalcon"]
+	path = php-ext/phalcon
+	url = git://github.com/phalcon/cphalcon.git
+[submodule "php-ext/yaf"]
+	path = php-ext/yaf
+	url = https://github.com/laruence/php-yaf
+
+[submodule "php-ext/mongo"]
+	path = php-ext/mongo
+	url = git://github.com/mongodb/mongo-php-driver.git
+[submodule "php-ext/.xhprof"]
+	path = php-ext/.xhprof
+	url = https://github.com/facebook/xhprof

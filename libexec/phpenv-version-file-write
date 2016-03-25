@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Usage: phpenv version-file-write <file> <version>
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
@@ -6,7 +8,7 @@ PHPENV_VERSION_FILE="$1"
 PHPENV_VERSION="$2"
 
 if [ -z "$PHPENV_VERSION" ] || [ -z "$PHPENV_VERSION_FILE" ]; then
-  echo "usage: phpenv write-version-file FILENAME VERSION" >&2
+  phpenv-help --usage version-file-write >&2
   exit 1
 fi
 

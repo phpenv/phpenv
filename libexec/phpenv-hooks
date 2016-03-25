@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Summary: List hook scripts for a given phpenv command
+# Usage: phpenv hooks <command>
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
@@ -12,9 +15,14 @@ fi
 
 PHPENV_COMMAND="$1"
 if [ -z "$PHPENV_COMMAND" ]; then
-  echo "usage: phpenv hooks COMMAND" >&2
+  phpenv-help --usage hooks >&2
   exit 1
 fi
+
+#PHPENV_COMMAND_HOOK="$2"
+#if [ -z "$PHPENV_COMMAND_HOOK" ]; then
+#  PHPENV_COMMAND_HOOK="*"
+#fi
 
 resolve_link() {
   $(type -p greadlink readlink | head -1) $1
@@ -41,4 +49,15 @@ for path in ${PHPENV_HOOK_PATH//:/$'\n'}; do
     echo $(realpath $script)
   done
 done
+#
+#for path in ${PHPENV_HOOK_PATH//:/$'\n'}; do
+#  files="${path}/${PHPENV_COMMAND}/${PHPENV_COMMAND_HOOK}.bash"
+#  for script in $files; do
+#    if [ "$PHPENV_COMMAND_HOOK" != "*" ] && [ -x $script ]; then
+#      exec "$script"
+#    elif [ -f $script ]; then
+#      echo $(realpath $script)
+#    fi
+#  done
+#done
 shopt -u nullglob

@@ -1,9 +1,28 @@
-## Hello World!
+## phpenv - PHP multi-version installation and management for humans.
 
-My name is phpenv. I was designed to help simplify the management of multiple
-PHP installations, and was inspired by the outstanding work of both the
-[rbenv](https://github.com/sstephenson/rbenv) and
-[ruby-build](https://github.com/sstephenson/ruby-build) projects.
+This is a maintenance fork of [phpenv/phpenv](https://github.com/phpenv/phpenv). Build functionality is currently delegated to [php-build](https://github.com/php-build/php-build).
+
+### Key features:
+
+My name is phpenv. I was designed for humans, to help simplify the management
+of multiple PHP custom build installations.
+
+I was originally inspired by the outstanding work of both the
+ projects which
+you already know and love with a whole bunch of PHP centric additions
+to help you build your first release, simplify managing and working
+with diffirent releases and keep you building new release after new
+release like there's nothing to it.
+
+You are a PHP developer, like we are, and you not only have to have the
+latest and freshest interpreter to spin your scripts but you also care to
+see what how they get treated when submitted to older interpretations.
+Ever wondered why you can't run a PHP app on your own development machine? Well
+you just found the answer doing when taken for a ride building PHP
+on their dev machines. Easily customize your configuration options and even
+build pecl extensions into PHP or manually afterwards. Configure and install
+custom builds of the same PHP release version directly from the PHP source
+code repository kept in your local `.phpenv` folder.
 
 ## How It Works
 
@@ -23,7 +42,8 @@ directory for the selected version at the beginning of your `$PATH`
 and then execute the corresponding binary.
 
 Because of the simplicity of the shim approach, all you need to use
-phpenv is `~/.phpenv/shims` in your `$PATH`.
+phpenv is `~/.phpenv/shims` in your `$PATH` which will do the version
+switching automagically.
 
 ## Installation
 
@@ -35,7 +55,14 @@ easy to fork and contribute any changes back upstream.
 1. Check out phpenv into `~/.phpenv`.
 
         $ cd
-        $ git clone git://github.com/humanshell/phpenv.git .phpenv
+        $ git clone git://github.com/madumlao/phpenv.git .phpenv
+
+1.1. Create a plugins directory and install php-build into it
+
+        $ cd .phpenv
+        $ mkdir plugins
+        $ cd plugins
+        $ git clone https://github.com/php-build/php-build
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
@@ -66,39 +93,12 @@ To upgrade to the latest development version of phpenv, use `git pull`:
     $ cd ~/.phpenv
     $ git pull
 
-### Apache (httpd.conf) Setup
+### Apache Setup
 
-phpenv has been designed as a tool for a local development environment.
-Currently, phpenv does not build the libphp5.so module. This is due to
-permission issues during `make install` that make it difficult to compile
-multiple modules and link to them for each installed PHP version dynamically.
-Therefore, phpenv executes PHP as a cgi binary. To accomplish this, add the
-following code to the end of your httpd.conf file:
+The preferred way of connecting phpenv applications is by using php-fpm after building php. Apache can then be configured to connect to the php-fpm instance by following instructions at the [apache wiki](https://wiki.apache.org/httpd/PHP-FPM). In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
 
-```
-# PHPENV Setup
-<IfModule alias_module>
-    ScriptAlias /phpenv "/PATH-TO-YOUR-HOME-FOLDER/.phpenv/shims"
-    <Directory "/PATH-TO-YOUR-HOME-FOLDER/.phpenv/shims">
-        Order allow,deny
-        Allow from all
-    </Directory>
-</IfModule>
-
-<IfModule mime_module>
-    AddType application/x-httpd-php5 .php
-</IfModule>
-
-<IfModule dir_module>
-    DirectoryIndex index.php index.html
-</IfModule>
-
-Action application/x-httpd-php5 "/phpenv/php-cgi"
-```
-
-**NOTE: running php as a cgi binary can be considered insecure, which you can
-read about [here](http://www.php.net/manual/en/security.cgi-bin.php). PLEASE DO
-NOT RUN PHPENV ON A PRODUCTION SERVER.**
+Alternatively, you may still use the php5_module by configuring [php-build](https://github.com/php-build/php-build) to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
+directive and requires Apache to restart when changed.
 
 ### Neckbeard Configuration
 
@@ -138,24 +138,9 @@ first argument. The most common subcommands are:
 
 ### phpenv install
 
-The phpenv installation script is based (almost entirely) on the
-[php-build](https://github.com/CHH/php-build) installation script written by
-[Christoph Hochstrasser (CHH)](https://github.com/CHH). The main difference is
-that it uses the [php-src](https://github.com/php/php-src) repo to compile your
-individual PHP installs as opposed to downloading a tarball from php.net.
+[php-build](https://github.com/php-build/php-build) is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php- plugin build as described in step 1.1. of the  install instructions above.
 
-You can list the available PHP releases by running:
-
-    $ phpenv install --releases
-
-To build one of the listed releases run:
-
-    $ phpenv install php-5.3.13
-
-This command will checkout a branch to build in and install that release to
-its own subdirectory in ~/.phpenv/versions/
-
-Running `phpenv install` with no arguments will output its usage.
+Before running phpenv install, make sure the development versions needed to build php are installed in your system. In particular, if you want to build the apache extension, make sure that libapache2-dev (or your OS's equivalent) is installed.
 
 ### phpenv global
 
@@ -244,20 +229,20 @@ run the given command.
 ## Development
 
 The phpenv source code is [hosted on
-GitHub](https://github.com/humanshell/phpenv). It's clean, modular,
+GitHub](https://github.com/madumlao/phpenv). It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
 This project is basically a clone (Read: "search and replace") of the rbenv
 project. It's in need of love and support. If you're interested in improving it
 please feel free to fork, submit pull requests and file bugs on the [issue
-tracker](https://github.com/humanshell/phpenv/issues).
+tracker](https://github.com/phpenv/phpenv/issues).
 
 ### License
 
 (The MIT license)
 
-Copyright (c) 2012 Dominic Giglio
+Copyright (c) 2012 Dominic Giglio, madumlao
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

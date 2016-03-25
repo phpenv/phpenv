@@ -5,8 +5,10 @@ _phpenv() {
   if [ "$COMP_CWORD" -eq 1 ]; then
     COMPREPLY=( $(compgen -W "$(phpenv commands)" -- "$word") )
   else
-    local command="${COMP_WORDS[1]}"
-    local completions="$(phpenv completions "$command")"
+    local words=("${COMP_WORDS[@]}")
+    unset words[0]
+    unset words[$COMP_CWORD]
+    local completions=$(phpenv completions "${words[@]}")
     COMPREPLY=( $(compgen -W "$completions" -- "$word") )
   fi
 }

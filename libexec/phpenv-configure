@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Summary: Edit the current PHP's php.ini configuration file at location
+
+set -e
+[ -n "$PHPENV_DEBUG" ] && set -x
+
+vi "$(php --ini|grep Loaded|awk '{print $NF}')"
