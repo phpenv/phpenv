@@ -1,6 +1,6 @@
 ## phpenv - PHP multi-version installation and management for humans.
 
-This is a maintenance fork of [phpenv/phpenv](https://github.com/phpenv/phpenv). Build functionality is currently delegated to [php-build](https://github.com/php-build/php-build).
+This is a maintenance fork of [phpenv/phpenv][original-url]. Build functionality is currently delegated to [php-build][php-build-url].
 
 ### Key features:
 
@@ -54,15 +54,7 @@ easy to fork and contribute any changes back upstream.
 
 1. Check out phpenv into `~/.phpenv`.
 
-        $ cd
-        $ git clone git://github.com/madumlao/phpenv.git .phpenv
-
-1.1. Create a plugins directory and install php-build into it
-
-        $ cd .phpenv
-        $ mkdir plugins
-        $ cd plugins
-        $ git clone https://github.com/php-build/php-build
+        $ git clone git://github.com/madumlao/phpenv.git ~/.phpenv
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
@@ -76,9 +68,14 @@ easy to fork and contribute any changes back upstream.
 4. Restart your shell so the path changes take effect. You can now
    begin using phpenv.
 
-        $ exec $SHELL
+        $ exec $SHELL -l
 
-5. Rebuild the shim binaries. You should do this any time you install
+5. (Optional) Install php-build into it and any php. (See [php-build][php-build-url] home)
+
+        $ git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
+        $ phpenv install [any php version]
+
+6. (Optional) Rebuild the shim binaries. You should do this any time you install
    a new PHP binary.
 
         $ phpenv rehash
@@ -97,7 +94,7 @@ To upgrade to the latest development version of phpenv, use `git pull`:
 
 The preferred way of connecting phpenv applications is by using php-fpm after building php. Apache can then be configured to connect to the php-fpm instance by following instructions at the [apache wiki](https://wiki.apache.org/httpd/PHP-FPM). In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
 
-Alternatively, you may still use the php5_module by configuring [php-build](https://github.com/php-build/php-build) to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
+Alternatively, you may still use the php5_module by configuring [php-build][php-build-url] to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
 directive and requires Apache to restart when changed.
 
 ### Neckbeard Configuration
@@ -136,9 +133,16 @@ hood.
 Like `git`, the `phpenv` command delegates to subcommands based on its
 first argument. The most common subcommands are:
 
+### phpenv help
+
+Show the usage and useful help.  When you are in trouble, do this ;)
+
+    $ phpenv help
+    $ phpenv help <subcommand>
+
 ### phpenv install
 
-[php-build](https://github.com/php-build/php-build) is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php- plugin build as described in step 1.1. of the  install instructions above.
+[php-build][php-build-url] is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php plugin build as described in step 5. of the install instructions above.
 
 Before running phpenv install, make sure the development versions needed to build php are installed in your system. In particular, if you want to build the apache extension, make sure that libapache2-dev (or your OS's equivalent) is installed.
 
@@ -229,14 +233,14 @@ run the given command.
 ## Development
 
 The phpenv source code is [hosted on
-GitHub](https://github.com/madumlao/phpenv). It's clean, modular,
+GitHub][phpenv-url]. It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
 This project is basically a clone (Read: "search and replace") of the rbenv
 project. It's in need of love and support. If you're interested in improving it
-please feel free to fork, submit pull requests and file bugs on the [issue
-tracker](https://github.com/phpenv/phpenv/issues).
+please feel free to fork, submit [pull requests][phpenv-prs] and file bugs on the [issue
+tracker][phpenv-issues].
 
 ### License
 
@@ -262,3 +266,9 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[original-url]: https://github.com/phpenv/phpenv
+[php-build-url]: https://github.com/php-build/php-build
+[phpenv-url]: https://github.com/madumlao/phpenv
+[phpenv-issues]: https://github.com/madumlao/phpenv/issues
+[phpenv-prs]: https://github.com/phpenv/phpenv/pulls
