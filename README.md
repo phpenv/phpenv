@@ -18,7 +18,7 @@ of multiple PHP custom build installations.
 
 I was originally inspired by the outstanding work of both the
  projects which
-you already know and love with a whole bunch of PHP scentric additions
+you already know and love with a whole bunch of PHP centric additions
 to help you build your first release, simplify managing and working
 with diffirent releases and keep you building new release after new
 release like there's nothing to it.
