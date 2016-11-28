@@ -7,6 +7,7 @@ fi
 export CFLAGS='-I/usr/X11/include'
 
 CONFIGURE_OPTIONS="--with-apxs2=/usr/sbin/apxs
+                   --enable-fpm
                    --enable-option-checking
                    --enable-phar
                    --disable-intl
