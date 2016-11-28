@@ -78,7 +78,7 @@ easy to fork and contribute any changes back upstream.
 4. Restart your shell so the path changes take effect. You can now
    begin using phpenv.
 
-        $ exec $SHELL
+        $ exec bash -l
 
 5. Rebuild the shim binaries. You should do this any time you install
    a new PHP binary.
