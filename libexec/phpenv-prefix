@@ -22,7 +22,7 @@ fi
 
 PHPENV_PREFIX_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}"
 if [ ! -d "$PHPENV_PREFIX_PATH" ]; then
-  echo "phpenv: version \`${PHPENV_VERSION}' not installed" >&2
+  echo "phpenv: version \`${PHPENV_VERSION}\` not installed" >&2
   exit 1
 fi
 
