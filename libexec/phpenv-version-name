@@ -17,6 +17,6 @@ PHPENV_VERSION_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}"
 if [ -d "$PHPENV_VERSION_PATH" ]; then
   echo "$PHPENV_VERSION"
 else
-  echo "phpenv: version \`$PHPENV_VERSION' is not installed" >&2
+  echo "phpenv: version \`$PHPENV_VERSION\` is not installed" >&2
   exit 1
 fi
