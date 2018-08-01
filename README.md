@@ -246,7 +246,9 @@ tracker][phpenv-issues].
 
 (The MIT license)
 
-Copyright (c) 2012 Dominic Giglio, madumlao
+Copyright (c) 2012 Dominic Giglio
+Copyright (c) 2013 Nick Lombard
+Copyright (c) 2015 madumlao
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
