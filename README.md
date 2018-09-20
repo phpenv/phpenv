@@ -94,7 +94,7 @@ To upgrade to the latest development version of phpenv, use `git pull`:
 
 ### Webserver Setup
 
-The preferred way of connecting phpenv applications is by using php-fpm after building php. Apache can then be configured to connect to the php-fpm instance by following instructions at the [apache wiki](https://wiki.apache.org/httpd/PHP-FPM). In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
+The preferred way of connecting phpenv applications is by using php-fpm after building php. Your webserver can then be configured to connect to the php-fpm instance. In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
 
 php-fpm can be started in one of the following ways:
  - using an init script: by running `~/.phpenv/versions/$VERSION/etc/init.d/php-fpm`
@@ -104,6 +104,10 @@ php-fpm can be started in one of the following ways:
  - manually: by running `php-fpm (8)` and supplying command-line arguments
 
 By default, php-fpm comes with a configuration file under `~/.phpenv/versions/$VERSION/etc/php-fpm.conf`, which it will look for when run. This configures php-fpm to listen on `localhost:9000` when started. You may edit or replace this file, or supply a different configuration file using the `--fpm-config` (`-y`) command line argument.
+
+Instructions for connecting different webservers to php-fpm:
+ - for Apache, see the [apache wiki article][apache-wiki-phpfpm]
+ - for NGINX, see the [nginx wiki article][nginx-wiki-phpfpm]
 
 Alternatively, you may still use the php5_module by configuring [php-build][php-build-url] to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
 directive and requires Apache to restart when changed.
@@ -286,3 +290,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [phpenv-issues]: https://github.com/madumlao/phpenv/issues
 [phpenv-installer-url]: https://github.com/madumlao/phpenv-installer
 [phpenv-prs]: https://github.com/phpenv/phpenv/pulls
+[apache-wiki-phpfpm]: https://wiki.apache.org/httpd/PHP-FPM
+[nginx-wiki-phpfpm]: https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
