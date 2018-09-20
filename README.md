@@ -93,7 +93,7 @@ To upgrade to the latest development version of phpenv, use `git pull`:
     $ git pull
 
 ### Webserver Setup
-
+#### PHP-FPM
 The preferred way of connecting phpenv applications is by using php-fpm after building php. Your webserver can then be configured to connect to the php-fpm instance. In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
 
 php-fpm can be started in one of the following ways:
@@ -109,8 +109,8 @@ Instructions for connecting different webservers to php-fpm:
  - for Apache, see the [apache wiki article][apache-wiki-phpfpm]
  - for NGINX, see the [nginx wiki article][nginx-wiki-phpfpm]
 
-Alternatively, you may still use the php5_module by configuring [php-build][php-build-url] to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
-directive and requires Apache to restart when changed.
+#### Apache SAPI
+Alternatively, you may still use the Apache php module by configuring [php-build][php-build-url] to build the libphp.so apache extension (directions to follow). libphp.so can then be found by apache under the `~/.phpenv/versions/$VERSION/libexec` folder. This file can be used for Apache's `LoadModule php5_module` directive and requires Apache to restart when changed.
 
 ### Neckbeard Configuration
 
