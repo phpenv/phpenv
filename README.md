@@ -153,7 +153,7 @@ Show the usage and useful help.  When you are in trouble, do this ;)
 
 ### phpenv install
 
-[php-build][php-build-url] is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php plugin build as described in step 5. of the install instructions above.
+[php-build][php-build-url] is a phpenv-compatible plugin that builds and installs php. To be able to use phpenv install, download and install the php-build plugin as described in step 5. of the install instructions above.
 
 Before running phpenv install, make sure the development versions needed to build php are installed in your system. In particular, if you want to build the apache extension, make sure that libapache2-dev (or your OS's equivalent) is installed.
 
