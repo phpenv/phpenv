@@ -48,6 +48,8 @@ switching automagically.
 ## Installation
 
 ### Basic GitHub Checkout
+For a more automated install, you can use [phpenv-installer][phpenv-installer-url].
+If you prefer a manual approach, follow the steps below.
 
 This will get you going with the latest version of phpenv and make it
 easy to fork and contribute any changes back upstream.
@@ -282,4 +284,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [php-build-url]: https://github.com/php-build/php-build
 [phpenv-url]: https://github.com/madumlao/phpenv
 [phpenv-issues]: https://github.com/madumlao/phpenv/issues
+[phpenv-installer-url]: https://github.com/madumlao/phpenv-installer
 [phpenv-prs]: https://github.com/phpenv/phpenv/pulls
