@@ -90,9 +90,18 @@ To upgrade to the latest development version of phpenv, use `git pull`:
     $ cd ~/.phpenv
     $ git pull
 
-### Apache Setup
+### Webserver Setup
 
 The preferred way of connecting phpenv applications is by using php-fpm after building php. Apache can then be configured to connect to the php-fpm instance by following instructions at the [apache wiki](https://wiki.apache.org/httpd/PHP-FPM). In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
+
+php-fpm can be started in one of the following ways:
+ - using an init script: by running `~/.phpenv/versions/$VERSION/etc/init.d/php-fpm`
+ - using systemd: by installing `~/.phpenv/versions/$VERSION/etc/systemd/system/php-fpm.service`
+ - using an init script: by writing your own custom init script
+ - using systemd: by writing your own custom systemd unit
+ - manually: by running `php-fpm (8)` and supplying command-line arguments
+
+By default, php-fpm comes with a configuration file under `~/.phpenv/versions/$VERSION/etc/php-fpm.conf`, which it will look for when run. This configures php-fpm to listen on `localhost:9000` when started. You may edit or replace this file, or supply a different configuration file using the `--fpm-config` (`-y`) command line argument.
 
 Alternatively, you may still use the php5_module by configuring [php-build][php-build-url] to build the libphp5.so apache extension (directions to follow). libphp5.so can then be found by apache under the `versions` `libexec` folder. This file can be used for Apache's `LoadModule php5_module`
 directive and requires Apache to restart when changed.
