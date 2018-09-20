@@ -1,6 +1,6 @@
 ## phpenv - PHP multi-version installation and management for humans.
 
-This is a maintenance fork of [phpenv/phpenv][original-url]. Build functionality is currently delegated to [php-build][php-build-url].
+This is a maintenance fork of [phpenv/phpenv][original-url].
 
 ### Key features:
 
