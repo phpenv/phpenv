@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# Check prerequisites
+[[ "Darwin" != "$(uname)" ]] && { \
+    echo "This install script was written for Mac OS X only."; exit 1; \
+}
+which brew &> /dev/null || { \
+    echo "Please install homebrew, see: http://mxcl.github.com/homebrew/"; exit 1; \
+}
+[[ "/usr/local" != "$(brew --prefix)" ]] && { \
+    echo "For now we expect the brew --prefix to be /usr/local"; \
+    echo "but yours is $(brew --prefix)."; \
+    echo "Please create an issue to have this resolved."; exit 1; \
+}
+
+PHPENV_ROOT="$(dirname ~/.phpenv/bin)"
+#Install dependencies
+echo "Installing PHP build dependencies..."
+echo "ERROR: Something already installed is a good thing"
+echo
+#flex 2.5.4 formula patch
+grep -q 2.5.4 /usr/local/Library/Formula/flex.rb || \
+    patch /usr/local/Library/Formula/flex.rb  ${PHPENV_ROOT}/patches/homebrew-flex.diff
+
+brew install \
+    flex curl expat freetds freetype gettext gmp imap-uw jpeg libevent libiconv libmagic \
+    libmemcached libpng libvpx libxml2 libxslt mariadb mcrypt mhash net-snmp oniguruma \
+    openssl pcre readline tidy unixodbc zlib autoconf213 autoconf ccache httpd
+
+#install libxml2 2.7.8
+cd /usr/local
+git checkout 497b13a /usr/local/Library/Formula/libxml2.rb
+brew install libxml2
+git checkout HEAD /usr/local/Library/Formula/libxml2.rb
+cd - &> /dev/null
+#make sure we are on the latest version though
+brew switch libxml2 $(brew versions libxml2|awk '{if (NR==1) print $1}')
+
+#Use ccache
+export PATH=/usr/local/opt/ccache/libexec:$PATH
+
+#Add our php module to the new apache httpd.conf
+grep -q php5_module /usr/local/opt/httpd/etc/apache2/httpd.conf || { \
+    awk -v phpenv="${PHPENV_ROOT}" '/^LoadModule/{
+             if (!done) {
+                 print "LoadModule php5_module "phpenv"/lib/libphp5.so"; done=1;
+             }
+         };
+         {print $0;}' /usr/local/opt/httpd/etc/apache2/httpd.conf > /usr/local/opt/httpd/etc/apache2/httpd.tmp && \
+             mv /usr/local/opt/httpd/etc/apache2/httpd.{tmp,conf}; \
+}
+echo
+echo "Fetching the latest releases to see what is available..."
+echo "If this is the first time you use phpenv we have to clone"
+echo "the php-src repo first, please be patient..."
+RELEASES=$(phpenv install --releases 2>/dev/null)
+
+LATEST=(\
+    "$(echo "${RELEASES}"| grep --color=never php-5.5| head -n 1)" \
+    "$(echo "${RELEASES}"| grep --color=never php-5.4| head -n 1)" \
+    "$(echo "${RELEASES}"| grep --color=never php-5.3| head -n 1)" \
+    "$(echo "${RELEASES}"| grep --color=never php-5.2| head -n 1)" \
+)
+echo "These are the latest releases, we will install them now:"
+echo
+echo "${LATEST[@]}"
+echo
+for release in "${LATEST[@]}"; do
+    echo "Cleaning the build environment..."
+    phpenv install --deep-clean &> /dev/null;
+    echo "Running: phpenv install ${release} ${1}";
+    phpenv install ${release} ${1} || { \
+        echo "Ok that didn't work, please open an issue for this."; exit 1; \
+    }
+done

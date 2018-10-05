@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Summary: Configure the shell environment for phpenv
+# Usage: eval "$(phpenv init - [--no-rehash] [<shell>])"
+
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
@@ -53,6 +56,9 @@ if [ -z "$print" ]; then
   ksh )
     profile='~/.profile'
     ;;
+  fish )
+    profile='~/.config/fish/config.fish'
+    ;;
   * )
     profile='your profile'
     ;;
@@ -61,7 +67,14 @@ if [ -z "$print" ]; then
   { echo "# Load phpenv automatically by adding"
     echo "# the following to ${profile}:"
     echo
-    echo 'eval "$(phpenv init -)"'
+    case "$shell" in
+    fish )
+      echo 'status --is-interactive; and source (phpenv init -|psub)'
+      ;;
+    * )
+      echo 'eval "$(phpenv init -)"'
+      ;;
+    esac
     echo
   } >&2
 
@@ -70,10 +83,17 @@ fi
 
 mkdir -p "${PHPENV_ROOT}/"{shims,versions}
 
-echo 'export PATH="'${PHPENV_ROOT}'/shims:${PATH}"'
+case "$shell" in
+fish )
+  echo "set -gx PATH '${PHPENV_ROOT}/shims' \$PATH"
+  ;;
+* )
+  echo 'export PATH="'${PHPENV_ROOT}'/shims:${PATH}"'
+  ;;
+esac
 
 case "$shell" in
-bash | zsh )
+bash | zsh | fish )
   echo "source \"$root/completions/phpenv.${shell}\""
   ;;
 esac
@@ -82,11 +102,40 @@ if [ -z "$no_rehash" ]; then
   echo 'phpenv rehash 2>/dev/null'
 fi
 
-commands=(`phpenv commands --sh`)
+commands=(`phpenv-commands --sh`)
+case "$shell" in
+fish )
+  cat <<EOS
+function phpenv
+  set command \$argv[1]
+  set -e argv[1]
+  switch "\$command"
+  case ${commands[*]}
+    source (phpenv "sh-\$command" \$argv|psub)
+  case '*'
+    command phpenv "\$command" \$argv
+  end
+end
+EOS
+  ;;
+ksh )
+  cat <<EOS
+function phpenv {
+  typeset command
+EOS
+  ;;
+* )
+  cat <<EOS
+phpenv() {
+  local command
+EOS
+  ;;
+esac
+
+if [ "$shell" != "fish" ]; then
 IFS="|"
 cat <<EOS
-phpenv() {
-  local command="\$1"
+  command="\$1"
   if [ "\$#" -gt 0 ]; then
     shift
   fi
@@ -99,3 +148,4 @@ phpenv() {
   esac
 }
 EOS
+fi

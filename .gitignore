@@ -1,7 +1,7 @@
 .DS_Store
-/php-src
 /plugins
 /shims
 /version
 /versions
-
+/lib
+/var
