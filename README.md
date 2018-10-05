@@ -1,7 +1,5 @@
 ## phpenv - PHP multi-version installation and management for humans.
 
-This is a maintenance fork of [phpenv/phpenv][original-url].
-
 ### Key features:
 
 My name is phpenv. I was designed for humans, to help simplify the management
