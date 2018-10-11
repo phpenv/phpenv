@@ -1,7 +1,5 @@
 ## phpenv - PHP multi-version installation and management for humans.
 
-This is a maintenance fork of [phpenv/phpenv][original-url].
-
 ### Key features:
 
 My name is phpenv. I was designed for humans, to help simplify the management
@@ -56,7 +54,7 @@ easy to fork and contribute any changes back upstream.
 
 1. Check out phpenv into `~/.phpenv`.
 
-        $ git clone git://github.com/madumlao/phpenv.git ~/.phpenv
+        $ git clone git://github.com/phpenv/phpenv.git ~/.phpenv
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
@@ -261,8 +259,8 @@ tracker][phpenv-issues].
 
 (The MIT license)
 
-Copyright (c) 2012 Dominic Giglio
-Copyright (c) 2013 Nick Lombard
+Copyright (c) 2012 Dominic Giglio\
+Copyright (c) 2013 Nick Lombard\
 Copyright (c) 2015 madumlao
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -286,9 +284,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [original-url]: https://github.com/phpenv/phpenv
 [php-build-url]: https://github.com/php-build/php-build
-[phpenv-url]: https://github.com/madumlao/phpenv
-[phpenv-issues]: https://github.com/madumlao/phpenv/issues
-[phpenv-installer-url]: https://github.com/madumlao/phpenv-installer
+[phpenv-url]: https://github.com/phpenv/phpenv
+[phpenv-issues]: https://github.com/phpenv/phpenv/issues
+[phpenv-installer-url]: https://github.com/phpenv/phpenv-installer
 [phpenv-prs]: https://github.com/phpenv/phpenv/pulls
 [apache-wiki-phpfpm]: https://wiki.apache.org/httpd/PHP-FPM
 [nginx-wiki-phpfpm]: https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/

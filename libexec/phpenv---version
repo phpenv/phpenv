@@ -12,7 +12,8 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-version="0.0.4-dev"
+version="0.9.0-rc.1"
+git_revision=""
 
 cd "$PHPENV_ROOT"
 git_revision="$(git describe --tags HEAD 2>/dev/null || true)"

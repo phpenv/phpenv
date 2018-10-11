@@ -4,4 +4,20 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-vi "$(php --ini|grep Loaded|awk '{print $NF}')"
+if [ "$VISUAL" ]; then
+	cmd="$VISUAL"
+fi
+
+if ! [ "$cmd" ] && [ "$EDITOR" ]; then
+	cmd="$EDITOR"
+fi
+
+if ! [ "$cmd" ] && type vim >/dev/null 2>&1; then
+	cmd="vim"
+fi
+
+if ! [ "$cmd" ]; then
+	cmd="vi"
+fi
+
+"$cmd" "$(php --ini|grep Loaded|awk '{print $NF}')"
