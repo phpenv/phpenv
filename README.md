@@ -95,6 +95,8 @@ To upgrade to the latest development version of phpenv, use `git pull`:
 The preferred way of connecting phpenv applications is by using php-fpm after building php. Your webserver can then be configured to connect to the php-fpm instance. In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
 
 php-fpm can be started in one of the following ways:
+ - using an init script: by running `~/.phpenv/versions/$VERSION/etc/init.d/php-fpm`
+ - using systemd: by installing `~/.phpenv/versions/$VERSION/etc/systemd/system/php-fpm.service`
  - using an init script: by writing your own custom init script
  - using systemd: by writing your own custom systemd unit
  - manually: by running `php-fpm (8)` and supplying command-line arguments
