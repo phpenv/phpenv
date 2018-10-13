@@ -3,6 +3,7 @@
 # Summary: Set or show the shell-specific PHP version
 #
 # Usage: phpenv shell <version>
+#        phpenv shell -
 #        phpenv shell --unset
 #
 # Sets a shell-specific PHP version by setting the `PHPENV_VERSION'
@@ -12,6 +13,11 @@
 # <version> should be a string matching a PHP version known to phpenv.
 # The special version string `system' will use your default system PHP.
 # Run `phpenv versions' for a list of available PHP versions.
+# 
+# When `-` is passed instead of the version string, the previously set
+# version will be restored. With `--unset`, the `PHPENV_VERSION`
+# environment variable gets unset, restoring the environment to the
+# state before the first `phpenv shell` call.
 
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
@@ -24,12 +30,7 @@ if [ "$1" = "--complete" ]; then
 fi
 
 version="$1"
-
-if [ "$version" = "--unset" ]; then
-  echo "unset PHPENV_VERSION" 2>/dev/null
-  PHPENV_VERSION=""; version=""
-fi
-
+shell="$(basename "${PHPENV_SHELL:-$SHELL}")"
 
 if [ -z "$version" ]; then
   if [ -z "$PHPENV_VERSION" ]; then
@@ -41,11 +42,77 @@ if [ -z "$version" ]; then
   fi
 fi
 
+if [ "$version" = "--unset" ]; then
+  case "$shell" in
+  fish )
+    echo "set -gu PHPENV_VERSION_OLD \"\$PHPENV_VERSION\""
+    echo "set -e PHPENV_VERSION"
+    ;;
+  * )
+    echo "PHPENV_VERSION_OLD=\"\$PHPENV_VERSION\""
+    echo "unset PHPENV_VERSION"
+    ;;
+  esac
+  exit
+fi
+
+if [ "$version" = "-" ]; then
+  case "$shell" in
+  fish )
+    cat <<EOS
+if set -q PHPENV_VERSION_OLD
+  if [ -n "\$PHPENV_VERSION_OLD" ]
+    set PHPENV_VERSION_OLD_ "\$PHPENV_VERSION"
+    set -gx PHPENV_VERSION "\$PHPENV_VERSION_OLD"
+    set -gu PHPENV_VERSION_OLD "\$PHPENV_VERSION_OLD_"
+    set -e PHPENV_VERSION_OLD_
+  else
+    set -gu PHPENV_VERSION_OLD "\$PHPENV_VERSION"
+    set -e PHPENV_VERSION
+  end
+else
+  echo "phpenv: PHPENV_VERSION_OLD is not set" >&2
+  false
+end
+EOS
+    ;;
+  * )
+    cat <<EOS
+if [ -n "\${PHPENV_VERSION_OLD+x}" ]; then
+  if [ -n "\$PHPENV_VERSION_OLD" ]; then
+    PHPENV_VERSION_OLD_="\$PHPENV_VERSION"
+    export PHPENV_VERSION="\$PHPENV_VERSION_OLD"
+    PHPENV_VERSION_OLD="\$PHPENV_VERSION_OLD_"
+    unset PHPENV_VERSION_OLD_
+  else
+    PHPENV_VERSION_OLD="\$PHPENV_VERSION"
+    unset PHPENV_VERSION
+  fi
+else
+  echo "phpenv: PHPENV_VERSION_OLD is not set" >&2
+  false
+fi
+EOS
+    ;;
+  esac
+  exit
+fi
+
 # Make sure the specified version is installed.
 if phpenv-prefix "$version" >/dev/null; then
-  echo "export PHPENV_VERSION=\"${version}\""
-  echo "$version" >&2
+  if [ "$version" != "$PHPENV_VERSION" ]; then
+    case "$shell" in
+    fish )
+      echo "set -gu PHPENV_VERSION_OLD \"\$PHPENV_VERSION\""
+      echo "set -gx PHPENV_VERSION \"$version\""
+      ;;
+    * )
+      echo "PHPENV_VERSION_OLD=\"\$PHPENV_VERSION\""
+      echo "export PHPENV_VERSION=\"$version\""
+      ;;
+    esac
+  fi
 else
-  echo "return 1"
+  echo "false"
   exit 1
 fi

@@ -22,10 +22,15 @@ elif [ -z "$PHPENV_VERSION" ]; then
 fi
 
 if [ "$PHPENV_VERSION" = "system" ]; then
-  PHP_PATH="$(phpenv-which php)"
-  PHP_PATH="${PHP_PATH%/*}"
-  echo "${PHP_PATH%/bin}"
-  exit
+  if PHP_PATH="$(phpenv-which php 2>/dev/null)"; then
+    PHP_PATH="${PHP_PATH%/*}"
+    PHPENV_PREFIX_PATH="${PHP_PATH%/bin}"
+    echo "${PHPENV_PREFIX_PATH:-/}"
+    exit
+  else
+    echo "phpenv: system version not found in PATH" >&2
+    exit 1
+  fi
 fi
 
 PHPENV_PREFIX_PATH="${PHPENV_ROOT}/versions/${PHPENV_VERSION}"

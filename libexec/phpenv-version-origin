@@ -3,7 +3,18 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-if [ -n "$PHPENV_VERSION" ]; then
+unset PHPENV_VERSION_ORIGIN
+
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`phpenv-hooks version-origin`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
+  source "$script"
+done
+
+if [ -n "$PHPENV_VERSION_ORIGIN" ]; then
+  echo "$PHPENV_VERSION_ORIGIN"
+elif [ -n "$PHPENV_VERSION" ]; then
   echo "PHPENV_VERSION environment variable"
 else
   phpenv-version-file

@@ -9,6 +9,8 @@ set -e
 if [ "$1" = "--complete" ]; then
   echo exec
   echo rehash
+  echo version-name
+  echo version-origin
   echo which
   exit
 fi
@@ -24,29 +26,43 @@ fi
 #  PHPENV_COMMAND_HOOK="*"
 #fi
 
+if ! enable -f "${BASH_SOURCE%/*}"/phpenv-realpath.dylib realpath 2>/dev/null; then
+  if [ -n "$PHPENV_NATIVE_EXT" ]; then
+    echo "phpenv: failed to load \`realpath' builtin" >&2
+    exit 1
+  fi
+READLINK=$(type -p greadlink readlink | head -1)
+if [ -z "$READLINK" ]; then
+  echo "phpenv: cannot find readlink - are you missing GNU coreutils?" >&2
+  exit 1
+fi
+
 resolve_link() {
-  $(type -p greadlink readlink | head -1) $1
+  $READLINK "$1"
 }
 
 realpath() {
-  local cwd="$(pwd)"
-  local base="$(basename $1)"
+  local cwd="$PWD"
   local path="$1"
+  local name
 
   while [ -n "$path" ]; do
-    cd "${path%/*}"
-    local name="${path##*/}"
+    name="${path##*/}"
+    [ "$name" = "$path" ] || cd "${path%/*}"
     path="$(resolve_link "$name" || true)"
   done
 
-  echo "$(pwd)/$base"
+  echo "${PWD}/$name"
   cd "$cwd"
 }
+fi
+
+IFS=: hook_paths=($PHPENV_HOOK_PATH)
 
 shopt -s nullglob
-for path in ${PHPENV_HOOK_PATH//:/$'\n'}; do
-  for script in $path/"$PHPENV_COMMAND"/*.bash; do
-    echo $(realpath $script)
+for path in "${hook_paths[@]}"; do
+  for script in "$path/$PHPENV_COMMAND"/*.bash; do
+    realpath "$script"
   done
 done
 #

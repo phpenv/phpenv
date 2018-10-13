@@ -18,10 +18,10 @@ set -e
 
 # Provide phpenv completions
 if [ "$1" = "--complete" ]; then
-  exec phpenv shims --short
+  exec phpenv-shims --short
 fi
 
-export PHPENV_VERSION="$(phpenv-version-name)"
+PHPENV_VERSION="$(phpenv-version-name)"
 PHPENV_COMMAND="$1"
 
 if [ -z "$PHPENV_COMMAND" ]; then
@@ -29,10 +29,14 @@ if [ -z "$PHPENV_COMMAND" ]; then
   exit 1
 fi
 
+export PHPENV_VERSION
 PHPENV_COMMAND_PATH="$(phpenv-which "$PHPENV_COMMAND")"
 PHPENV_BIN_PATH="${PHPENV_COMMAND_PATH%/*}"
 
-for script in $(phpenv-hooks exec); do
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`phpenv-hooks exec`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
   source "$script"
 done
 

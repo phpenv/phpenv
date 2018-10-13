@@ -15,8 +15,9 @@ set -e
 version="0.9.0-rc.1"
 git_revision=""
 
-cd "$PHPENV_ROOT"
-git_revision="$(git describe --tags HEAD 2>/dev/null || true)"
-git_revision="${git_revision#v}"
+if cd "${BASH_SOURCE%/*}" 2>/dev/null && git remote -v 2>/dev/null | grep -q phpenv; then
+  git_revision="$(git describe --tags HEAD 2>/dev/null || true)"
+  git_revision="${git_revision#v}"
+fi
 
 echo "phpenv v${git_revision:-$version}"

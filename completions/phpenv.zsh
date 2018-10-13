@@ -11,7 +11,7 @@ _phpenv() {
   if [ "${#words}" -eq 2 ]; then
     completions="$(phpenv commands)"
   else
-    completions="$(phpenv completions ${words[2,-1]})"
+    completions="$(phpenv completions ${words[2,-2]})"
   fi
 
   reply=("${(ps:\n:)completions}")
