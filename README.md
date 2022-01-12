@@ -90,6 +90,15 @@ To upgrade to the latest development version of phpenv, use `git pull`:
     $ cd ~/.phpenv
     $ git pull
 
+
+### php-build configuration
+By default, php-build will compile PHP with a default set of options specified by:
+ - php-build [default configure options](https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options)
+ - per-version configure options in the PHP build definition. For example, in [7.4.13](https://github.com/php-build/php-build/blob/master/share/php-build/definitions/7.4.13)
+ - configure options specified in environment variables. See [the man page](https://github.com/php-build/php-build/blob/master/man/php-build.1.ronn) for details.
+
+Typically, if you need to specify how PHP is built on your system, you can add configure options in the `PHP_BUILD_CONFIGURE_OPTS` variable, and add PHP extensions in the `PHP_BUILD_INSTALL_EXTENSION` variable.
+
 ### Webserver Setup
 #### PHP-FPM
 The preferred way of connecting phpenv applications is by using php-fpm after building php. Your webserver can then be configured to connect to the php-fpm instance. In this approach, php will run as the permissions of the invoking user, which is not necessarily as the web server.
