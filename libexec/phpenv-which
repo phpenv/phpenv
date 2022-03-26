@@ -12,49 +12,29 @@ set -e
 
 # Provide phpenv completions
 if [ "$1" = "--complete" ]; then
-  exec phpenv shims --short
+  exec phpenv-shims --short
 fi
 
-expand_path() {
-  if [ ! -d "$1" ]; then
-    return 1
-  fi
-
-  local cwd="$(pwd)"
-  cd "$1"
-  pwd
-  cd "$cwd"
-}
-
 remove_from_path() {
-  local path_to_remove="$(expand_path "$1")"
-  local result=""
-
-  if [ -z "$path_to_remove" ]; then
-    echo "${PATH}"
-    return
-  fi
-
-  local paths
-  IFS=: paths=($PATH)
-
-  for path in "${paths[@]}"; do
-    path="$(expand_path "$path" || true)"
-    if [ -n "$path" ] && [ "$path" != "$path_to_remove" ]; then
-      result="${result}${path}:"
-    fi
+  local path_to_remove="$1"
+  local path_before
+  local result=":${PATH//\~/$HOME}:"
+  while [ "$path_before" != "$result" ]; do
+    path_before="$result"
+    result="${result//:$path_to_remove:/:}"
   done
-
-  echo "${result%:}"
+  result="${result%:}"
+  echo "${result#:}"
 }
 
-PHPENV_VERSION="$(phpenv-version-name)"
 PHPENV_COMMAND="$1"
 
 if [ -z "$PHPENV_COMMAND" ]; then
   phpenv-help --usage which >&2
   exit 1
 fi
+
+PHPENV_VERSION="${PHPENV_VERSION:-$(phpenv-version-name)}"
 
 if [ "$PHPENV_VERSION" = "system" ]; then
   PATH="$(remove_from_path "${PHPENV_ROOT}/shims")"
@@ -66,12 +46,18 @@ else
   fi
 fi
 
-for script in $(phpenv-hooks which); do
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`phpenv-hooks which`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
   source "$script"
 done
 
 if [ -x "$PHPENV_COMMAND_PATH" ]; then
   echo "$PHPENV_COMMAND_PATH"
+elif [ "$PHPENV_VERSION" != "system" ] && [ ! -d "${PHPENV_ROOT}/versions/${PHPENV_VERSION}" ]; then
+  echo "phpenv: version \`$PHPENV_VERSION' is not installed (set by $(phpenv-version-origin))" >&2
+  exit 1
 else
   echo "phpenv: $PHPENV_COMMAND: command not found" >&2
 

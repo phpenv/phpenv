@@ -20,9 +20,11 @@ elif [ "$1" = "--no-sh" ]; then
   shift
 fi
 
+IFS=: paths=($PATH)
+
 shopt -s nullglob
 
-{ for path in ${PATH//:/$'\n'}; do
+{ for path in "${paths[@]}"; do
     for command in "${path}/phpenv-"*; do
       command="${command##*phpenv-}"
       if [ -n "$sh" ]; then

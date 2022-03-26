@@ -8,7 +8,7 @@ set -e
 # Provide phpenv completions
 if [ "$1" = "--complete" ]; then
   echo --path
-  exec phpenv shims --short
+  exec phpenv-shims --short
 fi
 
 if [ "$1" = "--path" ]; then
@@ -20,11 +20,13 @@ fi
 
 whence() {
   local command="$1"
-  phpenv-versions --bare | while read version; do
-    path="$(phpenv-prefix "$version")/bin/${command}"
-    if [ -x "$path" ]; then
-      [ "$print_paths" ] && echo "$path" || echo "$version"
-    fi
+  phpenv-versions --bare | \
+  while read version; do
+    for path in "$(phpenv-prefix "$version")"/*bin/"${command}"; do
+      if [ -x "$path" ]; then
+        [ "$print_paths" ] && echo "$path" || echo "$version"
+      fi
+    done
   done
 }
 

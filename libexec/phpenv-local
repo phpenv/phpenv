@@ -15,10 +15,6 @@
 # `PHPENV_VERSION' environment variable takes precedence over local
 # and global versions.
 #
-# For backwards compatibility, phpenv will also read version
-# specifications from `.phpenv-version' files, but a `.php-version'
-# file in the same directory takes precedence.
-#
 # <version> should be a string matching a PHP version known to phpenv.
 # The special version string `system' will use your default system PHP.
 # Run `phpenv versions' for a list of available PHP versions.
@@ -36,22 +32,14 @@ fi
 PHPENV_VERSION="$1"
 
 if [ "$PHPENV_VERSION" = "--unset" ]; then
-  rm -f .php-version .phpenv-version
-  PHPENV_VERSION=""
+  rm -f .php-version
 elif [ -n "$PHPENV_VERSION" ]; then
-  if [ "$(PHPENV_VERSION= phpenv-version-origin)" -ef .phpenv-version ]; then
-    rm -f .phpenv-version
-    { echo "phpenv: removed existing \`.phpenv-version' file and migrated"
-      echo "       local version specification to \`.php-version' file"
-    } >&2
-  fi
   phpenv-version-file-write .php-version "$PHPENV_VERSION"
-  echo "$PHPENV_VERSION" >&2
-fi
-if [ -z "$PHPENV_VERSION" ]; then
-  phpenv-version-file-read .php-version ||
-  phpenv-version-file-read .phpenv-version ||
-  { echo "phpenv: no local version configured for this directory"
+else
+  if version_file="$(phpenv-version-file "$PWD")"; then
+    phpenv-version-file-read "$version_file"
+  else
+    echo "phpenv: no local version configured for this directory" >&2
     exit 1
-  } >&2
+  fi
 fi

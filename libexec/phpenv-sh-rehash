@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$PHPENV_DEBUG" ] && set -x
+
+# Provide phpenv completions
+if [ "$1" = "--complete" ]; then
+  exec phpenv-rehash --complete
+fi
+
+shell="$(basename "${PHPENV_SHELL:-$SHELL}")"
+
+# When phpenv shell integration is enabled, delegate to phpenv-rehash,
+# then tell the shell to empty its command lookup cache.
+phpenv-rehash
+
+case "$shell" in
+fish )
+  # no rehash support
+  ;;
+* )
+  echo "hash -r 2>/dev/null || true"
+  ;;
+esac

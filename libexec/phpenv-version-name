@@ -8,6 +8,13 @@ if [ -z "$PHPENV_VERSION" ]; then
   PHPENV_VERSION="$(phpenv-version-file-read "$PHPENV_VERSION_FILE" || true)"
 fi
 
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`phpenv-hooks version-name`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
+  source "$script"
+done
+
 if [ -z "$PHPENV_VERSION" ] || [ "$PHPENV_VERSION" = "system" ]; then
   echo "system"
   exit
@@ -21,11 +28,8 @@ version_exists() {
 if version_exists "$PHPENV_VERSION"; then
   echo "$PHPENV_VERSION"
 elif version_exists "${PHPENV_VERSION#php-}"; then
-  { echo "warning: ignoring extraneous \`php-' prefix in version \`${PHPENV_VERSION}'"
-    echo "         (set by $(phpenv-version-origin))"
-  } >&2
   echo "${PHPENV_VERSION#php-}"
 else
-  echo "phpenv: version \`$PHPENV_VERSION' is not installed" >&2
+  echo "phpenv: version \`$PHPENV_VERSION' is not installed (set by $(phpenv-version-origin))" >&2
   exit 1
 fi
