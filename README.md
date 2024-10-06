@@ -54,7 +54,7 @@ easy to fork and contribute any changes back upstream.
 
 1. Check out phpenv into `~/.phpenv`.
 
-        $ git clone git@github.com:phpenv/phpenv.git ~/.phpenv
+        $ git clone https://github.com/phpenv/phpenv.git ~/.phpenv
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
