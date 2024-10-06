@@ -54,31 +54,31 @@ easy to fork and contribute any changes back upstream.
 
 1. Check out phpenv into `~/.phpenv`.
 
-        $ git clone https://github.com/phpenv/phpenv.git ~/.phpenv
+        git clone https://github.com/phpenv/phpenv.git ~/.phpenv
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
 
-        $ echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bash_profile
+        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bash_profile
 
 3. Add phpenv init to your shell to enable shims and autocompletion.
 
-        $ echo 'eval "$(phpenv init -)"' >> ~/.bash_profile
+        echo 'eval "$(phpenv init -)"' >> ~/.bash_profile
 
 4. Restart your shell so the path changes take effect. You can now
    begin using phpenv.
 
-        $ exec $SHELL -l
+        exec $SHELL -l
 
 5. (Optional) Install php-build into it and any php. (See [php-build][php-build-url] home)
 
-        $ git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
-        $ phpenv install [any php version]
+        git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
+        phpenv install [any php version]
 
 6. (Optional) Rebuild the shim binaries. You should do this any time you install
    a new PHP binary.
 
-        $ phpenv rehash
+        phpenv rehash
 
 ### Upgrading
 
@@ -87,8 +87,7 @@ upgrade your installation at any time using git.
 
 To upgrade to the latest development version of phpenv, use `git pull`:
 
-    $ cd ~/.phpenv
-    $ git pull
+    cd ~/.phpenv && git pull
 
 
 ### php-build configuration
