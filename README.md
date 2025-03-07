@@ -63,9 +63,9 @@ easy to fork and contribute any changes back upstream.
 
 1. Check out phpenv into `~/.phpenv`.
 
-        ```sh
-        git clone https://github.com/phpenv/phpenv.git ~/.phpenv
-        ```
+   ```sh
+   git clone https://github.com/phpenv/phpenv.git ~/.phpenv
+   ```
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
@@ -78,36 +78,36 @@ easy to fork and contribute any changes back upstream.
 
    Assuming that your shell initialization is in `~/.profile`, then
 
-        ```sh
-        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.profile
-        ```
+   ```sh
+   echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.profile
+   ```
 
 3. Add phpenv init to your shell to enable shims and autocompletion.
 
-        ```sh
-        echo 'eval "$(phpenv init -)"' >> ~/.profile
-        ```
+   ```sh
+   echo 'eval "$(phpenv init -)"' >> ~/.profile
+   ```
 
 4. Restart your shell so the path changes take effect. You can now
    begin using phpenv.
 
-        ```sh
-        exec $SHELL -l
-        ```
+   ```sh
+   exec $SHELL -l
+   ```
 
 5. (Optional) Install php-build into it and any php. (See [php-build][php-build-url] home)
 
-        ```sh
-        git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
-        phpenv install [any php version]
-        ```
+   ```sh
+   git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
+   phpenv install [any php version]
+   ```
 
 6. (Optional) Rebuild the shim binaries. You should do this any time you install
    a new PHP binary.
 
-        ```sh
-        phpenv rehash
-        ```
+   ```sh
+   phpenv rehash
+   ```
 
 ### Upgrading
 
