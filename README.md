@@ -5,9 +5,9 @@
 My name is phpenv. I was designed for humans, to help simplify the management
 of multiple PHP custom build installations.
 
-I was originally inspired by the outstanding work of both the
- projects which
-you already know and love with a whole bunch of PHP centric additions
+I was originally inspired by the outstanding work of
+[rbenv][rbenv-url] and [ruby-build][ruby-build-url]
+with a whole bunch of PHP centric additions
 to help you build your first release, simplify managing and working
 with diffirent releases and keep you building new release after new
 release like there's nothing to it.
@@ -302,5 +302,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [phpenv-issues]: https://github.com/phpenv/phpenv/issues
 [phpenv-installer-url]: https://github.com/phpenv/phpenv-installer
 [phpenv-prs]: https://github.com/phpenv/phpenv/pulls
+[rbenv-url]: https://github.com/rbenv/rbenv
+[ruby-build-url]: https://github.com/rbenv/ruby-build
 [apache-wiki-phpfpm]: https://wiki.apache.org/httpd/PHP-FPM
 [nginx-wiki-phpfpm]: https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
