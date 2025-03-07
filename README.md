@@ -72,7 +72,7 @@ easy to fork and contribute any changes back upstream.
    
    The `$PATH` variable is typically set in your shell initialization file.
    Common examples:
-   - if you are using `bash`, check if `~/.bash_profile` exists.
+   - if you are using bash, check if `~/.bash_profile` exists.
    - if you are using another shell, check your specific shell configuration.
    - if the above do not exist, shells will typically default to `~/.profile`
 
