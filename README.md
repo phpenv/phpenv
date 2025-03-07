@@ -116,8 +116,9 @@ upgrade your installation at any time using git.
 
 To upgrade to the latest development version of phpenv, use `git pull`:
 
-    cd ~/.phpenv && git pull
-
+```sh
+cd ~/.phpenv && git pull
+```
 
 ### php-build configuration
 By default, php-build will compile PHP with a default set of options specified by:
