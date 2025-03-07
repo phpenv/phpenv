@@ -258,7 +258,7 @@ GitHub][phpenv-url]. It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
-Tests are executed using [Bats](https://github.com/bats-core/bats-code):
+Tests are executed using [Bats](https://github.com/bats-core/bats-core):
 
     $ bats test
     $ bats test/<file>.bats
