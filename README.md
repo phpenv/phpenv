@@ -258,10 +258,16 @@ GitHub][phpenv-url]. It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
+Tests are executed using [Bats](https://github.com/bats-core/bats-core):
+
+    $ bats test
+    $ bats test/<file>.bats
+
 This project is basically a clone (Read: "search and replace") of the rbenv
 project. It's in need of love and support. If you're interested in improving it
 please feel free to fork, submit [pull requests][phpenv-prs] and file bugs on the [issue
 tracker][phpenv-issues].
+
 
 ### License
 
