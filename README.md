@@ -188,8 +188,10 @@ first argument. The most common subcommands are:
 
 Show the usage and useful help.  When you are in trouble, do this ;)
 
-    $ phpenv help
-    $ phpenv help <subcommand>
+```sh
+phpenv help
+phpenv help <subcommand>
+```
 
 ### phpenv install
 
@@ -204,7 +206,9 @@ the version name to the `~/.phpenv/version` file. This version can be
 overridden by a per-project `.phpenv-version` file, or by setting the
 `PHPENV_VERSION` environment variable.
 
-    $ phpenv global 5.4.0
+```sh
+phpenv global 5.4.0
+```
 
 The special version name `system` tells phpenv to use the system PHP
 (detected by searching your `$PATH`).
@@ -220,12 +224,16 @@ overrides the global, and can be overridden itself by setting the
 `PHPENV_VERSION` environment variable or with the `phpenv shell`
 command.
 
-    $ phpenv local 5.3.8
+```sh
+phpenv local 5.3.8
+```
 
 When run without a version number, `phpenv local` reports the currently
 configured local version. You can also unset the local version:
 
-    $ phpenv local --unset
+```sh
+phpenv local --unset
+```
 
 ### phpenv shell
 
@@ -233,37 +241,47 @@ Sets a shell-specific PHP version by setting the `PHPENV_VERSION`
 environment variable in your shell. This version overrides both
 project-specific versions and the global version.
 
-    $ phpenv shell 5.3.9
+```sh
+phpenv shell 5.3.9
+```
 
 When run without a version number, `phpenv shell` reports the current
 value of `PHPENV_VERSION`. You can also unset the shell version:
 
-    $ phpenv shell --unset
+```sh
+phpenv shell --unset
+```
 
 Note that you'll need phpenv's shell integration enabled (step 3 of
 the installation instructions) in order to use this command. If you
 prefer not to use shell integration, you may simply set the
 `PHPENV_VERSION` variable yourself:
 
-    $ export PHPENV_VERSION=5.3.13
+```sh
+export PHPENV_VERSION=5.3.13
+```
 
 ### phpenv versions
 
 Lists all PHP versions known to phpenv, and shows an asterisk next to
 the currently active version.
 
-    $ phpenv versions
-      5.2.8
-      5.3.13
-    * 5.4.0 (set by /YOUR-USERNAME/.phpenv/global)
+```sh
+$ phpenv versions
+  5.2.8
+  5.3.13
+* 5.4.0 (set by /YOUR-USERNAME/.phpenv/global)
+```
 
 ### phpenv version
 
 Displays the currently active PHP version, along with information on
 how it was set.
 
-    $ phpenv version
-    5.4.0 (set by /YOUR-USERNAME/.phpenv/version)
+```sh
+$ phpenv version
+5.4.0 (set by /YOUR-USERNAME/.phpenv/version)
+```
 
 ### phpenv rehash
 
@@ -271,15 +289,19 @@ Installs shims for all PHP binaries known to phpenv (i.e.,
 `~/.phpenv/versions/*/bin/*`). Run this command after you install a new
 version of PHP.
 
-    $ phpenv rehash
+```sh
+phpenv rehash
+```
 
 ### phpenv which
 
 Displays the full path to the binary that phpenv will execute when you
 run the given command.
 
-    $ phpenv which pyrus
-    /YOUR-USERNAME/.phpenv/versions/5.4.0/bin/pyrus
+```sh
+$ phpenv which pyrus
+/YOUR-USERNAME/.phpenv/versions/5.4.0/bin/pyrus
+```
 
 ## Development
 
@@ -290,8 +312,10 @@ shell hacker.
 
 Tests are executed using [Bats](https://github.com/bats-core/bats-core):
 
-    $ bats test
-    $ bats test/<file>.bats
+```sh
+bats test
+bats test/<file>.bats
+```
 
 This project is basically a clone (Read: "search and replace") of the rbenv
 project. It's in need of love and support. If you're interested in improving it
