@@ -303,14 +303,35 @@ $ phpenv which pyrus
 /YOUR-USERNAME/.phpenv/versions/5.4.0/bin/pyrus
 ```
 
+## Environment variables
+
+You can affect how phpenv operates with the following settings:
+
+name | default | description
+-----|---------|------------
+`PHPENV_VERSION`| | Specifies the PHP version to be used.<br>Also see [`phpenv shell`](#phpenv-shell)
+`PHPENV_ROOT` | `~/.phpenv` | Defines the directory under which PHP versions and shims reside.<br>Also see [`phpenv root`](#phpenv-root)
+`PHPENV_DEBUG` | | Outputs debug information.<br>Also as `phpenv --debug <subcommand>`
+`PHPENV_HOOK_PATH` | | Colon-separated list of paths searched for phpenv hooks.
+`PHPENV_DIR` | `$PWD` | Directory to start searching for `.php-version` files.
+
+### Uninstalling phpenv
+
+The simplicity of phpenv makes it easy to temporarily disable it, or uninstall from the system.
+
+1. To **disable** phpenv managing your PHP versions, simply comment or remove the `phpenv init` line from your shell startup configuration. This will remove phpenv shims directory from PATH, and future invocations like `php` will execute the system PHP version, bypassing phpenv completely.
+
+   While disabled, `phpenv` will still be accessible on the command line, but your PHP projects won't be affected by version switching.
+
+2. To completely **uninstall** phpenv, perform step (1) and then remove the phpenv root directory. This will **delete all PHP versions** that were installd under `` `phpenv root`/versions/ `.
+
 ## Development
 
-The phpenv source code is [hosted on
-GitHub][phpenv-url]. It's clean, modular,
+The phpenv source code is [hosted on GitHub][phpenv-url]. It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
-Tests are executed using [Bats](https://github.com/bats-core/bats-core):
+Tests are executed using [Bats][bats-url]
 
 ```sh
 bats test
@@ -361,3 +382,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [ruby-build-url]: https://github.com/rbenv/ruby-build
 [apache-wiki-phpfpm]: https://wiki.apache.org/httpd/PHP-FPM
 [nginx-wiki-phpfpm]: https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
+[bats-url]: https://github.com/bats-core/bats-core
