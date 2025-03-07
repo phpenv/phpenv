@@ -352,7 +352,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [original-url]: https://github.com/phpenv/phpenv
 [php-build-url]: https://github.com/php-build/php-build
-[php-build-configure-opts-url]: https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options
+[php-build-default-configure-opts-url]: https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options
 [phpenv-url]: https://github.com/phpenv/phpenv
 [phpenv-issues]: https://github.com/phpenv/phpenv/issues
 [phpenv-installer-url]: https://github.com/phpenv/phpenv-installer
