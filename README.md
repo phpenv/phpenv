@@ -99,7 +99,7 @@ easy to fork and contribute any changes back upstream.
 
    ```sh
    git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
-   phpenv install [any php version]
+   phpenv install <php-version>
    ```
 
 6. (Optional) Rebuild the shim binaries. You should do this any time you install
