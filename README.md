@@ -122,7 +122,7 @@ cd ~/.phpenv && git pull
 
 ### php-build configuration
 By default, php-build will compile PHP with a default set of options specified by:
- - php-build [default configure options](https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options)
+ - php-build [default configure options][php-build-default-configure-opts-url]
  - per-version configure options in the PHP build definition. For example, in [7.4.13](https://github.com/php-build/php-build/blob/master/share/php-build/definitions/7.4.13)
  - configure options specified in environment variables. See [the man page](https://github.com/php-build/php-build/blob/master/man/php-build.1.ronn) for details.
 
@@ -328,6 +328,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [original-url]: https://github.com/phpenv/phpenv
 [php-build-url]: https://github.com/php-build/php-build
+[php-build-configure-opts-url]: https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options
 [phpenv-url]: https://github.com/phpenv/phpenv
 [phpenv-issues]: https://github.com/phpenv/phpenv/issues
 [phpenv-installer-url]: https://github.com/phpenv/phpenv-installer
