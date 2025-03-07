@@ -24,24 +24,33 @@ code repository kept in your local `.phpenv` folder.
 
 ## How It Works
 
-phpenv operates on the per-user directory `~/.phpenv`. Version names in
-phpenv correspond to subdirectories of `~/.phpenv/versions`. For
-example, you might have `~/.phpenv/versions/5.3.8` and
-`~/.phpenv/versions/5.4.0`.
+After phpenv injects itself into your PATH at installation time, any invocation
+of `php`, `php-fpm`, or other PHP-related executable will first activate phpenv.
+Then, phpenv scans the current project directory for a file named `.php-version`.
+If found, that file determines the version of PHP that should be used within that
+directory. phpenv then looks up that PHP version among those installed under
+`~/.phpenv/versions/`.
 
-Each version is a working tree with its own binaries, like
-`~/.phpenv/versions/5.4.0/bin/php` and
-`~/.phpenv/versions/5.3.8/bin/pyrus`. phpenv makes _shim binaries_
-for every such binary across all installed versions of PHP.
+phpenv expects each version to be a directory resulting from a PHP installation.
+This means each directory has its own binaries, libraries, config files, man pages.
+For example, each version has its own `php`, `php-fpm`, `pecl`, `pyrus`, `php.ini`.
+phpenv detects which version to run for your project then calls the appropriate file.
 
-These shims are simple wrapper scripts that live in `~/.phpenv/shims`
-and detect which PHP version you want to use. They insert the
-directory for the selected version at the beginning of your `$PATH`
-and then execute the corresponding binary.
+You can choose the PHP version for your project with, for example:
 
-Because of the simplicity of the shim approach, all you need to use
-phpenv is `~/.phpenv/shims` in your `$PATH` which will do the version
-switching automagically.
+```sh
+cd Projects/my-php-project
+# choose PHP 8.3.13
+phpenv local 8.3.13
+```
+
+Doing so will update the `.php-version` file in the current directory with the
+version that you've chosen. A different project of yours that is another directory
+might be using a different version of PHP altogether - phpenv will seamlessly
+transition from one PHP version to another when you cd into the project directory.
+
+Finally, almost every aspect of phpenv's mechanism is customizable via plugins
+written in bash.
 
 ## Installation
 
