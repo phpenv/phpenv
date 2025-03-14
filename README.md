@@ -5,9 +5,9 @@
 My name is phpenv. I was designed for humans, to help simplify the management
 of multiple PHP custom build installations.
 
-I was originally inspired by the outstanding work of both the
- projects which
-you already know and love with a whole bunch of PHP centric additions
+I was originally inspired by the outstanding work of
+[rbenv][rbenv-url] and [ruby-build][ruby-build-url]
+with a whole bunch of PHP centric additions
 to help you build your first release, simplify managing and working
 with diffirent releases and keep you building new release after new
 release like there's nothing to it.
@@ -24,24 +24,33 @@ code repository kept in your local `.phpenv` folder.
 
 ## How It Works
 
-phpenv operates on the per-user directory `~/.phpenv`. Version names in
-phpenv correspond to subdirectories of `~/.phpenv/versions`. For
-example, you might have `~/.phpenv/versions/5.3.8` and
-`~/.phpenv/versions/5.4.0`.
+After phpenv injects itself into your PATH at installation time, any invocation
+of `php`, `php-fpm`, or other PHP-related executable will first activate phpenv.
+Then, phpenv scans the current project directory for a file named `.php-version`.
+If found, that file determines the version of PHP that should be used within that
+directory. phpenv then looks up that PHP version among those installed under
+`~/.phpenv/versions/`.
 
-Each version is a working tree with its own binaries, like
-`~/.phpenv/versions/5.4.0/bin/php` and
-`~/.phpenv/versions/5.3.8/bin/pyrus`. phpenv makes _shim binaries_
-for every such binary across all installed versions of PHP.
+phpenv expects each version to be a directory resulting from a PHP installation.
+This means each directory has its own binaries, libraries, config files, man pages.
+For example, each version has its own `php`, `php-fpm`, `pecl`, `pyrus`, `php.ini`.
+phpenv detects which version to run for your project then calls the appropriate file.
 
-These shims are simple wrapper scripts that live in `~/.phpenv/shims`
-and detect which PHP version you want to use. They insert the
-directory for the selected version at the beginning of your `$PATH`
-and then execute the corresponding binary.
+You can choose the PHP version for your project with, for example:
 
-Because of the simplicity of the shim approach, all you need to use
-phpenv is `~/.phpenv/shims` in your `$PATH` which will do the version
-switching automagically.
+```sh
+cd Projects/my-php-project
+# choose PHP 8.3.13
+phpenv local 8.3.13
+```
+
+Doing so will update the `.php-version` file in the current directory with the
+version that you've chosen. A different project of yours that is another directory
+might be using a different version of PHP altogether - phpenv will seamlessly
+transition from one PHP version to another when you cd into the project directory.
+
+Finally, almost every aspect of phpenv's mechanism is customizable via plugins
+written in bash.
 
 ## Installation
 
@@ -54,31 +63,51 @@ easy to fork and contribute any changes back upstream.
 
 1. Check out phpenv into `~/.phpenv`.
 
-        git clone https://github.com/phpenv/phpenv.git ~/.phpenv
+   ```sh
+   git clone https://github.com/phpenv/phpenv.git ~/.phpenv
+   ```
 
 2. Add `~/.phpenv/bin` to your `$PATH` for access to the `phpenv`
    command-line utility.
+   
+   The `$PATH` variable is typically set in your shell initialization file.
+   Common examples:
+   - if you are using bash, check if `~/.bash_profile` exists.
+   - if you are using another shell, check your specific shell configuration.
+   - if the above do not exist, shells will typically default to `~/.profile`
 
-        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bash_profile
+   Assuming that your shell initialization is in `~/.profile`, then
+
+   ```sh
+   echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.profile
+   ```
 
 3. Add phpenv init to your shell to enable shims and autocompletion.
 
-        echo 'eval "$(phpenv init -)"' >> ~/.bash_profile
+   ```sh
+   echo 'eval "$(phpenv init -)"' >> ~/.profile
+   ```
 
 4. Restart your shell so the path changes take effect. You can now
    begin using phpenv.
 
-        exec $SHELL -l
+   ```sh
+   exec $SHELL -l
+   ```
 
 5. (Optional) Install php-build into it and any php. (See [php-build][php-build-url] home)
 
-        git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
-        phpenv install [any php version]
+   ```sh
+   git clone https://github.com/php-build/php-build $(phpenv root)/plugins/php-build
+   phpenv install <php-version>
+   ```
 
 6. (Optional) Rebuild the shim binaries. You should do this any time you install
    a new PHP binary.
 
-        phpenv rehash
+   ```sh
+   phpenv rehash
+   ```
 
 ### Upgrading
 
@@ -87,12 +116,13 @@ upgrade your installation at any time using git.
 
 To upgrade to the latest development version of phpenv, use `git pull`:
 
-    cd ~/.phpenv && git pull
-
+```sh
+cd ~/.phpenv && git pull
+```
 
 ### php-build configuration
 By default, php-build will compile PHP with a default set of options specified by:
- - php-build [default configure options](https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options)
+ - php-build [default configure options][php-build-default-configure-opts-url]
  - per-version configure options in the PHP build definition. For example, in [7.4.13](https://github.com/php-build/php-build/blob/master/share/php-build/definitions/7.4.13)
  - configure options specified in environment variables. See [the man page](https://github.com/php-build/php-build/blob/master/man/php-build.1.ronn) for details.
 
@@ -158,8 +188,10 @@ first argument. The most common subcommands are:
 
 Show the usage and useful help.  When you are in trouble, do this ;)
 
-    $ phpenv help
-    $ phpenv help <subcommand>
+```sh
+phpenv help
+phpenv help <subcommand>
+```
 
 ### phpenv install
 
@@ -174,7 +206,9 @@ the version name to the `~/.phpenv/version` file. This version can be
 overridden by a per-project `.phpenv-version` file, or by setting the
 `PHPENV_VERSION` environment variable.
 
-    $ phpenv global 5.4.0
+```sh
+phpenv global 5.4.0
+```
 
 The special version name `system` tells phpenv to use the system PHP
 (detected by searching your `$PATH`).
@@ -190,12 +224,16 @@ overrides the global, and can be overridden itself by setting the
 `PHPENV_VERSION` environment variable or with the `phpenv shell`
 command.
 
-    $ phpenv local 5.3.8
+```sh
+phpenv local 5.3.8
+```
 
 When run without a version number, `phpenv local` reports the currently
 configured local version. You can also unset the local version:
 
-    $ phpenv local --unset
+```sh
+phpenv local --unset
+```
 
 ### phpenv shell
 
@@ -203,37 +241,47 @@ Sets a shell-specific PHP version by setting the `PHPENV_VERSION`
 environment variable in your shell. This version overrides both
 project-specific versions and the global version.
 
-    $ phpenv shell 5.3.9
+```sh
+phpenv shell 5.3.9
+```
 
 When run without a version number, `phpenv shell` reports the current
 value of `PHPENV_VERSION`. You can also unset the shell version:
 
-    $ phpenv shell --unset
+```sh
+phpenv shell --unset
+```
 
 Note that you'll need phpenv's shell integration enabled (step 3 of
 the installation instructions) in order to use this command. If you
 prefer not to use shell integration, you may simply set the
 `PHPENV_VERSION` variable yourself:
 
-    $ export PHPENV_VERSION=5.3.13
+```sh
+export PHPENV_VERSION=5.3.13
+```
 
 ### phpenv versions
 
 Lists all PHP versions known to phpenv, and shows an asterisk next to
 the currently active version.
 
-    $ phpenv versions
-      5.2.8
-      5.3.13
-    * 5.4.0 (set by /YOUR-USERNAME/.phpenv/global)
+```sh
+$ phpenv versions
+  5.2.8
+  5.3.13
+* 5.4.0 (set by /YOUR-USERNAME/.phpenv/global)
+```
 
 ### phpenv version
 
 Displays the currently active PHP version, along with information on
 how it was set.
 
-    $ phpenv version
-    5.4.0 (set by /YOUR-USERNAME/.phpenv/version)
+```sh
+$ phpenv version
+5.4.0 (set by /YOUR-USERNAME/.phpenv/version)
+```
 
 ### phpenv rehash
 
@@ -241,27 +289,54 @@ Installs shims for all PHP binaries known to phpenv (i.e.,
 `~/.phpenv/versions/*/bin/*`). Run this command after you install a new
 version of PHP.
 
-    $ phpenv rehash
+```sh
+phpenv rehash
+```
 
 ### phpenv which
 
 Displays the full path to the binary that phpenv will execute when you
 run the given command.
 
-    $ phpenv which pyrus
-    /YOUR-USERNAME/.phpenv/versions/5.4.0/bin/pyrus
+```sh
+$ phpenv which pyrus
+/YOUR-USERNAME/.phpenv/versions/5.4.0/bin/pyrus
+```
+
+## Environment variables
+
+You can affect how phpenv operates with the following settings:
+
+name | default | description
+-----|---------|------------
+`PHPENV_VERSION`| | Specifies the PHP version to be used.<br>Also see [`phpenv shell`](#phpenv-shell)
+`PHPENV_ROOT` | `~/.phpenv` | Defines the directory under which PHP versions and shims reside.<br>Also see [`phpenv root`](#phpenv-root)
+`PHPENV_DEBUG` | | Outputs debug information.<br>Also as `phpenv --debug <subcommand>`
+`PHPENV_HOOK_PATH` | | Colon-separated list of paths searched for phpenv hooks.
+`PHPENV_DIR` | `$PWD` | Directory to start searching for `.php-version` files.
+
+### Uninstalling phpenv
+
+The simplicity of phpenv makes it easy to temporarily disable it, or uninstall from the system.
+
+1. To **disable** phpenv managing your PHP versions, simply comment or remove the `phpenv init` line from your shell startup configuration. This will remove phpenv shims directory from PATH, and future invocations like `php` will execute the system PHP version, bypassing phpenv completely.
+
+   While disabled, `phpenv` will still be accessible on the command line, but your PHP projects won't be affected by version switching.
+
+2. To completely **uninstall** phpenv, perform step (1) and then remove the phpenv root directory. This will **delete all PHP versions** that were installd under `` `phpenv root`/versions/ `.
 
 ## Development
 
-The phpenv source code is [hosted on
-GitHub][phpenv-url]. It's clean, modular,
+The phpenv source code is [hosted on GitHub][phpenv-url]. It's clean, modular,
 and easy to understand (thanks to the rbenv project), even if you're not a
 shell hacker.
 
-Tests are executed using [Bats](https://github.com/bats-core/bats-core):
+Tests are executed using [Bats][bats-url]
 
-    $ bats test
-    $ bats test/<file>.bats
+```sh
+bats test
+bats test/<file>.bats
+```
 
 This project is basically a clone (Read: "search and replace") of the rbenv
 project. It's in need of love and support. If you're interested in improving it
@@ -298,9 +373,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [original-url]: https://github.com/phpenv/phpenv
 [php-build-url]: https://github.com/php-build/php-build
+[php-build-default-configure-opts-url]: https://github.com/php-build/php-build/blob/master/share/php-build/default_configure_options
 [phpenv-url]: https://github.com/phpenv/phpenv
 [phpenv-issues]: https://github.com/phpenv/phpenv/issues
 [phpenv-installer-url]: https://github.com/phpenv/phpenv-installer
 [phpenv-prs]: https://github.com/phpenv/phpenv/pulls
+[rbenv-url]: https://github.com/rbenv/rbenv
+[ruby-build-url]: https://github.com/rbenv/ruby-build
 [apache-wiki-phpfpm]: https://wiki.apache.org/httpd/PHP-FPM
 [nginx-wiki-phpfpm]: https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
+[bats-url]: https://github.com/bats-core/bats-core
