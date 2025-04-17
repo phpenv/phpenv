@@ -15,9 +15,15 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
+# Provide phpenv completions
+if [ "$1" = "--complete" ]; then
+  echo --usage
+  exec phpenv-commands
+fi
+
 command_path() {
   local command="$1"
-  command -v phpenv-"$command" || command -v phpenv-sh-"$command" || true
+  type -P phpenv-"$command" phpenv-sh-"$command" | head -n1
 }
 
 extract_initial_comment_block() {
@@ -36,7 +42,15 @@ extract_initial_comment_block() {
 }
 
 collect_documentation() {
-  awk '
+  local awk
+  awk="$(type -P gawk)" || awk="$(type -P awk)" || true
+  if [ -z "$awk" ]; then
+    echo "phpenv: cannot find awk" >&2
+    return 1
+  fi
+
+  # shellcheck disable=SC2016
+  "$awk" '
     /^Summary:/ {
       summary = substr($0, 10)
       next
@@ -80,7 +94,8 @@ collect_documentation() {
 }
 
 documentation_for() {
-  local filename="$(command_path "$1")"
+  local filename
+  filename="$(command_path "$1")"
   if [ -n "$filename" ]; then
     extract_initial_comment_block < "$filename" | collect_documentation
   fi
@@ -108,14 +123,17 @@ print_help() {
   eval "$(documentation_for "$command")"
   [ -n "$help" ] || help="$summary"
 
-  if [ -n "$usage" -o -n "$summary" ]; then
-    local buffer="$(
-      print_usage $command;
-      if [ -n "$help" ]; then \
-        echo -e "\n$help\n";
-      fi
-    )"
-    echo "${buffer}"|$([[ $(tput lines) -lt $(echo "${buffer}"| wc -l ) ]] && echo less || echo cat)
+  if [ -n "$usage" ] || [ -n "$summary" ]; then
+    if [ -n "$usage" ]; then
+      echo "$usage"
+    else
+      echo "Usage: phpenv ${command}"
+    fi
+    if [ -n "$help" ]; then
+      echo
+      echo "$help"
+      echo
+    fi
   else
     echo "Sorry, this command isn't documented yet." >&2
     return 1
@@ -126,11 +144,40 @@ print_usage() {
   local command="$1"
   local summary usage help
   eval "$(documentation_for "$command")"
-  echo "${command}:"
-  echo ${command//?/=}=
-  [[ -n "$summary" ]] && printf "   %s\n\n" "$summary"
-  [[ -z "$usage" ]] || echo "$usage"
+  if [ -n "$usage" ]; then
+    echo "$usage"
+  else
+    echo "Usage: phpenv ${command}"
+  fi
 }
+
+if [ "$1" = "--complete-commands" ]; then
+  command_prefix="${2:-}"
+  seen=()
+  shopt -s nullglob
+  PATH_remain="$PATH"
+  # traverse PATH to find "phpenv-" prefixed commands
+  while true; do
+    path="${PATH_remain%%:*}"
+    if [ -n "$path" ]; then
+      for phpenv_command in "${path}/phpenv-"*; do
+        command_name="${phpenv_command##*/}"
+        command_name="${command_name#phpenv-}"
+        command_name="${command_name#sh-}"
+        [[ $command_name == "${command_prefix}"* ]] || continue
+        [[ " ${seen[*]} " != *" ${command_name} "* ]] || continue
+        seen+=("$command_name")
+        summary=""
+        eval "$(extract_initial_comment_block < "$phpenv_command" | collect_documentation)"
+        [ -n "$summary" ] || continue
+        printf "%s:%s\n" "$command_name" "$summary"
+      done
+    fi
+    [[ $PATH_remain == *:* ]] || break
+    PATH_remain="${PATH_remain#*:}"
+  done
+  exit 0
+fi
 
 unset usage
 if [ "$1" = "--usage" ]; then
@@ -139,14 +186,14 @@ if [ "$1" = "--usage" ]; then
 fi
 
 if [ -z "$1" ] || [ "$1" == "phpenv" ]; then
-  echo "phpenv:"
-  printf "%0.1s" "="{1..7}
-  echo -e "\n   PHP multi-version installation and management utility.\n"
-  echo "Usage: phpenv <command> [<args>]"
-  [ -z "$usage" ] || exit
+  echo "Usage: phpenv <command> [<args>...]"
+  [ -n "$usage" ] && exit
   echo
-  echo "Some useful phpenv commands are:"
-  print_summaries commands configure local global shell install uninstall rehash version versions which whence
+  echo "Commands to manage available PHP versions:"
+  print_summaries versions install uninstall rehash
+  echo
+  echo "Commands to view or change the current PHP version:"
+  print_summaries version local global shell
   echo
   echo "See \`phpenv help <command>' for information on a specific command."
   echo "For full documentation, see: https://github.com/phpenv/phpenv#readme"
