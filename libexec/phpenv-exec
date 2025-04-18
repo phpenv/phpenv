@@ -2,7 +2,7 @@
 #
 # Summary: Run an executable with the selected PHP version
 #
-# Usage: phpenv exec <command> [arg1 arg2...]
+# Usage: phpenv exec <command> [<args>...]
 #
 # Runs an executable by first preparing PATH so that the selected PHP
 # version's `bin' directory is at the front.
@@ -18,10 +18,10 @@ set -e
 
 # Provide phpenv completions
 if [ "$1" = "--complete" ]; then
-  exec phpenv shims --short
+  exec phpenv-shims --short
 fi
 
-export PHPENV_VERSION="$(phpenv-version-name)"
+PHPENV_VERSION="$(phpenv-version-name)"
 PHPENV_COMMAND="$1"
 
 if [ -z "$PHPENV_COMMAND" ]; then
@@ -29,6 +29,7 @@ if [ -z "$PHPENV_COMMAND" ]; then
   exit 1
 fi
 
+export PHPENV_VERSION
 PHPENV_COMMAND_PATH="$(phpenv-which "$PHPENV_COMMAND")"
 PHPENV_BIN_PATH="${PHPENV_COMMAND_PATH%/*}"
 
