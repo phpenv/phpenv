@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: phpenv completions <command> [arg1 arg2...]
+# Usage: phpenv completions <command> [<args>...]
 
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
@@ -10,8 +10,17 @@ if [ -z "$COMMAND" ]; then
   exit 1
 fi
 
-COMMAND_PATH="$(command -v "phpenv-$COMMAND" || command -v "phpenv-sh-$COMMAND")"
-if grep -i "^# provide phpenv completions" "$COMMAND_PATH" >/dev/null; then
+# Provide phpenv completions
+if [ "$COMMAND" = "--complete" ]; then
+  exec phpenv-commands
+fi
+
+COMMAND_PATH="$(type -P "phpenv-$COMMAND" "phpenv-sh-$COMMAND" | head -n1)"
+
+# --help is provided automatically
+echo --help
+
+if grep -iE "^([#%]|--|//) provide phpenv completions" "$COMMAND_PATH" >/dev/null; then
   shift
   exec "$COMMAND_PATH" --complete "$@"
 fi

@@ -8,4 +8,11 @@
 set -e
 [ -n "$PHPENV_DEBUG" ] && set -x
 
-echo "$(phpenv-version-name) (set by $(phpenv-version-origin))"
+version_name="$(phpenv-version-name)"
+version_origin="$(phpenv-version-origin)"
+
+if [ "$version_origin" = "${PHPENV_ROOT}/version" ] && [ ! -e "$version_origin" ]; then
+  echo "$version_name"
+else
+  echo "$version_name (set by $version_origin)"
+fi
